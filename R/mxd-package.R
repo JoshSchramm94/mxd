@@ -5,7 +5,7 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @importFrom dplyr mutate
+#' @importFrom dplyr select filter group_by reframe arrange rename
 #' @importFrom magrittr "%>%"
 #' @importFrom tidyr pivot_longer
 #' @importFrom tidyselect all_of ends_with everything starts_with
