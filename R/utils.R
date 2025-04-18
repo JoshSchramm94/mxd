@@ -26,3 +26,5 @@ design <- readRDS(r"(C:\Users\risy79sy\Desktop\SynologyDrive\MaxDiff_models\05_A
 names(design)
 a = bw_define(design, Item, Response, c(ID, Set)) %>%
   mutate(alt = seq_len(n()), .by = ID)
+
+usethis::use_github()
