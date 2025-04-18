@@ -1,5 +1,5 @@
 #' @description
-#' mxd xxx
+#' mxd package
 #'
 #' @name mxd
 "_PACKAGE"
