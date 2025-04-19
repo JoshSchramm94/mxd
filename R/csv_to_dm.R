@@ -37,11 +37,11 @@ convert_csv_to_design_matrix <- function(
   # check whether anchor is empty or set to direct
   if (isTRUE(is.null(anchor)) || isTRUE(anchor == "direct")) {
     # best-worst coding
-    if (type == "best-worst") {
+    if (type %in% c("best-worst", "best-worst-seq", "worst-best-seq", "best-only", "worst-only")) {
 
       unanchored <- design %>%
         dplyr::filter({{ cs }} <= mxd_tasks) %>%
-        bw_define(., {{ item }}, {{ ch }}, c({{ id }}, {{ cs }})) %>%
+        bw_summary(., {{ item }}, {{ ch }}, c({{ id }}, {{ cs }})) %>%
         merge(
           x = design,
           y = .,
@@ -54,234 +54,175 @@ convert_csv_to_design_matrix <- function(
         )
 
       # dummy vars
-      item_vars <- dummy_names(data, {{ item }})
+      item_vars <- dummy_names(design, unanchored, {{ item }})
 
-      # stop
+      # prepare best choice data frame
+      if (!(type %in% c("worst_best_seq", "worst-only"))) {
+        best <- prepare_best_worst_ch(unanchored, {{ id }}, {{cs}}, item_vars, "b", 1, type)
+      } else if (type == "worst_best_seq") {
+        best <- prepare_best_worst_ch(unanchored, {{ id }}, {{cs}}, item_vars, "b", 2, type)
+      }
 
-      # first prepare best data frame
-      best <- unanchored %>%
-        dplyr::rename("choice" = "b") %>% # rename "b" (best choice) to choice for merging purposes
-        dplyr::relocate(choice, .after = tidyselect::everything()) %>% # relocate choice at the end of the data frame
-        dplyr::mutate(
-          bw = 1, # create best worst variable for ordering purposes
-          choice = ifelse(max.col(.[, item_vars]) == choice, 1, 0) # recode choice to 0 (not chosen) or 1 (chosen)
-        ) %>%
-        dplyr::select(-w) %>% # delete worst variable
-        dplyr::mutate(alt = seq_len(dplyr::n()), .by = c({{ id }}, {{ cs }})) %>% # create alternative variable
-        dplyr::relocate(alt, .after = {{ cs }}) # relocate alt variable
+      if (type %in% c("worst_best_seq", "worst-only")) {
+        worst <- prepare_best_worst_ch(unanchored, {{ id }}, {{cs}}, item_vars, "w", 1, type)
+      } else if (type %in% c("best-worst", "best-worst-seq")) {
+        worst <- prepare_best_worst_ch(unanchored, {{ id }}, {{cs}}, item_vars, "w", 2, type)
+      }
 
-      # next do the same with the worst choice
-      worst <- unanchored %>%
-        dplyr::rename("choice" = "w") %>%
-        dplyr::relocate(choice, .after = tidyselect::everything()) %>%
-        dplyr::mutate(
-          bw = 2,
-          choice = ifelse(max.col(.[, item_vars]) == choice, 1, 0)
-        ) %>%
-        dplyr::select(-b) %>%
-        dplyr::mutate_at(dplyr::vars(tidyselect::all_of(item_vars)), ~ .x * -1) %>% # multiply design matrix with -1
-        dplyr::mutate(alt = seq_len(dplyr::n()), .by = c({{ id }}, {{ cs }}))
-        dplyr::relocate(alt, .after = {{ cs }})
 
-      # finally merge both data frames
-      df_md <- rbind(best, worst) %>%
-        dplyr::arrange({{ id }}, {{ cs }}, bw) %>%
-        dplyr::mutate_at(dplyr::vars({{ cs }}), ~ cumsum(c(1, diff(alt) < 0)), .by = {{ id }}) %>%
-        dplyr::select(-bw) %>%
-        dplyr::relocate(choice, .after = tidyselect::everything())
+      # prepare worst choice data frame
+      if (type == "best-only") {
+
+        df_md <- best %>%
+          dplyr::select(-bw) %>%
+          dplyr::relocate(choice, .after = tidyselect::everything())
+
+      }
+
+      if (type == "worst-only") {
+
+        df_md <- worst %>%
+          dplyr::select(-bw) %>%
+          dplyr::relocate(choice, .after = tidyselect::everything())
+
+      }
+
+      if (!grepl("-only", type)){
+
+        df_md <- bw_merge(best, worst, {{ id }}, {{ cs }})
+
+      }
+
     }
+
 
     # maxdiff coding
-    if (type == "maxdiff") {
+    if (type == "maxdiff" || type == "exploded") {
       unanchored <- design %>%
-        dplyr::filter(., {{ cs }} <= mxd_tasks) %>% # select mxd tasks only
-        dplyr::group_by(dplyr::pick({{ id }}, {{ cs }})) %>%
-        dplyr::mutate(
-          b = {{ item }}[{{ ch }} == 1], # define best choice
-          w = {{ item }}[{{ ch }} == -1], # define worst choice
-          var = paste0("var_", seq(1, dplyr::n())) # create variable to define number of variables
-        ) %>%
-        dplyr::ungroup() %>%
-        dplyr::select(-{{ ch }}) %>% # delete choice
+        dplyr::filter(., {{ cs }} <= mxd_tasks) %>%
+        bw_mutate(., {{ item }}, {{ ch }}, c({{ id }}, {{ cs }})) %>%
         dplyr::arrange({{ id }}, {{ cs }}, {{ pos }}) %>% # order the data frame
-        dplyr::select(-{{ pos }}) %>% # delete position (just used for ordering purposes)
+        dplyr::select(-c({{ pos }}, {{ ch}})) %>% # delete position (just used for ordering purposes)
         tidyr::pivot_wider(.,
                            values_from = {{ item }},
                            names_from = var
-        ) %>% # change to wider format
-        dplyr::mutate(obs = c(1:nrow(.))) # create obs variable
-
-      # for each maxdiff task, prepare the comparisons
-      for (i in 1:nrow(unanchored)) {
-        Items <- unanchored %>%
-          dplyr::filter(obs == i) %>% # select row
-          dplyr::select(tidyselect::all_of(tidyselect::starts_with("var_"))) %>% # select the variables where the item ids are stored
-          unlist() %>% # unlist
-          as.vector() # store as vector
-
-        b <- unname(unlist(unanchored[i, "b"])) # define the best choice
-        w <- unname(unlist(unanchored[i, "w"])) # define the worst choice
-
-        md <- expand.grid(list(Item_b = Items, Item_w = Items)) %>% # create each potential comparison
-          dplyr::filter(Item_b != Item_w) %>% # remove variables that have the same items in best and worst
-          dplyr::mutate(
-            id = unlist(unanchored %>% dplyr::filter(obs == i) %>% dplyr::select(., {{ id }})), # store id
-            cs = unlist(unanchored %>% dplyr::filter(obs == i) %>% dplyr::select(., {{ cs }})), # store cs
-            alt = seq(1, dplyr::n()) # define alternative
-          ) %>%
-          dplyr::mutate(choice = ifelse(Item_b %in% b & Item_w %in% w, 1, 0)) %>% # code the choice
-          dplyr::relocate(id, cs, alt, .before = tidyselect::everything()) # reorder data frame
-
-        if (i == 1) {
-          df_md <- md # create data frame
-        } else {
-          df_md <- rbind(df_md, md)
-        }
-
-        # once MaxDiff choice sets for each task is created, create design matrix
-        if (i == nrow(unanchored)) {
-          df_md <- df_md %>%
-            fastDummies::dummy_cols(.,
-                                    select_columns = "Item_b",
-                                    remove_selected_columns = T
-            ) # create the design matrix
-
-          for (k in 1:nrow(df_md)) {
-            df_md[k, unname(unlist(((df_md[k, "Item_w"] + (which(colnames(df_md) == "Item_b_1") - 1)))))] <- -1
-
-            if (k == nrow(df_md)) {
-              df_md <- df_md %>%
-                dplyr::rename_all(., ~ stringr::str_replace(colnames(df_md), "_b_", "_")) %>%
-                dplyr::select(-Item_w) %>%
-                dplyr::relocate(choice, .after = tidyselect::everything()) # reorder data frame
-
-              col_names <- c(
-                (design %>% dplyr::select(., {{ id }}) %>% colnames()),
-                (design %>% dplyr::select(., {{ cs }}) %>% colnames()),
-                "alt",
-                c(df_md %>%
-                    dplyr::select(tidyselect::all_of(tidyselect::starts_with("Item_"))) %>%
-                    colnames(.)),
-                "choice"
-              )
-
-              colnames(df_md) <- col_names
-            }
-          }
-        }
-      }
+        )
     }
 
+    if (type == "maxdiff"){
 
+      df <- data.frame()
+      df_md = purrr::map(seq_len(nrow(unanchored)), function(x) {
+         vars <- names(unanchored)[startsWith(names(unanchored), "var_")]
 
-    if (type == "best-worst-seq" | type == "worst-best-seq") {
-      unanchored <- design %>%
-        dplyr::filter(., {{ cs }} <= mxd_tasks) %>% # filter out only maxdiff (tasks)
-        dplyr::group_by(dplyr::pick({{ id }}, {{ cs }})) %>%
-        dplyr::reframe(
-          b = {{ item }}[{{ ch }} == 1], # store best choice
-          w = {{ item }}[{{ ch }} == -1] # store worst choice
-        ) %>%
-        dplyr::ungroup() %>%
-        merge(x = design, y = ., by = c(design %>% dplyr::select(., {{ id }}, {{ cs }}) %>% colnames())) %>% # merge with the design
-        dplyr::select(-{{ ch }}) %>% # delete "ch" variable
-        dplyr::arrange({{ id }}, {{ cs }}, {{ pos }}) %>% # sort data frame
-        dplyr::select(-{{ pos }}) %>% # delete "pos" which was just used for sorting purposes
-        fastDummies::dummy_cols(., select_columns = (design %>% dplyr::select(., {{ item }}) %>% colnames()), remove_selected_columns = T) # create dummy columns
+         df <- rbind(df,
+                     unlist(unanchored[x, ][vars]) %>%
+                       DescTools::CombSet(., 2, repl = FALSE, ord = TRUE) %>%
+                       tibble::as_tibble() %>%
+                       setNames(paste0("item", seq_len(2))) %>%
+                       dplyr::mutate(
+                         id = unanchored[x, ][[var_names(design, {{ id }})]],
+                         b = unanchored[x, ][["b"]],
+                         w = unanchored[x, ][["w"]],
+                         choice = ifelse(item1 %in% b & item2 %in% w, 1, 0),
+                         alt = seq_len(nrow(.))
+                       ))
+       }) %>%
+         purrr::list_rbind() %>%
+         dplyr::select(paste0("item", seq_len(2)), "id", choice, alt)
 
-      item_vars <- unanchored %>%
-        dplyr::select(tidyselect::all_of(tidyselect::starts_with(paste0((design %>% dplyr::select(., {{ item }}) %>% colnames()), "_")))) %>% # extract names of the variables and store them
-        colnames()
+       names(df_md)[1] <- var_names(design, {{ item }})
 
-      if (type == "best-worst-seq") {
-        best <- unanchored %>%
-          dplyr::rename("choice" = "b") %>% # rename best into choice
-          dplyr::relocate(choice, .after = tidyselect::everything()) %>% # place choice at the end of the survey
-          dplyr::mutate(
-            bw = 1, # create bw variable for sorting purposes
-            choice = ifelse(max.col(.[, item_vars]) == choice, 1, 0) # code choice; "0" not chosen, "1" chosen
+        df_md <- df_md %>%
+          fastDummies::dummy_cols(
+            select_columns = var_names(design, {{ item }}),
+            remove_selected_columns = TRUE
           ) %>%
-          dplyr::select(-w) %>% # delete worst choice
-          dplyr::group_by(dplyr::pick({{ id }}, {{ cs }})) %>%
-          dplyr::mutate(alt = seq(1, dplyr::n())) %>% # create alternative variable
-          dplyr::ungroup() %>%
-          dplyr::relocate(alt, .after = {{ cs }}) # reorder data frame
+          dplyr::mutate(item2 = paste0(var_names(design, {{ item }}), "_", item2))
 
-        # apply the same for the worst choice
-        worst <- unanchored %>%
-          dplyr::rename("choice" = "w") %>%
-          dplyr::relocate(choice, .after = tidyselect::everything()) %>%
-          dplyr::mutate(
-            bw = 2,
-            choice = ifelse(max.col(.[, item_vars]) == choice, 1, 0)
-          ) %>%
-          dplyr::filter(max.col(.[, item_vars]) != b) %>% # filter out best choice
-          dplyr::select(-b) %>%
-          dplyr::mutate_at(dplyr::vars(tidyselect::all_of(item_vars)), ~ .x * -1) %>%
-          dplyr::group_by(dplyr::pick({{ id }}, {{ cs }})) %>%
-          dplyr::mutate(alt = seq(1, dplyr::n())) %>%
-          dplyr::ungroup() %>%
-          dplyr::relocate(alt, .after = {{ cs }})
-      } else if (type == "worst-best-seq") {
-        # see comments above // only difference "bw" set to "2" for best and "1" for worst + worst choice is filtered out for best choice
-        best <- unanchored %>%
-          dplyr::rename("choice" = "b") %>%
-          dplyr::relocate(choice, .after = tidyselect::everything()) %>%
-          dplyr::mutate(
-            bw = 2,
-            choice = ifelse(max.col(.[, item_vars]) == choice, 1, 0)
-          ) %>%
-          dplyr::filter(max.col(.[, item_vars]) != w) %>%
-          dplyr::select(-w) %>%
-          dplyr::group_by(dplyr::pick({{ id }}, {{ cs }})) %>%
-          dplyr::mutate(alt = seq(1, dplyr::n())) %>%
-          dplyr::ungroup() %>%
-          dplyr::relocate(alt, .after = {{ cs }})
+        for (i in seq_len(nrow(df_md))) {
+          df_md[i, df_md[i, ][["item2"]]] <- -1
+        }
 
-        worst <- unanchored %>%
-          dplyr::rename("choice" = "w") %>%
-          dplyr::relocate(choice, .after = tidyselect::everything()) %>%
-          dplyr::mutate(
-            bw = 1,
-            choice = ifelse(max.col(.[, item_vars]) == choice, 1, 0)
-          ) %>%
-          dplyr::select(-b) %>%
-          dplyr::mutate_at(dplyr::vars(tidyselect::all_of(item_vars)), ~ .x * -1) %>%
-          dplyr::group_by(dplyr::pick({{ id }}, {{ cs }})) %>%
-          dplyr::mutate(alt = seq(1, dplyr::n())) %>%
-          dplyr::ungroup() %>%
-          dplyr::relocate(alt, .after = {{ cs }})
-      }
+        names(df_md)[names(df_md) == "id"] <- var_names(design, {{ id }})
 
-      # merge both best and worst
-      df_md <- rbind(best, worst) %>% # rbind best and worst design matrix
-        dplyr::arrange({{ id }}, {{ cs }}, bw) %>% # sort data frame
-        dplyr::group_by(dplyr::pick({{ id }})) %>%
-        dplyr::mutate_at(dplyr::vars({{ cs }}), ~ cumsum(c(1, diff(alt) < 0))) %>% # create number of choice sets per individual
-        dplyr::ungroup() %>%
-        dplyr::select(-bw) %>% # delete "bw" helper variable which was just used for sorting purposes
-        dplyr::relocate(choice, .after = tidyselect::everything()) # reorder data frame
+        df_md <- df_md %>%
+          dplyr::select(-item2) %>%
+          dplyr::mutate(
+            cs = cumsum(c(1, diff(alt) < 0)),
+            .by = {{ id }}
+          ) %>%
+          dplyr::relocate(cs, .before = alt) %>%
+          dplyr::relocate(choice, .after = tidyselect::everything())
+
+        names(df_md)[names(df_md) == "cs"] <- var_names(design, {{ cs }})
+
+       return(df_md)
     }
 
-    # exploded logit pairs
     if (type == "exploded") {
-      unanchored <- design %>%
-        dplyr::filter(., {{ cs }} <= mxd_tasks) %>% # select all relevant MaxDiff tasks
-        dplyr::group_by(dplyr::pick({{ id }}, {{ cs }})) %>%
-        dplyr::mutate(
-          b = {{ item }}[{{ ch }} == 1], # define best choice
-          w = {{ item }}[{{ ch }} == -1], # define worst choice
-          var = paste0("var_", seq(1, dplyr::n())) # create variable to define number of variables
+      df <- data.frame()
+      df_md = purrr::map(seq_len(nrow(unanchored)), function(x) {
+        vars <- names(unanchored)[startsWith(names(unanchored), "var_")]
+
+        df <- rbind(df,
+                    unlist(unanchored[x, ][vars]) %>%
+                      DescTools::CombSet(., 2, repl = FALSE, ord = FALSE) %>%
+                      tibble::as_tibble() %>%
+                      setNames(paste0("item", seq_len(2))) %>%
+                      dplyr::mutate(
+                        id = unanchored[x, ][[var_names(design, {{ id }})]],
+                        b = unanchored[x, ][["b"]],
+                        w = unanchored[x, ][["w"]],
+                        alt = seq_len(nrow(.))
+                      ) %>%
+                      dplyr::filter(item1 %in% c(b, w) | item2 %in% c(b, w)))
+      }) %>%
+        purrr::list_rbind() %>%
+        dplyr::select(paste0("item", seq_len(2)), "b", "w", "id", alt)
+
+      names(df_md)[names(df_md) == "id"] <- var_names(design, {{ id }})
+      df_md = df_md %>%
+        dplyr::mutate(choice = ch_exploded(.)) %>%
+        tidyr::pivot_longer(
+          cols = c(item1, item2),
+          names_to = "bw",
+          values_to = var_names(design, {{ item }})
         ) %>%
-        dplyr::ungroup() %>%
-        dplyr::select(-{{ ch }}) %>% # delete "ch" column
-        dplyr::arrange({{ id }}, {{ cs }}, {{ pos }}) %>% # sorting data frame
-        dplyr::select(-{{ pos }}) %>% # delete position which was just for sorting purposes
-        tidyr::pivot_wider(.,
-                           values_from = {{ item }},
-                           names_from = var
-        ) %>% # change to wider format
-        dplyr::mutate(obs = c(1:nrow(.))) # create observation id
+        fastDummies::dummy_cols(
+          select_columns = var_names(design, {{ item }}),
+          remove_selected_columns = FALSE
+        ) %>%
+        dplyr::mutate(alt = rep(seq_len(2), length.out = nrow(.))) %>%
+        dplyr::mutate(
+          cs = cumsum(c(1, diff(alt) < 0)),
+          .by = {{ id }}
+        )
+
+      # rename
+      names(df_md)[names(df_md) == "cs"] <- var_names(design, {{ cs }})
+
+      # dummy vars
+      item_vars <- dummy_names(design, df_md, {{ item }})
+
+      #
+      df_md <- df_md %>%
+        dplyr::mutate(choice = ifelse({{ item }} == choice, 1, 0)) %>%
+        dplyr::mutate(
+          dplyr::across(
+            tidyselect::all_of(item_vars),
+            ~ ifelse(choice == 0, .x * -1, .x)
+          )
+        )
+
+      # select relevant variables
+      df_md <- dplyr::select(df_md, {{ id }}, {{ cs }}, alt, all_of(item_vars), choice)
+
+      return(df_md)
+    }
+  }
+}
+
 
       # create for each observation
       for (i in 1:nrow(unanchored)) {
@@ -368,74 +309,6 @@ convert_csv_to_design_matrix <- function(
       }
     }
 
-    if (type == "best-only") {
-      unanchored <- design %>%
-        dplyr::filter(., {{ cs }} <= mxd_tasks) %>% # select maxdiff tasks
-        dplyr::group_by(dplyr::pick({{ id }}, {{ cs }})) %>%
-        dplyr::reframe(
-          b = {{ item }}[{{ ch }} == 1]
-        ) %>% # summarise the best choice by id and choice set
-        dplyr::ungroup() %>%
-        merge(
-          x = design,
-          y = .,
-          by = c(design %>% dplyr::select(., {{ id }}, {{ cs }}) %>% colnames())
-        ) %>% # merge with design
-        dplyr::select(-{{ ch }}) %>% # delete actual choice
-        dplyr::arrange({{ id }}, {{ cs }}, {{ pos }}) %>% # arrange according to id, choice set, and position
-        dplyr::select(-{{ pos }}) %>% # delete position (just used for ordering purposes)
-        fastDummies::dummy_cols(., select_columns = (design %>% dplyr::select(., {{ item }}) %>% colnames()), remove_selected_columns = T) # change items to dummy coding
-
-      item_vars <- unanchored %>%
-        dplyr::select(tidyselect::all_of(tidyselect::starts_with(paste0((design %>% dplyr::select(., {{ item }}) %>% colnames()), "_")))) %>%
-        colnames() # store the column names of the dummy coded variables (items in the MaxDiff)
-
-      df_md <- unanchored %>%
-        dplyr::rename("choice" = "b") %>% # rename "b" (best choice) to choice for merging purposes
-        dplyr::relocate(choice, .after = tidyselect::everything()) %>% # relocate choice at the end of the data frame
-        dplyr::mutate(
-          choice = ifelse(max.col(.[, item_vars]) == choice, 1, 0) # recode choice to 0 (not chosen) or 1 (chosen)
-        ) %>%
-        dplyr::group_by(dplyr::pick({{ id }}, {{ cs }})) %>% # group
-        dplyr::mutate(alt = seq(1, dplyr::n())) %>% # create alternative variable
-        dplyr::ungroup() %>%
-        dplyr::relocate(alt, .after = {{ cs }}) # relocate alt variable
-    }
-
-    if (type == "worst-only") {
-      unanchored <- design %>%
-        dplyr::filter(., {{ cs }} <= mxd_tasks) %>% # select maxdiff tasks
-        dplyr::group_by(dplyr::pick({{ id }}, {{ cs }})) %>%
-        dplyr::reframe(
-          w = {{ item }}[{{ ch }} == -1]
-        ) %>% # summarise the best choice by id and choice set
-        dplyr::ungroup() %>%
-        merge(
-          x = design,
-          y = .,
-          by = c(design %>% dplyr::select(., {{ id }}, {{ cs }}) %>% colnames())
-        ) %>% # merge with design
-        dplyr::select(-{{ ch }}) %>% # delete actual choice
-        dplyr::arrange({{ id }}, {{ cs }}, {{ pos }}) %>% # arrange according to id, choice set, and position
-        dplyr::select(-{{ pos }}) %>% # delete position (just used for ordering purposes)
-        fastDummies::dummy_cols(., select_columns = (design %>% dplyr::select(., {{ item }}) %>% colnames()), remove_selected_columns = T) # change items to dummy coding
-
-      item_vars <- unanchored %>%
-        dplyr::select(tidyselect::all_of(tidyselect::starts_with(paste0((design %>% dplyr::select(., {{ item }}) %>% colnames()), "_")))) %>%
-        colnames() # store the column names of the dummy coded variables (items in the MaxDiff)
-
-      df_md <- unanchored %>%
-        dplyr::rename("choice" = "w") %>% # rename "w" (worst choice) to choice for merging purposes
-        dplyr::relocate(choice, .after = tidyselect::everything()) %>% # relocate choice at the end of the data frame
-        dplyr::mutate(
-          choice = ifelse(max.col(.[, item_vars]) == choice, 1, 0) # recode choice to 0 (not chosen) or 1 (chosen)
-        ) %>%
-        dplyr::mutate_at(dplyr::vars(tidyselect::all_of(item_vars)), ~ .x * -1) %>%
-        dplyr::group_by(dplyr::pick({{ id }}, {{ cs }})) %>% # group
-        dplyr::mutate(alt = seq(1, dplyr::n())) %>% # create alternative variable
-        dplyr::ungroup() %>%
-        dplyr::relocate(alt, .after = {{ cs }}) # relocate alt variable
-    }
 
     # modify direct anchor
     if (!is.null(anchor)) {
