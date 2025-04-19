@@ -12,20 +12,24 @@ dummy_names <- function(design, data, item) {
 
 
 bw_summary <- function(data, item, ch, group) {
-  dplyr::reframe(data,
+  data %>%
+    dplyr::group_by(dplyr::pick({{ group }})) %>%
+  dplyr::reframe(
     b = {{ item }}[{{ ch }} == 1],
-    w = {{ item }}[{{ ch }} == -1],
-    .by = {{ group }}
-  )
+    w = {{ item }}[{{ ch }} == -1]) %>%
+    dplyr::ungroup()
 }
 
 bw_mutate <- function(data, item, ch, group) {
-  dplyr::mutate(data,
+
+  data %>%
+    dplyr::group_by(dplyr::pick({{ group }})) %>%
+  dplyr::mutate(
     b = {{ item }}[{{ ch }} == 1],
     w = {{ item }}[{{ ch }} == -1],
-    var = paste0("var_", seq_len(dplyr::n())),
-    .by = {{ group }}
-  )
+    var = paste0("var_", seq_len(dplyr::n()))
+  ) %>%
+    dplyr::ungroup()
 }
 
 prepare_best_worst_ch <- function(data, id, cs, vars, bw_ind, stack_pos, type) {
@@ -44,6 +48,53 @@ prepare_best_worst_ch <- function(data, id, cs, vars, bw_ind, stack_pos, type) {
   if (type == "worst-best-seq" && bw_ind == "b") {
     data <- data %>%
       dplyr::filter(max.col(.[vars]) != w)
+  }
+
+  data <- data %>%
+    dplyr::mutate(alt = seq_len(dplyr::n()), .by = c({{ id }}, {{ cs }})) %>%
+    dplyr::relocate(alt, .after = {{ cs }})
+
+  if (bw_ind == "b") {
+    data <- dplyr::select(data, -w)
+  }
+
+  if (bw_ind == "w") {
+    data <- data %>%
+      dplyr::select(-b) %>%
+      dplyr::mutate_at(
+        dplyr::vars(tidyselect::all_of(vars)),
+        function(x) x * -1
+      )
+  }
+
+  return(data)
+}
+
+prepare_best_worst_ch_ind <- function(data, id, cs, vars, bw_ind, stack_pos, type) {
+  data <- data %>%
+    tidyr::drop_na(tidyselect::any_of(bw_ind)) %>%
+    dplyr::rename("choice" = bw_ind) %>%
+    dplyr::mutate(
+      bw = stack_pos,
+      choice = ifelse(max.col(.[vars]) == choice, 1, 0)
+    )
+
+  if (type == "best-worst-seq" && bw_ind == "w") {
+    data <- data %>%
+      dplyr::filter(max.col(.[vars]) != b) %>%
+      dplyr::mutate_at(dplyr::vars({{ cs }}), ~ .x + .5) %>%
+      dplyr::filter(max.col(.[, item_vars[-length(item_vars)]]) != b | is.na(b))
+  }
+
+  if (type == "best-worst" && bw_ind == "w") {
+    data <- data %>%
+      dplyr::mutate_at(dplyr::vars({{ cs }}), ~ .x + .5)
+  }
+
+  if (type == "worst-best-seq" && bw_ind == "b") {
+    data <- data %>%
+      dplyr::mutate_at(dplyr::vars({{ cs }}), ~ .x + .5) %>%
+      dplyr::filter(max.col(.[vars[-length(vars)]]) != w | is.na(w))
   }
 
   data <- data %>%
@@ -89,10 +140,10 @@ ch_exploded <- function(data) {
 }
 
 
-
 # design <- readRDS(r"(C:\Users\risy79sy\Desktop\SynologyDrive\MaxDiff_models\05_Analysis\Scipts_Chocolate\MainAnalysis\01_DA\data\anchored_design.rds)")
 # names(design)
 # a = bw_define(design, Item, Response, c(ID, Set)) %>%
 #   mutate(alt = seq_len(n()), .by = ID)
 #
 # usethis::use_github()
+test2 = read.csv(r"(C:\Users\risy79sy\Desktop\SynologyDrive\MaxDiff_models\05_Analysis\Scipts_Chocolate\MainAnalysis\02_IDA\data\00_alt\AnchoredDesign.csv)")
