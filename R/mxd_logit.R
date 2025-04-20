@@ -2,8 +2,9 @@
 #'
 #' @param data design matrix
 #' @param ch column name of the choice variable
-#' @param alt column name of the alternative within choice sets variable
-#' @param items column names of the item variables
+#' @param alt column name of the variable marking alternatives within choice
+#' sets
+#' @param items column names of the predictor variables
 #' @param reference column name of the reference variable (i.e., holdout for
 #' mode estimation)
 #' @param bw_size numeric input to specify size of MaxDiff tasks in survey

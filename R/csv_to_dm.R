@@ -15,7 +15,7 @@
 #' @export
 #'
 #' @examples
-convert_csv_to_design_matrix <- function(
+csv_to_dm <- function(
     design,
     id,
     cs,
