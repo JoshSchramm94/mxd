@@ -1,4 +1,4 @@
-#' Title
+#' MaxDiff Count Analysis
 #'
 #' @param data unanchored csv design
 #' @param id column name of the id variable
@@ -15,7 +15,13 @@
 #' @export
 #'
 #' @examples
-bws_count <- function(data, id, cs, item, ch, group, no_items, labs = NULL) {
+mxd_count <- function(data, id, cs, item, ch, group, no_items, labs = NULL) {
+
+  # tests ----------------------------------------------------------------------
+
+
+
+
   labs <- labs %||% paste0("item_", seq(1, no_items))
 
   shown <- data %>%

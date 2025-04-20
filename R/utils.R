@@ -10,7 +10,7 @@ dummy_names <- function(design, data, item) {
   names(data)[startsWith(names(data), paste0(item_name, "_"))]
 }
 
-
+## summarize best worst choices
 bw_summary <- function(data, item, ch, group) {
   data %>%
     dplyr::group_by(dplyr::pick({{ group }})) %>%
@@ -20,6 +20,7 @@ bw_summary <- function(data, item, ch, group) {
     dplyr::ungroup()
 }
 
+## mutate best worst choices
 bw_mutate <- function(data, item, ch, group) {
 
   data %>%
@@ -32,6 +33,7 @@ bw_mutate <- function(data, item, ch, group) {
     dplyr::ungroup()
 }
 
+## prepare best worst choices for direct and unanchored
 prepare_best_worst_ch <- function(data, id, cs, vars, bw_ind, stack_pos, type) {
   data <- data %>%
     dplyr::rename("choice" = bw_ind) %>%
@@ -70,6 +72,7 @@ prepare_best_worst_ch <- function(data, id, cs, vars, bw_ind, stack_pos, type) {
   return(data)
 }
 
+## prepare best worst choices for indirect anchored
 prepare_best_worst_ch_ind <- function(data, id, cs, vars, bw_ind, stack_pos, type) {
   data <- data %>%
     tidyr::drop_na(tidyselect::any_of(bw_ind)) %>%
@@ -83,7 +86,7 @@ prepare_best_worst_ch_ind <- function(data, id, cs, vars, bw_ind, stack_pos, typ
     data <- data %>%
       dplyr::filter(max.col(.[vars]) != b) %>%
       dplyr::mutate_at(dplyr::vars({{ cs }}), ~ .x + .5) %>%
-      dplyr::filter(max.col(.[, item_vars[-length(item_vars)]]) != b | is.na(b))
+      dplyr::filter(max.col(.[, vars[-length(vars)]]) != b | is.na(b))
   }
 
   if (type == "best-worst" && bw_ind == "w") {
@@ -117,6 +120,7 @@ prepare_best_worst_ch_ind <- function(data, id, cs, vars, bw_ind, stack_pos, typ
   return(data)
 }
 
+## merge best and worst choices
 bw_merge <- function(best, worst, id, cs) {
   rbind(best, worst) %>%
     dplyr::arrange({{ id }}, {{ cs }}, bw) %>%
@@ -127,6 +131,7 @@ bw_merge <- function(best, worst, id, cs) {
     dplyr::relocate(choice, .after = tidyselect::everything())
 }
 
+## define choice for exploded paired comparisons
 ch_exploded <- function(data) {
   data %>%
     apply(., 1, function(x) {
@@ -137,6 +142,11 @@ ch_exploded <- function(data) {
         )
       )
     })
+}
+
+## mean center variable
+mean_center <- function(var) {
+  var - mean(var)
 }
 
 

@@ -1,4 +1,4 @@
-#' Title
+#' Converting csv design into design matrix
 #'
 #' @param design csv design provided by Sawtooth software
 #' @param id column name of the id variable
@@ -25,6 +25,11 @@ convert_csv_to_design_matrix <- function(
     mxd_tasks,
     type,
     pos) {
+
+  # tests ----------------------------------------------------------------------
+
+
+
   # select relevant variables from the design
   design <- dplyr::select(
     design,
@@ -56,15 +61,30 @@ convert_csv_to_design_matrix <- function(
 
       # prepare best choice data frame
       if (!(type %in% c("worst_best_seq", "worst-only"))) {
-        best <- prepare_best_worst_ch(unanchored, {{ id }}, {{ cs }}, item_vars, "b", 1, type)
+
+        best <- prepare_best_worst_ch(
+          unanchored, {{ id }}, {{ cs }}, item_vars, "b", 1, type
+          )
+
       } else if (type == "worst_best_seq") {
-        best <- prepare_best_worst_ch(unanchored, {{ id }}, {{ cs }}, item_vars, "b", 2, type)
+
+        best <- prepare_best_worst_ch(
+          unanchored, {{ id }}, {{ cs }}, item_vars, "b", 2, type
+          )
       }
 
       if (type %in% c("worst_best_seq", "worst-only")) {
-        worst <- prepare_best_worst_ch(unanchored, {{ id }}, {{ cs }}, item_vars, "w", 1, type)
+
+        worst <- prepare_best_worst_ch(
+          unanchored, {{ id }}, {{ cs }}, item_vars, "w", 1, type,
+          )
+
       } else if (type %in% c("best-worst", "best-worst-seq")) {
-        worst <- prepare_best_worst_ch(unanchored, {{ id }}, {{ cs }}, item_vars, "w", 2, type)
+
+        worst <- prepare_best_worst_ch(
+          unanchored, {{ id }}, {{ cs }}, item_vars, "w", 2, type
+          )
+
       }
 
 
@@ -92,8 +112,8 @@ convert_csv_to_design_matrix <- function(
       unanchored <- design %>%
         dplyr::filter(., {{ cs }} <= mxd_tasks) %>%
         bw_mutate(., {{ item }}, {{ ch }}, c({{ id }}, {{ cs }})) %>%
-        dplyr::arrange({{ id }}, {{ cs }}, {{ pos }}) %>% # order the data frame
-        dplyr::select(-c({{ pos }}, {{ ch }})) %>% # delete position (just used for ordering purposes)
+        dplyr::arrange({{ id }}, {{ cs }}, {{ pos }}) %>%
+        dplyr::select(-c({{ pos }}, {{ ch }})) %>%
         tidyr::pivot_wider(.,
           values_from = {{ item }},
           names_from = var
@@ -208,7 +228,9 @@ convert_csv_to_design_matrix <- function(
         )
 
       # select relevant variables
-      df_md <- dplyr::select(df_md, {{ id }}, {{ cs }}, alt, all_of(item_vars), choice)
+      df_md <- dplyr::select(
+        df_md, {{ id }}, {{ cs }}, alt, all_of(item_vars), choice
+        )
     }
 
 
@@ -227,8 +249,7 @@ convert_csv_to_design_matrix <- function(
           .by = c({{ id }}, {{ cs }})
         ) %>%
         merge(
-          x = (design %>%
-            dplyr::filter({{ cs }} > mxd_tasks)),
+          x = (dplyr::filter(design, {{ cs }} > mxd_tasks)),
           y = .,
           by = c(var_names(design, c({{ id }}, {{ cs }})))
         ) %>%
@@ -252,7 +273,9 @@ convert_csv_to_design_matrix <- function(
         dplyr::mutate(
           choice = ifelse(max.col(.[item_vars_anc]) == choice, 1, 0)
         ) %>%
-        dplyr::select({{ id }}, newcs, choice, tidyselect::all_of(item_vars_anc)) %>%
+        dplyr::select(
+          {{ id }}, newcs, choice, tidyselect::all_of(item_vars_anc)
+          ) %>%
         dplyr::mutate(alt = seq_len(dplyr::n()), .by = c({{ id }}, newcs)) %>%
         dplyr::relocate(alt, .after = newcs)
 
@@ -266,8 +289,6 @@ convert_csv_to_design_matrix <- function(
         dplyr::arrange({{ id }}, {{ cs }}, alt) %>%
         dplyr::relocate(choice, .after = tidyselect::everything())
     }
-
-    return(df_md)
   }
 
   #-----------------------------------------------------------------------------
@@ -286,7 +307,7 @@ convert_csv_to_design_matrix <- function(
         by = c(var_names(design, c({{ id }}, {{ cs }})))
       ) %>%
       dplyr::arrange({{ id }}, {{ cs }}, {{ pos }}) %>%
-      dplyr::select(-c({{ pos }}, {{ch }})) %>%
+      dplyr::select(-c({{ pos }}, {{ ch }})) %>%
       fastDummies::dummy_cols(.,
                               select_columns = var_names(design, {{ item }}),
                               remove_selected_columns = TRUE
@@ -298,15 +319,31 @@ convert_csv_to_design_matrix <- function(
 
     # prepare best choice data frame
     if (!(type %in% c("worst_best_seq", "worst-only"))) {
-      best <- prepare_best_worst_ch_ind (unanchored, {{ id }}, {{ cs }}, item_vars, "b", 1, type)
+
+      best <- prepare_best_worst_ch_ind(
+        unanchored, {{ id }}, {{ cs }}, item_vars, "b", 1, type
+        )
+
     } else if (type == "worst_best_seq") {
-      best <- prepare_best_worst_ch_ind (unanchored, {{ id }}, {{ cs }}, item_vars, "b", 2, type)
+
+      best <- prepare_best_worst_ch_ind(
+        unanchored, {{ id }}, {{ cs }}, item_vars, "b", 2, type
+        )
+
     }
 
     if (type %in% c("worst_best_seq", "worst-only")) {
-      worst <- prepare_best_worst_ch_ind (unanchored, {{ id }}, {{ cs }}, item_vars, "w", 1, type)
+
+      worst <- prepare_best_worst_ch_ind (
+        unanchored, {{ id }}, {{ cs }}, item_vars, "w", 1, type
+        )
+
     } else if (type %in% c("best-worst", "best-worst-seq")) {
-      worst <- prepare_best_worst_ch_ind (unanchored, {{ id }}, {{ cs }}, item_vars, "w", 2, type)
+
+      worst <- prepare_best_worst_ch_ind(
+        unanchored, {{ id }}, {{ cs }}, item_vars, "w", 2, type
+        )
+
     }
 
     # prepare worst choice data frame
@@ -343,6 +380,5 @@ convert_csv_to_design_matrix <- function(
       df_md <- bw_merge(best, worst, {{ id }}, {{ cs }})
     }
 }
-
   return(df_md)
 }
