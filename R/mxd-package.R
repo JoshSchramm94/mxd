@@ -15,8 +15,19 @@
 #' @importFrom utils combn
 #' @importFrom cli cli_abort cli_warn
 #' @importFrom rlang caller_arg caller_env "%||%"
+#' @useDynLib mxd, .registration = TRUE
+#' @import methods
+#' @import Rcpp
+#' @importFrom rstan sampling
+#' @importFrom rstantools rstan_config
+#' @importFrom RcppParallel RcppParallelLibs
+
+
+#'
 ## usethis namespace: end
 NULL
+
+
 
 utils::globalVariables(
   c(

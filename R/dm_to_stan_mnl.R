@@ -15,7 +15,7 @@
 #' @export
 #'
 #' @examples
-dm_to_stan_hb <- function(design, id, cs, alt, items, ch, prior_b = NULL) {
+dm_to_stan_mnl <- function(design, id, cs, alt, items, ch, prior_b = NULL) {
 
   # tests ----------------------------------------------------------------------
 
@@ -58,14 +58,14 @@ dm_to_stan_hb <- function(design, id, cs, alt, items, ch, prior_b = NULL) {
     )
 
   data_stan <- list(
-    N = max(index_n$obs),
+    N = max(index$obs),
     M = nrow(X),
     K = ncol(X),
     item = design$item,
     bw = design$bw,
-    y = index_n$y,
-    start_n = index_n$start_n,
-    end_n = index_n$end_n,
+    y = index$y,
+    start_n = index$start_n,
+    end_n = index$end_n,
     prior_b = prior_b
   )
 
