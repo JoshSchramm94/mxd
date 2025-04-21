@@ -7,6 +7,7 @@ data {
   int<lower=1> y[N];                  // row number in X that belongs to nth choice
   int<lower=1> start_n[N];            // row number in X where nth choice task starts
   int<lower=1> end_n[N];              // row number in X where nth choice task ends
+  real<lower=0> prior_b;              // prior
 }
 
 parameters {
@@ -25,7 +26,7 @@ transformed parameters {
 }
 
 model {
-  b ~ normal(0, 5);
+  b ~ normal(0, prior_b);
 
   target += log_lik;
 }

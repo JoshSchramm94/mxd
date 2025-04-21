@@ -24,7 +24,7 @@ mxd_logit <- function(data,
   # tests ----------------------------------------------------------------------
 
 
-  # return(c(var_names(data, {{ items }})))
+
 
   # prep -----------------------------------------------------------------------
 
@@ -55,20 +55,20 @@ mxd_logit <- function(data,
   if (isTRUE(anchor)) {
     res <- res %>%
       dplyr::mutate(
-        zc = 100 * ((est - min(est)) / diff(range(est))),
+        zc = range_100(est),
         zc = zc - zc[nrow(.)],
         zc_se = std * zc / est,
-        prob = exp(est) / (exp(est) + (bw_size - 1)) * 100 / (1 / bw_size)
+        prob = prob_scores(prob, bw_size) * 100 / (1 / bw_size)
       )
   }
 
   if (isFALSE(anchor)) {
     res <- res %>%
       dplyr::mutate(
-        zc = 100 * ((est - min(est)) / diff(range(est))),
+        zc = range_100(est),
         zc = mean_center(zc),
         prob = mean_center(est),
-        prob = exp(prob) / (exp(prob) + (bw_size - 1)),
+        prob = prob_scores(prob, bw_size),
         prob = prob / sum(prob) * 100
       )
   }

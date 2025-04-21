@@ -149,6 +149,13 @@ mean_center <- function(var) {
   var - mean(var)
 }
 
+range_100 <- function(var) {
+  100 * ((var - min(var)) / diff(range(var)))
+}
+
+prob_scores <- function(var, size) {
+  exp(var) / (exp(var) + (size - 1))
+}
 
 
 # names(design)

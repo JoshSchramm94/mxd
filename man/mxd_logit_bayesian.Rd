@@ -4,10 +4,40 @@
 \alias{mxd_logit_bayesian}
 \title{Bayesian logit estimation for MaxDiff}
 \usage{
-mxd_logit_bayesian(design, seed = NULL)
+mxd_logit_bayesian(
+  data_stan,
+  chains,
+  cores,
+  iter,
+  warmup,
+  thin,
+  bw_size,
+  labels = NULL,
+  anchor = FALSE,
+  seed = NULL
+)
 }
 \arguments{
-\item{seed}{}
+\item{data_stan}{list with parameters for stan}
+
+\item{chains}{numeric input to define the number of chains to be run}
+
+\item{cores}{numeric input to define the number of cores to be used}
+
+\item{iter}{numeric input to define the number of iterations to
+be run (warm-up + sampling)}
+
+\item{warmup}{numeric input to define the number of iterations to be used
+for warm-up purposes}
+
+\item{thin}{numeric input to define thinning parameter}
+
+\item{anchor}{logical vector to indicate whether it is an anchored MaxDiff}
+
+\item{seed}{numeric input to specify seed for reproducible results}
+}
+\value{
+S4
 }
 \description{
 Bayesian logit estimation for MaxDiff
