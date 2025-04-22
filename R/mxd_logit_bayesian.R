@@ -59,12 +59,13 @@ mxd_logit_bayesian <- function(data_stan,
       apply(., 2, function(x) x - x[nrow(.)]) %>%
       t() %>%
       as.data.frame() %>%
-      setNames(labels, "ref")
+      setNames(c(labels, "ref"))
 
     beta_prob <- apply(beta_raw, 1, function(x) prob_scores(x, bw_size) * 100 / (1 / bw_size)) %>%
       t() %>%
       as.data.frame() %>%
-      setNames(labels, "ref")
+      setNames(c(labels, "ref"))
+
 
 
   }
@@ -74,16 +75,40 @@ mxd_logit_bayesian <- function(data_stan,
       apply(., 2, mean_center) %>%
       t() %>%
       as.data.frame() %>%
-      setNames(labels, "ref")
+      setNames(c(labels, "ref"))
 
     beta_prob <- apply(beta_raw, 1, mean_center) %>%
       apply(., 2, function(x) prob_scores(x, bw_size)) %>%
       apply(., 2, function(x) x / sum(x) * 100) %>%
       t() %>%
       as.data.frame() %>%
-      setNames(labels, "ref")
+      setNames(c(labels, "ref"))
 
   }
 
-  return(out)
+  beta_summary <- data.frame(
+    items = c(labels, "ref"),
+    mean_raw_mean = apply(beta_raw, 2, mean),
+    mean_raw_sd = apply(beta_raw, 2, sd),
+    mean_raw_2.5 = apply(beta_raw, 2, function(x) quantile(x, probs = 0.025)),
+    mean_raw_97.5 = apply(beta_raw, 2, function(x) quantile(x, probs = 0.975)),
+    mean_zc_mean = apply(beta_zc, 2, mean),
+    mean_zc_sd = apply(beta_zc, 2, sd),
+    mean_zc_2.5 = apply(beta_zc, 2, function(x) quantile(x, probs = 0.025)),
+    mean_zc_97.5 = apply(beta_zc, 2, function(x) quantile(x, probs = 0.975)),
+    mean_prob_mean = apply(beta_prob, 2, mean),
+    mean_prob_sd = apply(beta_prob, 2, sd),
+    mean_prob_2.5 = apply(beta_prob, 2, function(x) quantile(x, probs = 0.025)),
+    mean_prob_97.5 = apply(beta_prob, 2, function(x) quantile(x, probs = 0.975))
+  ) %>%
+    dplyr::add_row(items = paste0("Log. Likelihood = ", round(res$log_lik[(iter - warmup)])))
+
+  return(
+    list(
+    "beta_raw" = beta_raw,
+    "beta_zc" = beta_zc,
+    "beta_prob" = beta_prob,
+    "summary" = beta_summary
+  )
+  )
 }

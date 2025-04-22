@@ -27,17 +27,17 @@ namespace model_mnl_namespace {
 using stan::model::model_base_crtp;
 using namespace stan::math;
 stan::math::profile_map profiles__;
-static constexpr std::array<const char*, 25> locations_array__ =
+static constexpr std::array<const char*, 26> locations_array__ =
   {" (found before start of program)",
-  " (in 'string', line 12, column 2 to column 14)",
-  " (in 'string', line 15, column 2 to column 28)",
-  " (in 'string', line 16, column 2 to column 19)",
-  " (in 'string', line 17, column 2 to column 24)",
-  " (in 'string', line 19, column 4 to column 97)",
-  " (in 'string', line 18, column 17 to line 20, column 3)",
-  " (in 'string', line 18, column 2 to line 20, column 3)",
-  " (in 'string', line 23, column 2 to column 19)",
-  " (in 'string', line 24, column 2 to column 20)",
+  " (in 'string', line 13, column 2 to column 14)",
+  " (in 'string', line 16, column 2 to column 28)",
+  " (in 'string', line 17, column 2 to column 19)",
+  " (in 'string', line 18, column 2 to column 24)",
+  " (in 'string', line 20, column 4 to column 97)",
+  " (in 'string', line 19, column 17 to line 21, column 3)",
+  " (in 'string', line 19, column 2 to line 21, column 3)",
+  " (in 'string', line 24, column 2 to column 25)",
+  " (in 'string', line 25, column 2 to column 20)",
   " (in 'string', line 2, column 2 to column 17)",
   " (in 'string', line 3, column 2 to column 17)",
   " (in 'string', line 4, column 2 to column 17)",
@@ -51,8 +51,9 @@ static constexpr std::array<const char*, 25> locations_array__ =
   " (in 'string', line 8, column 2 to column 26)",
   " (in 'string', line 9, column 21 to column 22)",
   " (in 'string', line 9, column 2 to column 24)",
-  " (in 'string', line 12, column 9 to column 10)",
-  " (in 'string', line 16, column 9 to column 14)"};
+  " (in 'string', line 10, column 2 to column 24)",
+  " (in 'string', line 13, column 9 to column 10)",
+  " (in 'string', line 17, column 9 to column 14)"};
 #include <stan_meta_header.hpp>
 class model_mnl final : public model_base_crtp<model_mnl> {
 private:
@@ -64,6 +65,7 @@ private:
   std::vector<int> y;
   std::vector<int> start_n;
   std::vector<int> end_n;
+  double prior_b;
   int b0_1dim__;
 public:
   ~model_mnl() {}
@@ -160,12 +162,20 @@ public:
       current_statement__ = 22;
       stan::math::check_greater_or_equal(function__, "end_n", end_n, 1);
       current_statement__ = 23;
+      context__.validate_dims("data initialization", "prior_b", "double",
+        std::vector<size_t>{});
+      prior_b = std::numeric_limits<double>::quiet_NaN();
+      current_statement__ = 23;
+      prior_b = context__.vals_r("prior_b")[(1 - 1)];
+      current_statement__ = 23;
+      stan::math::check_greater_or_equal(function__, "prior_b", prior_b, 0);
+      current_statement__ = 24;
       stan::math::validate_non_negative_index("b", "K", K);
-      current_statement__ = 24;
+      current_statement__ = 25;
       b0_1dim__ = std::numeric_limits<int>::min();
-      current_statement__ = 24;
+      current_statement__ = 25;
       b0_1dim__ = (K + 1);
-      current_statement__ = 24;
+      current_statement__ = 25;
       stan::math::validate_non_negative_index("b0", "K + 1", b0_1dim__);
     } catch (const std::exception& e) {
       stan::lang::rethrow_located(e, locations_array__[current_statement__]);
@@ -243,7 +253,7 @@ public:
       stan::math::check_less_or_equal(function__, "log_lik", log_lik, 0);
       {
         current_statement__ = 8;
-        lp_accum__.add(stan::math::normal_lpdf<propto__>(b, 0, 5));
+        lp_accum__.add(stan::math::normal_lpdf<propto__>(b, 0, prior_b));
         current_statement__ = 9;
         lp_accum__.add(log_lik);
       }
