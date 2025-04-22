@@ -12,6 +12,8 @@ mxd_logit_bayesian(
   warmup,
   thin,
   bw_size,
+  init = "random",
+  algorithm = "NUTS",
   labels = NULL,
   anchor = FALSE,
   seed = NULL
@@ -31,6 +33,17 @@ be run (warm-up + sampling)}
 for warm-up purposes}
 
 \item{thin}{numeric input to define thinning parameter}
+
+\item{bw_size}{numeric input to define number of alternatives shown in
+MaxDiff task}
+
+\item{init}{initial values for parameters, see \link[rstan]{stan}
+documentation, default set to "random"}
+
+\item{algorithm}{sampling algorithm used, see \link[rstan]{stan}
+documentation, default set to "NUTS"}
+
+\item{labels}{optional character to define labels of items}
 
 \item{anchor}{logical vector to indicate whether it is an anchored MaxDiff}
 

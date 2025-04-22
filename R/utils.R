@@ -157,6 +157,19 @@ prob_scores <- function(var, size) {
   exp(var) / (exp(var) + (size - 1))
 }
 
+res_summary <- function(.data, var) {
+  .data %>%
+    dplyr::reframe(
+      dplyr::across({{ var }},
+                    function(x) c(mean(x),
+                                  sd(x),
+                                  quantile(x, probs = 0.025),
+                                  quantile(x, probs = 0.975)))
+    ) %>%
+    t() %>%
+    as.data.frame() %>%
+    setNames(c("mw", "sd", "2.5%", "97.5%"))
+}
 
 # names(design)
 # a = bw_define(design, Item, Response, c(ID, Set)) %>%

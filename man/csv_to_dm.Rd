@@ -26,6 +26,9 @@ leave empty}
 
 \item{pos}{column name of the position variable}
 }
+\value{
+data.frame object
+}
 \description{
 Converting csv design into design matrix
 }

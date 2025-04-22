@@ -10,7 +10,7 @@
 #' @param bw_size numeric input to specify size of MaxDiff tasks in survey
 #' @param anchor logical vector to indicate whether it is an anchored MaxDiff
 #'
-#' @returns
+#' @returns list
 #' @export
 #'
 #' @examples
@@ -58,7 +58,7 @@ mxd_logit <- function(data,
         zc = range_100(est),
         zc = zc - zc[nrow(.)],
         zc_se = std * zc / est,
-        prob = prob_scores(prob, bw_size) * 100 / (1 / bw_size)
+        prob = prob_scores(est, bw_size) * 100 / (1 / bw_size)
       )
   }
 

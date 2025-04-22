@@ -8,8 +8,13 @@
 #' @param warmup numeric input to define the number of iterations to be used
 #' for warm-up purposes
 #' @param thin numeric input to define thinning parameter
-#' @param bw_size
-#' @param labels
+#' @param bw_size numeric input to define number of alternatives shown in
+#' MaxDiff task
+#' @param init initial values for parameters, see \link[rstan]{stan}
+#' documentation, default set to "random"
+#' @param algorithm sampling algorithm used, see \link[rstan]{stan}
+#' documentation, default set to "NUTS"
+#' @param labels optional character to define labels of items
 #' @param anchor logical vector to indicate whether it is an anchored MaxDiff
 #' @param seed numeric input to specify seed for reproducible results
 #'
@@ -23,6 +28,8 @@ mxd_logit_bayesian <- function(data_stan,
                                warmup,
                                thin,
                                bw_size,
+                               init = "random",
+                               algorithm = "NUTS",
                                labels = NULL,
                                anchor = FALSE,
                                seed = NULL) {
@@ -88,20 +95,18 @@ mxd_logit_bayesian <- function(data_stan,
 
   beta_summary <- data.frame(
     items = c(labels, "ref"),
-    mean_raw_mean = apply(beta_raw, 2, mean),
-    mean_raw_sd = apply(beta_raw, 2, sd),
-    mean_raw_2.5 = apply(beta_raw, 2, function(x) quantile(x, probs = 0.025)),
-    mean_raw_97.5 = apply(beta_raw, 2, function(x) quantile(x, probs = 0.975)),
-    mean_zc_mean = apply(beta_zc, 2, mean),
-    mean_zc_sd = apply(beta_zc, 2, sd),
-    mean_zc_2.5 = apply(beta_zc, 2, function(x) quantile(x, probs = 0.025)),
-    mean_zc_97.5 = apply(beta_zc, 2, function(x) quantile(x, probs = 0.975)),
-    mean_prob_mean = apply(beta_prob, 2, mean),
-    mean_prob_sd = apply(beta_prob, 2, sd),
-    mean_prob_2.5 = apply(beta_prob, 2, function(x) quantile(x, probs = 0.025)),
-    mean_prob_97.5 = apply(beta_prob, 2, function(x) quantile(x, probs = 0.975))
-  ) %>%
-    dplyr::add_row(items = paste0("Log. Likelihood = ", round(res$log_lik[(iter - warmup)])))
+    cbind(res$beta_raw %>%
+            res_summary(tidyselect::everything(.)),
+          res$beta_zc %>%
+            res_summary(tidyselect::everything(.)) %>%
+            setNames(c(paste0("zc_", names(.)))),
+          res$beta_prob %>%
+            res_summary(tidyselect::everything(.)) %>%
+            setNames(c(paste0("prob_", names(.))))
+    )) %>%
+    dplyr::add_row(items = "Log. Likelihood = ",
+                   mean_raw_mean = round(res$log_lik[(iter - warmup)])) %>%
+    tibble::remove_rownames()
 
   return(
     list(

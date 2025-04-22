@@ -4,12 +4,43 @@
 \alias{mxd_hb}
 \title{Hierarchical Bayesian estimation for MaxDiff}
 \usage{
-mxd_hb(data_stan, chains, cores, iter, warmup, thin, seed = NULL)
+mxd_hb(
+  data_stan,
+  chains = 5L,
+  cores = 5L,
+  iter = 4000L,
+  warmup = 1000L,
+  thin = 5L,
+  init = "random",
+  algorithm = "NUTS",
+  seed = NULL
+)
 }
 \arguments{
 \item{data_stan}{list with parameters for stan}
 
-\item{thin}{}
+\item{chains}{numeric input to define the number of chains to be run}
+
+\item{cores}{numeric input to define the number of cores to be used}
+
+\item{iter}{numeric input to define the number of iterations to
+be run (warm-up + sampling)}
+
+\item{warmup}{numeric input to define the number of iterations to be used
+for warm-up purposes}
+
+\item{thin}{numeric input to define thinning parameter}
+
+\item{init}{initial values for parameters, see \link[rstan]{stan}
+documentation, default set to "random"}
+
+\item{algorithm}{sampling algorithm used, see \link[rstan]{stan}
+documentation, default set to "NUTS"}
+
+\item{seed}{numeric input to specify seed for reproducible results}
+}
+\value{
+S4
 }
 \description{
 Hierarchical Bayesian estimation for MaxDiff

@@ -11,7 +11,7 @@
 #' @param type character to specify coding method
 #' @param pos column name of the position variable
 #'
-#' @returns
+#' @returns data.frame object
 #' @export
 #'
 #' @examples

@@ -23,6 +23,9 @@ mode estimation)}
 
 \item{anchor}{logical vector to indicate whether it is an anchored MaxDiff}
 }
+\value{
+list
+}
 \description{
 Multinomial logit estimation for MaxDiff
 }
