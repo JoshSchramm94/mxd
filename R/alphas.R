@@ -12,7 +12,7 @@
 #'
 alphas <- function(stan_output, bw_size, labels = NULL, anchor = FALSE) {
 
-  labels <- labels %||% paste0("item_", seq_len(ncol(as.data.frame(extract(stan_output)[["b"]]))))
+  labels <- labels %||% paste0("item_", seq_len(ncol(as.data.frame(rstan::extract(stan_output)[["b"]]))))
 
 
   alphas_raw <- rstan::extract(stan_output)[["b"]] %>%

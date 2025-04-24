@@ -171,9 +171,14 @@ res_summary <- function(.data, var) {
     setNames(c("mw", "sd", "2.5%", "97.5%"))
 }
 
-# names(design)
-# a = bw_define(design, Item, Response, c(ID, Set)) %>%
-#   mutate(alt = seq_len(n()), .by = ID)
-#
-# usethis::use_github()
-test2 = read.csv(r"(C:\Users\risy79sy\Desktop\SynologyDrive\MaxDiff_models\05_Analysis\Scipts_Chocolate\MainAnalysis\02_IDA\data\00_alt\AnchoredDesign.csv)")
+args_list <- function(args, def_args) {
+
+  for (i in names(args_predefined)) {
+    if (!(i %in% names(args))) {
+      args[[i]] <- args_predefined[[i]]
+    }
+  }
+
+  return(args)
+}
+

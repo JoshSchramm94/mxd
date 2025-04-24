@@ -7,38 +7,45 @@
 #' be run (warm-up + sampling)
 #' @param warmup numeric input to define the number of iterations to be used
 #' for warm-up purposes
-#' @param thin numeric input to define thinning parameter
 #' @param bw_size numeric input to define number of alternatives shown in
 #' MaxDiff task
-#' @param init initial values for parameters, see \link[rstan]{stan}
-#' documentation, default set to "random"
-#' @param algorithm sampling algorithm used, see \link[rstan]{stan}
-#' documentation, default set to "NUTS"
 #' @param labels optional character to define labels of items
 #' @param anchor logical vector to indicate whether it is an anchored MaxDiff
 #' @param seed numeric input to specify seed for reproducible results
+#' @param ... additional arguments to define are `cores`, `thin`, `init`, and
+#' `algorithm`, for more information see \link[rstan]{stan} documentation
 #'
 #' @returns S4
 #' @export
 #'
 mxd_logit_bayesian <- function(data_stan,
                                chains,
-                               cores,
                                iter,
                                warmup,
-                               thin,
                                bw_size,
-                               init = "random",
-                               algorithm = "NUTS",
                                labels = NULL,
                                anchor = FALSE,
-                               seed = NULL) {
+                               seed = NULL,
+                               ...) {
 
   # tests ----------------------------------------------------------------------
 
 
-  # preps ----------------------------------------------------------------------
+  # (...) ----------------------------------------------------------------------
 
+  # define additional arguments
+  defi_args <- list(...)
+
+  defa_args <- list(
+    cores = 5L,
+    thin = 5L,
+    init = "random",
+    algorithm = "NUTS"
+  )
+
+  args <- args_list(defi_args, defa_args)
+
+  # preps ----------------------------------------------------------------------
   seed <- seed %||% 1910L
 
   out <- rstan::sampling(
