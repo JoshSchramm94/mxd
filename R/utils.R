@@ -14,7 +14,7 @@ dummy_names <- function(design, data, item) {
 bw_summary <- function(data, item, ch, group) {
   data %>%
     dplyr::group_by(dplyr::pick({{ group }})) %>%
-  dplyr::reframe(
+    dplyr::reframe(
     b = {{ item }}[{{ ch }} == 1],
     w = {{ item }}[{{ ch }} == -1]) %>%
     dplyr::ungroup()

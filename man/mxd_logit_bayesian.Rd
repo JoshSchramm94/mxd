@@ -7,16 +7,13 @@
 mxd_logit_bayesian(
   data_stan,
   chains,
-  cores,
   iter,
   warmup,
-  thin,
   bw_size,
-  init = "random",
-  algorithm = "NUTS",
   labels = NULL,
   anchor = FALSE,
-  seed = NULL
+  seed = NULL,
+  ...
 )
 }
 \arguments{
@@ -24,30 +21,25 @@ mxd_logit_bayesian(
 
 \item{chains}{numeric input to define the number of chains to be run}
 
-\item{cores}{numeric input to define the number of cores to be used}
-
 \item{iter}{numeric input to define the number of iterations to
 be run (warm-up + sampling)}
 
 \item{warmup}{numeric input to define the number of iterations to be used
 for warm-up purposes}
 
-\item{thin}{numeric input to define thinning parameter}
-
 \item{bw_size}{numeric input to define number of alternatives shown in
 MaxDiff task}
-
-\item{init}{initial values for parameters, see \link[rstan]{stan}
-documentation, default set to "random"}
-
-\item{algorithm}{sampling algorithm used, see \link[rstan]{stan}
-documentation, default set to "NUTS"}
 
 \item{labels}{optional character to define labels of items}
 
 \item{anchor}{logical vector to indicate whether it is an anchored MaxDiff}
 
 \item{seed}{numeric input to specify seed for reproducible results}
+
+\item{...}{additional arguments to define are \code{cores}, \code{thin}, \code{init}, and
+\code{algorithm}, for more information see \link[rstan]{stan} documentation}
+
+\item{cores}{numeric input to define the number of cores to be used}
 }
 \value{
 S4

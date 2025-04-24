@@ -35,5 +35,4 @@ alphas_acf_plot <- function(stan_output, labels = NULL) {
     ggplot2::facet_wrap(~items)
 
 }
-alphas_acf_plot(res) + xlab("LAG") + theme_dark()
 

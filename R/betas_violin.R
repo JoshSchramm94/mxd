@@ -20,7 +20,7 @@ betas_violin <- function(betas, vars, label_names = NULL) {
     ggplot2::geom_violin(aes(fill = forcats::fct_rev(vars))) +
     ggplot2::ylab("") +
     ggplot2::theme_minimal() +
-    ggplot2::guides(ggplot2::fill = "none")
+    ggplot2::guides(fill = "none")
 
 
 }
