@@ -8,7 +8,6 @@
 #'
 #' @examples
 sigma_summary <- function(stan_output, labels = NULL) {
-
   # tests ----------------------------------------------------------------------
 
 
@@ -22,5 +21,3 @@ sigma_summary <- function(stan_output, labels = NULL) {
     setNames(labels) %>%
     res_summary(tidyselect::everything())
 }
-
-

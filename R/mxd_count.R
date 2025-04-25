@@ -16,7 +16,6 @@
 #'
 #' @examples
 mxd_count <- function(data, id, cs, item, ch, group, no_items, labs = NULL) {
-
   # tests ----------------------------------------------------------------------
 
 

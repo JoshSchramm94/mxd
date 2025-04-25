@@ -23,12 +23,17 @@ Currently, mxd provides the following function:
 
 - `dm_to_stan_hb()`: Function to prepare input for HB estimation in Stan
 
+- `dm_to_stan_hb_cv()`: Function to prepare input for k-folded cross
+  validation HB estimation in Stan
+
 - `dm_to_stan_mnl()`: Function to prepare input for MNL estimation in
   Stan
 
 **Running estimation**
 
 - `mxd_hb()`: Function to run hierarchical Bayes estimation
+
+- `mxd_hb_cv()`: Function to estimate k-folded MaxDiff data
 
 - `mxd_logit()`: Function to run frequentist MNL
 
@@ -63,6 +68,10 @@ Besides that, users can use `shinystan()` to inspect convergence.
 
 - `sigma_summary()`: Function to get posterior summary statistics for
   sigma
+
+**Validation tools**
+
+- `post_hit()`: Function to calculate posterior hit rates
 
 ## Installation
 

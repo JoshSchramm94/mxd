@@ -1,6 +1,7 @@
-#' Hierarchical Bayes estimation for MaxDiff
+#' K-fold hierarchical Bayesian estimation for MaxDiff
 #'
 #' @param data_stan list with parameters for stan
+#' @param folds numeric input to define the number of folds
 #' @param chains numeric input to define the number of chains to be run
 #' @param iter numeric input to define the number of iterations to
 #' be run (warm-up + sampling)
@@ -14,12 +15,13 @@
 #' @export
 #'
 #' @examples
-mxd_hb <- function(data_stan,
-                   chains = 5L,
-                   iter = 4000L,
-                   warmup = 1000L,
-                   seed = NULL,
-                   ...) {
+mxd_hb_cv <- function(data_stan,
+                      folds,
+                      chains = 5L,
+                      iter = 4000L,
+                      warmup = 1000L,
+                      seed = NULL,
+                      ...) {
   # tests ----------------------------------------------------------------------
 
 
@@ -41,20 +43,23 @@ mxd_hb <- function(data_stan,
 
   seed <- seed %||% 1910L
 
+  hbmnl_mcmc <- map(seq_len(folds), function(x) {
+    cat("Fold", x, "estimating ...", "\r")
 
-  hbmnl_mcmc <- rstan::sampling(
-    object = stanmodels$hbmnl,
-    data = data_stan,
-    pars = c("b", "sigma", "Omega", "beta", "log_lik"),
-    algorithm = args[["algorithm"]],
-    init = args[["init"]],
-    seed = seed,
-    chains = chains,
-    cores = args[["cores"]],
-    warmup = warmup,
-    iter = iter,
-    thin = args[["thin"]]
-  )
+    rstan::sampling(
+      object = stanmodels$hbmnl,
+      data = data_stan[[x]][["stan_input"]],
+      pars = c("b", "sigma", "Omega", "beta", "log_lik"),
+      algorithm = args[["algorithm"]],
+      init = args[["init"]],
+      seed = seed,
+      chains = chains,
+      cores = args[["cores"]],
+      warmup = warmup,
+      iter = iter,
+      thin = args[["thin"]]
+    )
+  })
 
   return(hbmnl_mcmc)
 }

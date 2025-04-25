@@ -8,7 +8,6 @@
 #'
 #' @examples
 alphas_acf_plot <- function(stan_output, labels = NULL) {
-
   labels <- labels %||% paste0("item ", seq_len(ncol(as.data.frame(rstan::extract(stan_output)[["b"]]))))
 
   rstan::extract(stan_output)[["b"]] %>%
@@ -28,11 +27,9 @@ alphas_acf_plot <- function(stan_output, labels = NULL) {
     ) +
     ggplot2::geom_hline(
       ggplot2::aes(yintercept = 0)
-      ) +
+    ) +
     ggplot2::geom_segment(mapping = ggplot2::aes(xend = id, yend = 0)) +
     ggplot2::theme_bw() +
     ggplot2::labs(x = "lag") +
     ggplot2::facet_wrap(~items)
-
 }
-

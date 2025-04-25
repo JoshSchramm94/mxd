@@ -9,9 +9,7 @@
 #' @export
 #'
 #' @examples
-#'
 alphas <- function(stan_output, bw_size, labels = NULL, anchor = FALSE) {
-
   labels <- labels %||% paste0("item_", seq_len(ncol(as.data.frame(rstan::extract(stan_output)[["b"]]))))
 
 
@@ -32,7 +30,6 @@ alphas <- function(stan_output, bw_size, labels = NULL, anchor = FALSE) {
       t() %>%
       as.data.frame() %>%
       setNames(c(labels, "ref"))
-
   }
 
   if (isFALSE(anchor)) {
@@ -48,21 +45,22 @@ alphas <- function(stan_output, bw_size, labels = NULL, anchor = FALSE) {
       t() %>%
       as.data.frame() %>%
       setNames(c(labels, "ref"))
-
   }
 
   alphas_summary <- data.frame(
     items = c(labels, "ref"),
-    cbind(alphas_raw %>%
-            res_summary(tidyselect::everything(.)) %>%
-            setNames(c(paste0("raw_", names(.)))),
-          alphas_zc %>%
-            res_summary(tidyselect::everything(.)) %>%
-            setNames(c(paste0("zc_", names(.)))),
-          alphas_prob %>%
-            res_summary(tidyselect::everything(.)) %>%
-            setNames(c(paste0("prob_", names(.))))
-    )) %>%
+    cbind(
+      alphas_raw %>%
+        res_summary(tidyselect::everything(.)) %>%
+        setNames(c(paste0("raw_", names(.)))),
+      alphas_zc %>%
+        res_summary(tidyselect::everything(.)) %>%
+        setNames(c(paste0("zc_", names(.)))),
+      alphas_prob %>%
+        res_summary(tidyselect::everything(.)) %>%
+        setNames(c(paste0("prob_", names(.))))
+    )
+  ) %>%
     tibble::remove_rownames()
 
   return(

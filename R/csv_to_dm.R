@@ -25,7 +25,6 @@ csv_to_dm <- function(
     mxd_tasks,
     type,
     pos) {
-
   # tests ----------------------------------------------------------------------
 
 
@@ -61,30 +60,23 @@ csv_to_dm <- function(
 
       # prepare best choice data frame
       if (!(type %in% c("worst_best_seq", "worst-only"))) {
-
         best <- prepare_best_worst_ch(
           unanchored, {{ id }}, {{ cs }}, item_vars, "b", 1, type
-          )
-
+        )
       } else if (type == "worst_best_seq") {
-
         best <- prepare_best_worst_ch(
           unanchored, {{ id }}, {{ cs }}, item_vars, "b", 2, type
-          )
+        )
       }
 
       if (type %in% c("worst_best_seq", "worst-only")) {
-
         worst <- prepare_best_worst_ch(
           unanchored, {{ id }}, {{ cs }}, item_vars, "w", 1, type,
-          )
-
+        )
       } else if (type %in% c("best-worst", "best-worst-seq")) {
-
         worst <- prepare_best_worst_ch(
           unanchored, {{ id }}, {{ cs }}, item_vars, "w", 2, type
-          )
-
+        )
       }
 
 
@@ -230,7 +222,7 @@ csv_to_dm <- function(
       # select relevant variables
       df_md <- dplyr::select(
         df_md, {{ id }}, {{ cs }}, alt, all_of(item_vars), choice
-        )
+      )
     }
 
 
@@ -275,7 +267,7 @@ csv_to_dm <- function(
         ) %>%
         dplyr::select(
           {{ id }}, newcs, choice, tidyselect::all_of(item_vars_anc)
-          ) %>%
+        ) %>%
         dplyr::mutate(alt = seq_len(dplyr::n()), .by = c({{ id }}, newcs)) %>%
         dplyr::relocate(alt, .after = newcs)
 
@@ -309,8 +301,8 @@ csv_to_dm <- function(
       dplyr::arrange({{ id }}, {{ cs }}, {{ pos }}) %>%
       dplyr::select(-c({{ pos }}, {{ ch }})) %>%
       fastDummies::dummy_cols(.,
-                              select_columns = var_names(design, {{ item }}),
-                              remove_selected_columns = TRUE
+        select_columns = var_names(design, {{ item }}),
+        remove_selected_columns = TRUE
       ) %>% # change to dummy coding
       dplyr::arrange({{ id }}, {{ cs }}) # sort data frame
 
@@ -319,31 +311,23 @@ csv_to_dm <- function(
 
     # prepare best choice data frame
     if (!(type %in% c("worst_best_seq", "worst-only"))) {
-
       best <- prepare_best_worst_ch_ind(
         unanchored, {{ id }}, {{ cs }}, item_vars, "b", 1, type
-        )
-
+      )
     } else if (type == "worst_best_seq") {
-
       best <- prepare_best_worst_ch_ind(
         unanchored, {{ id }}, {{ cs }}, item_vars, "b", 2, type
-        )
-
+      )
     }
 
     if (type %in% c("worst_best_seq", "worst-only")) {
-
-      worst <- prepare_best_worst_ch_ind (
+      worst <- prepare_best_worst_ch_ind(
         unanchored, {{ id }}, {{ cs }}, item_vars, "w", 1, type
-        )
-
+      )
     } else if (type %in% c("best-worst", "best-worst-seq")) {
-
       worst <- prepare_best_worst_ch_ind(
         unanchored, {{ id }}, {{ cs }}, item_vars, "w", 2, type
-        )
-
+      )
     }
 
     # prepare worst choice data frame
@@ -379,6 +363,6 @@ csv_to_dm <- function(
     if (!grepl("-only", type)) {
       df_md <- bw_merge(best, worst, {{ id }}, {{ cs }})
     }
-}
+  }
   return(df_md)
 }

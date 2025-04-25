@@ -15,21 +15,21 @@ bw_summary <- function(data, item, ch, group) {
   data %>%
     dplyr::group_by(dplyr::pick({{ group }})) %>%
     dplyr::reframe(
-    b = {{ item }}[{{ ch }} == 1],
-    w = {{ item }}[{{ ch }} == -1]) %>%
+      b = {{ item }}[{{ ch }} == 1],
+      w = {{ item }}[{{ ch }} == -1]
+    ) %>%
     dplyr::ungroup()
 }
 
 ## mutate best worst choices
 bw_mutate <- function(data, item, ch, group) {
-
   data %>%
     dplyr::group_by(dplyr::pick({{ group }})) %>%
-  dplyr::mutate(
-    b = {{ item }}[{{ ch }} == 1],
-    w = {{ item }}[{{ ch }} == -1],
-    var = paste0("var_", seq_len(dplyr::n()))
-  ) %>%
+    dplyr::mutate(
+      b = {{ item }}[{{ ch }} == 1],
+      w = {{ item }}[{{ ch }} == -1],
+      var = paste0("var_", seq_len(dplyr::n()))
+    ) %>%
     dplyr::ungroup()
 }
 
@@ -160,11 +160,17 @@ prob_scores <- function(var, size) {
 res_summary <- function(.data, var) {
   .data %>%
     dplyr::reframe(
-      dplyr::across({{ var }},
-                    function(x) c(mean(x),
-                                  sd(x),
-                                  quantile(x, probs = 0.025),
-                                  quantile(x, probs = 0.975)))
+      dplyr::across(
+        {{ var }},
+        function(x) {
+          c(
+            mean(x),
+            sd(x),
+            quantile(x, probs = 0.025),
+            quantile(x, probs = 0.975)
+          )
+        }
+      )
     ) %>%
     t() %>%
     as.data.frame() %>%
@@ -172,13 +178,11 @@ res_summary <- function(.data, var) {
 }
 
 args_list <- function(args, def_args) {
-
-  for (i in names(args_predefined)) {
+  for (i in names(def_args)) {
     if (!(i %in% names(args))) {
-      args[[i]] <- args_predefined[[i]]
+      args[[i]] <- def_args[[i]]
     }
   }
 
   return(args)
 }
-

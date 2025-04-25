@@ -20,9 +20,7 @@
 #' @examples
 dm_to_stan_hb <- function(
     design, id, cs, alt, items, ch, prior_b = NULL, prior_omega = NULL,
-    prior_sigma = NULL, demos = NULL
-    ) {
-
+    prior_sigma = NULL, demos = NULL) {
   # tests ----------------------------------------------------------------------
 
 
@@ -42,17 +40,18 @@ dm_to_stan_hb <- function(
 
   # fix ids
   id_fix <- data.frame(
-    orig_id = unique(de[[var_names(design, {{ id }})]]),
-    new_id = seq_len(length(unique(de[[var_names(design, {{ id }})]])))
+    orig_id = unique(design[[var_names(design, {{ id }})]]),
+    new_id = seq_len(length(unique(design[[var_names(design, {{ id }})]])))
   )
 
 
   # fix the design matrix
   design <- design %>%
-    dplyr::mutate(row = dplyr::row_number(),
-                  bw = apply(.[preds], 1, sum),
-                  item = apply(.[preds], 1, function(x) which.max(abs(x))),
-                  obs = cumsum(c(1, diff({{ alt }}) < 0))
+    dplyr::mutate(
+      row = dplyr::row_number(),
+      bw = apply(.[preds], 1, sum),
+      item = apply(.[preds], 1, function(x) which.max(abs(x))),
+      obs = cumsum(c(1, diff({{ alt }}) < 0))
     ) %>%
     dplyr::mutate(
       dplyr::across({{ id }}, ~ cumsum(c(1, diff(.x) != 0)))
@@ -62,10 +61,13 @@ dm_to_stan_hb <- function(
 
   X <- model.matrix(
     as.formula(
-      paste0(var_names(design, {{ ch }}),
-             " ~ 0 + ",
-             paste0(preds[-length(preds)], collapse = " + "))
-    ), data = design
+      paste0(
+        var_names(design, {{ ch }}),
+        " ~ 0 + ",
+        paste0(preds[-length(preds)], collapse = " + ")
+      )
+    ),
+    data = design
   )
 
 

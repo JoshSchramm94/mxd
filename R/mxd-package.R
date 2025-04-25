@@ -32,5 +32,5 @@ NULL
 utils::globalVariables(
   c(
     "."
-)
+  )
 )

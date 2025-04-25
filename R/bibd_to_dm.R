@@ -1,8 +1,7 @@
 bibd_to_dm <- function(design, data, id, choices, type) {
-
   ids <- data[[var_names(data, {{ id }})]]
 
-  tasks <- length(var_names(data, {{ choices}})) / 2
+  tasks <- length(var_names(data, {{ choices }})) / 2
 
   design <- design %>%
     as.data.frame() %>%
@@ -18,30 +17,32 @@ bibd_to_dm <- function(design, data, id, choices, type) {
       position = readr::parse_number(position)
     )
 
-  design <- purrr::map(seq_along(ids), function(x)
+  design <- purrr::map(seq_along(ids), function(x) {
     design %>%
       dplyr::mutate(
         id = ids[x]
       ) %>%
       dplyr::relocate(id, .before = tidyselect::everything())
-    ) %>%
+  }) %>%
     purrr::list_rbind() %>%
     as.data.frame()
 
-  design_data = data %>%
+  design_data <- data %>%
     dplyr::select({{ id }}, {{ choices }}) %>%
     tidyr::pivot_longer(
-      cols = {{choices}},
+      cols = {{ choices }},
       names_to = "set",
       values_to = "position"
     ) %>%
     dplyr::mutate(
       set = rep(
-        seq_len(tasks), each = 2
-        ),
+        seq_len(tasks),
+        each = 2
+      ),
       choice = rep(
-        c(1, -1), times = tasks
-        ),
+        c(1, -1),
+        times = tasks
+      ),
       .by = {{ id }}
     ) %>%
     dplyr::left_join(

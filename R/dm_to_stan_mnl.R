@@ -16,7 +16,6 @@
 #'
 #' @examples
 dm_to_stan_mnl <- function(design, id, cs, alt, items, ch, prior_b = NULL) {
-
   # tests ----------------------------------------------------------------------
 
 
@@ -31,20 +30,24 @@ dm_to_stan_mnl <- function(design, id, cs, alt, items, ch, prior_b = NULL) {
 
   # fix the design matrix
   design <- design %>%
-    dplyr::mutate(row = dplyr::row_number(),
-                  bw = apply(.[preds], 1, sum),
-                  item = apply(.[preds], 1, function(x) which.max(abs(x))),
-                  obs = cumsum(c(1, diff({{ alt }}) < 0))
+    dplyr::mutate(
+      row = dplyr::row_number(),
+      bw = apply(.[preds], 1, sum),
+      item = apply(.[preds], 1, function(x) which.max(abs(x))),
+      obs = cumsum(c(1, diff({{ alt }}) < 0))
     ) %>%
     dplyr::relocate(row, .before = dplyr::everything())
 
 
   X <- model.matrix(
     as.formula(
-      paste0(var_names(design, {{ ch }}),
-             " ~ 0 + ",
-             paste0(preds[-length(preds)], collapse = " + "))
-    ), data = design
+      paste0(
+        var_names(design, {{ ch }}),
+        " ~ 0 + ",
+        paste0(preds[-length(preds)], collapse = " + ")
+      )
+    ),
+    data = design
   )
 
 

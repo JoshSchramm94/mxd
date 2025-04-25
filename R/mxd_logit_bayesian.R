@@ -27,7 +27,6 @@ mxd_logit_bayesian <- function(data_stan,
                                anchor = FALSE,
                                seed = NULL,
                                ...) {
-
   # tests ----------------------------------------------------------------------
 
 
@@ -79,9 +78,6 @@ mxd_logit_bayesian <- function(data_stan,
       t() %>%
       as.data.frame() %>%
       setNames(c(labels, "ref"))
-
-
-
   }
 
   if (isFALSE(anchor)) {
@@ -97,30 +93,33 @@ mxd_logit_bayesian <- function(data_stan,
       t() %>%
       as.data.frame() %>%
       setNames(c(labels, "ref"))
-
   }
 
   beta_summary <- data.frame(
     items = c(labels, "ref"),
-    cbind(res$beta_raw %>%
-            res_summary(tidyselect::everything(.)),
-          res$beta_zc %>%
-            res_summary(tidyselect::everything(.)) %>%
-            setNames(c(paste0("zc_", names(.)))),
-          res$beta_prob %>%
-            res_summary(tidyselect::everything(.)) %>%
-            setNames(c(paste0("prob_", names(.))))
-    )) %>%
-    dplyr::add_row(items = "Log. Likelihood = ",
-                   mean_raw_mean = round(res$log_lik[(iter - warmup)])) %>%
+    cbind(
+      res$beta_raw %>%
+        res_summary(tidyselect::everything(.)),
+      res$beta_zc %>%
+        res_summary(tidyselect::everything(.)) %>%
+        setNames(c(paste0("zc_", names(.)))),
+      res$beta_prob %>%
+        res_summary(tidyselect::everything(.)) %>%
+        setNames(c(paste0("prob_", names(.))))
+    )
+  ) %>%
+    dplyr::add_row(
+      items = "Log. Likelihood = ",
+      mean_raw_mean = round(res$log_lik[(iter - warmup)])
+    ) %>%
     tibble::remove_rownames()
 
   return(
     list(
-    "beta_raw" = beta_raw,
-    "beta_zc" = beta_zc,
-    "beta_prob" = beta_prob,
-    "summary" = beta_summary
-  )
+      "beta_raw" = beta_raw,
+      "beta_zc" = beta_zc,
+      "beta_prob" = beta_prob,
+      "summary" = beta_summary
+    )
   )
 }
