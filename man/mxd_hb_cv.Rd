@@ -2,7 +2,7 @@
 % Please edit documentation in R/mxd_hb_cv.R
 \name{mxd_hb_cv}
 \alias{mxd_hb_cv}
-\title{Hierarchical Bayesian estimation for MaxDiff}
+\title{K-fold hierarchical Bayesian estimation for MaxDiff}
 \usage{
 mxd_hb_cv(
   data_stan,
@@ -17,7 +17,7 @@ mxd_hb_cv(
 \arguments{
 \item{data_stan}{list with parameters for stan}
 
-\item{folds}{number of folds}
+\item{folds}{numeric input to define the number of folds}
 
 \item{chains}{numeric input to define the number of chains to be run}
 
@@ -36,5 +36,5 @@ for warm-up purposes}
 S4
 }
 \description{
-Hierarchical Bayesian estimation for MaxDiff
+K-fold hierarchical Bayesian estimation for MaxDiff
 }

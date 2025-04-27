@@ -2,7 +2,7 @@
 % Please edit documentation in R/mxd_hb.R
 \name{mxd_hb}
 \alias{mxd_hb}
-\title{Hierarchical Bayesian estimation for MaxDiff}
+\title{Hierarchical Bayes estimation for MaxDiff}
 \usage{
 mxd_hb(data_stan, chains = 5L, iter = 4000L, warmup = 1000L, seed = NULL, ...)
 }
@@ -26,5 +26,5 @@ for warm-up purposes}
 S4
 }
 \description{
-Hierarchical Bayesian estimation for MaxDiff
+Hierarchical Bayes estimation for MaxDiff
 }

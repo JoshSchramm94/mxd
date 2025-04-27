@@ -12,7 +12,8 @@
 #' @export
 #'
 #' @examples
-post_hit <- function(post, hot_data, id, opts, group, hot_choice, raw = FALSE) {
+post_mhp <- function(post, hot_data, id, opts,
+                     group, hot_choice, raw = FALSE) {
 
 
   res <- purrr::map(post, function(x) {
@@ -21,28 +22,30 @@ post_hit <- function(post, hot_data, id, opts, group, hot_choice, raw = FALSE) {
 
     x %>%
       dplyr::select({{ id }}, {{ opts }}) %>%
-      dplyr::mutate(
-        pred_choice = apply(.[opts_names], 1, which.max)
-      ) %>%
+      mnl(variables = {{ opts }}) %>%
       dplyr::left_join(
         x = .,
-        y = hot_data %>% dplyr::select({{ id }}, {{ group }}, {{ hot_choice }}),
-        by = var_names(x, {{ id }})
+        y = dplyr::select(hot_data, {{ id }}, {{ group }}, {{ hot_choice }}),
+        by = var_names(hot_data, {{ id }})
       ) %>%
+      dplyr::mutate(ch_share = opts_names[{{ hot_choice }}]) %>%
+      dplyr::rowwise() %>%
+      dplyr::mutate(mhp = get(ch_share)) %>%
+      dplyr::ungroup() %>%
       dplyr::group_by(dplyr::pick({{ group }})) %>%
       dplyr::reframe(
-        hit = mean(as.integer(pred_choice == {{ hot_choice }})) * 100
+        mhp = mean(mhp)
       ) %>%
       dplyr::ungroup()
   }) %>%
     purrr::list_rbind(names_to = "iteration")
 
   if (isFALSE(raw) && missing(group)) {
-    res <- res_summary(res, hit)
+    res <- res_summary(res, mhp)
   }
 
   if (isFALSE(raw) && !missing(group)) {
-    res <- res_summary_group(res, hit, {{ group }})
+    res <- res_summary_group(res, mhp, {{ group }})
   }
 
   return(res)

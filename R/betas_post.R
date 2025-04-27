@@ -1,14 +1,27 @@
+#' Title
+#'
+#' @param stan_output
+#' @param bw_size
+#' @param cores
+#' @param ids
+#' @param labels
+#' @param anchor
+#'
+#' @returns
+#' @export
+#'
+#' @examples
 beta_post <- function(stan_output, bw_size, cores = 1L,
                       ids = NULL, labels = NULL, anchor = FALSE) {
   labels <- labels %||% paste0("item_", seq_len(ncol(as.data.frame(rstan::extract(stan_output)[["b"]]))))
 
-  ids <- ids %||% seq_len(dim(stan_output[["beta"]])[2])
+  ids <- ids %||% seq_len(dim(rstan::extract(stan_output)[["beta"]])[2])
 
   # setting multiple cores if wanted
   future::plan(strategy = future::multisession, workers = cores)
 
-  beta_raw <- furrr::future_map(seq(dim(stan_output[["beta"]])[1]), function(x) {
-    as.data.frame(stan_output[["beta"]][x, , ]) %>%
+  beta_raw <- furrr::future_map(seq(dim(rstan::extract(stan_output)[["beta"]])[1]), function(x) {
+    as.data.frame(rstan::extract(stan_output)[["beta"]][x, , ]) %>%
       dplyr::mutate(
         id = ids,
         ref = 0

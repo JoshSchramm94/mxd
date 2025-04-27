@@ -177,6 +177,27 @@ res_summary <- function(.data, var) {
     setNames(c("mw", "sd", "2.5%", "97.5%"))
 }
 
+res_summary_group <- function(.data, var, group) {
+
+  group_names <- var_names(.data, {{ group }})
+
+  .data %>%
+    dplyr::group_by(dplyr::pick({{ group }})) %>%
+    dplyr::reframe(
+      dplyr::across({{ var }},
+                    function(x) c(mean(x),
+                                  sd(x),
+                                  quantile(x, probs = 0.025),
+                                  quantile(x, probs = 0.975)))
+    ) %>%
+    setNames(c(group_names, "res")) %>%
+    dplyr::mutate(est = rep(c("mw", "sd", "2.5%", "97.5%"), length.out = nrow(.))) %>%
+    tidyr::pivot_wider(
+      names_from = est,
+      values_from = res
+    )
+}
+
 args_list <- function(args, def_args) {
   for (i in names(def_args)) {
     if (!(i %in% names(args))) {
@@ -185,4 +206,18 @@ args_list <- function(args, def_args) {
   }
 
   return(args)
+}
+
+
+mnl <- function(.data, variables) {
+  var_names <- dplyr::select(.data, {{ variables }}) %>%
+    colnames()
+
+  .data %>%
+    dplyr::mutate(
+      dplyr::across(
+        tidyselect::all_of(var_names),
+        function(x) exp(x) / rowSums(exp(.[var_names])) * 100
+      )
+    )
 }
