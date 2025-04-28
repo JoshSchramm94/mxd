@@ -9,7 +9,7 @@ csv_to_dm(design, id, cs, item, ch, anchor = NULL, mxd_tasks, type, pos)
 \arguments{
 \item{design}{csv design provided by Sawtooth software}
 
-\item{id}{column name of the id variable}
+\item{id}{column name of participants' identifier}
 
 \item{cs}{column name of the choice set variable}
 
@@ -27,7 +27,7 @@ leave empty}
 \item{pos}{column name of the position variable}
 }
 \value{
-data.frame object
+a data frame object
 }
 \description{
 Converting csv design into design matrix

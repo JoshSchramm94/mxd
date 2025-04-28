@@ -7,7 +7,12 @@
 alphas_acf_plot(stan_output, labels = NULL)
 }
 \arguments{
-\item{labels}{}
+\item{stan_output}{stanfit object}
+
+\item{labels}{optional character vector to define labels of predictors}
+}
+\value{
+a ggplot object
 }
 \description{
 Autocorrelation plot

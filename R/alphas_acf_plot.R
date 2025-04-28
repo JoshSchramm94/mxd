@@ -1,13 +1,13 @@
 #' Autocorrelation plot
 #'
-#' @param stan_output
-#' @param labels
+#' @param stan_output stanfit object
+#' @param labels optional character vector to define labels of predictors
 #'
-#' @returns
+#' @returns a ggplot object
 #' @export
 #'
-#' @examples
 alphas_acf_plot <- function(stan_output, labels = NULL) {
+
   labels <- labels %||% paste0("item ", seq_len(ncol(as.data.frame(rstan::extract(stan_output)[["b"]]))))
 
   rstan::extract(stan_output)[["b"]] %>%

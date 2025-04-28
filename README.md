@@ -44,7 +44,7 @@ Currently, mxd provides the following function:
 - `convergence_stats()`: Function to test convergence stats of
   population’s mean
 
-Besides that, users can use `shinystan()` to inspect convergence.
+Besides that, users can also use `shinystan()` to inspect convergence.
 
 **Analyses tools**
 
@@ -71,7 +71,20 @@ Besides that, users can use `shinystan()` to inspect convergence.
 
 **Validation tools**
 
-- `post_hit()`: Function to calculate posterior hit rates
+- `post_hit()`: Function to calculate posterior hit rates (in-sample
+  only)
+
+- `post_mhp()`: Function to calculate posterior mean hit probability
+  (in-sample only)
+
+- `post_mae()`: Function to calculate posterior mean absolute error
+  (both in-sample and out-of-sample)
+
+- `post_medae()`: Function to calculate posterior median absolute error
+  (both in-sample and out-of-sample)
+
+- `post_rmse()`: Function to calculate posterior root mean square error
+  (both in-sample and out-of-sample)
 
 ## Installation
 

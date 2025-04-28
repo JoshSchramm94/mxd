@@ -13,7 +13,6 @@
 #' @returns S4
 #' @export
 #'
-#' @examples
 mxd_hb <- function(data_stan,
                    chains = 5L,
                    iter = 4000L,

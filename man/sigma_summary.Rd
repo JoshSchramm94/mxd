@@ -2,13 +2,18 @@
 % Please edit documentation in R/sigma_summary.R
 \name{sigma_summary}
 \alias{sigma_summary}
-\title{Title}
+\title{Preparation of population sigma's posterior draws}
 \usage{
 sigma_summary(stan_output, labels = NULL)
 }
 \arguments{
-\item{labels}{}
+\item{stan_output}{stanfit object}
+
+\item{labels}{optional character vector to define labels of predictors}
+}
+\value{
+a tibble
 }
 \description{
-Title
+Preparation of population sigma's posterior draws
 }

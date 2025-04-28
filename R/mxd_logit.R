@@ -13,7 +13,6 @@
 #' @returns list
 #' @export
 #'
-#' @examples
 mxd_logit <- function(data,
                       ch,
                       alt,

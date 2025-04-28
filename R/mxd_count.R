@@ -14,7 +14,6 @@
 #'
 #' @export
 #'
-#' @examples
 mxd_count <- function(data, id, cs, item, ch, group, no_items, labs = NULL) {
   # tests ----------------------------------------------------------------------
 
@@ -55,9 +54,9 @@ mxd_count <- function(data, id, cs, item, ch, group, no_items, labs = NULL) {
       b_perc = b / n * 100,
       w_perc = w / n * 100
     ) %>%
-    dplyr::relocate(., label, .before = b) %>%
-    dplyr::relocate(., b_perc, .after = b) %>%
-    dplyr::relocate(., w_perc, .after = w) %>%
+    dplyr::relocate(label, .before = b) %>%
+    dplyr::relocate(b_perc, .after = b) %>%
+    dplyr::relocate(w_perc, .after = w) %>%
     dplyr::mutate(bw = b - w)
 
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/betas_post.R
 \name{beta_post}
 \alias{beta_post}
-\title{Title}
+\title{Preparation of posterior individuals draws}
 \usage{
 beta_post(
   stan_output,
@@ -14,8 +14,22 @@ beta_post(
 )
 }
 \arguments{
-\item{anchor}{}
+\item{stan_output}{stan_output stanfit object}
+
+\item{bw_size}{size of MaxDiff tasks in study}
+
+\item{cores}{optional numeric input to define the number of cores used for
+calculation (default set to 1L)}
+
+\item{ids}{optional vector to define ids}
+
+\item{labels}{optional character vector to define labels of predictors}
+
+\item{anchor}{logical vector to indicate whether it is an anchored MaxDiff}
+}
+\value{
+named list
 }
 \description{
-Title
+Preparation of posterior individuals draws
 }

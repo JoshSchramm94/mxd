@@ -1,7 +1,7 @@
 #' Converting csv design into design matrix
 #'
 #' @param design csv design provided by Sawtooth software
-#' @param id column name of the id variable
+#' @param id column name of participants' identifier
 #' @param cs column name of the choice set variable
 #' @param item column name of the item variable
 #' @param ch column name of the choice variable
@@ -11,10 +11,9 @@
 #' @param type character to specify coding method
 #' @param pos column name of the position variable
 #'
-#' @returns data.frame object
+#' @returns a data frame object
 #' @export
 #'
-#' @examples
 csv_to_dm <- function(
     design,
     id,

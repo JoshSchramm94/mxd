@@ -221,3 +221,8 @@ mnl <- function(.data, variables) {
       )
     )
 }
+
+
+percentage <- function(x) {
+  x / sum(x)
+}

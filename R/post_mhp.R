@@ -1,25 +1,24 @@
-#' Title
+#' Posterior in-sample mean hit probability
 #'
-#' @param post
-#' @param hot_data
-#' @param id
-#' @param opts
-#' @param group
-#' @param hot_choice
-#' @param raw
+#' @param post posterior draws
+#' @param hot_data data frame with actual hot choice
+#' @param id variable name of id
+#' @param opts variable names of items
+#' @param group optional variable name to get results by `group`
+#' @param hot_choice variable name of actual choice
+#' @param raw logical vector to indicate whether raw or aggregated results
+#' should be reported
 #'
-#' @returns
+#' @returns a tibble
 #' @export
 #'
-#' @examples
 post_mhp <- function(post, hot_data, id, opts,
                      group, hot_choice, raw = FALSE) {
 
 
+  opts_names <- var_names(post[[1]], {{ opts }})
+
   res <- purrr::map(post, function(x) {
-
-    opts_names <- var_names(x, {{ opts }})
-
     x %>%
       dplyr::select({{ id }}, {{ opts }}) %>%
       mnl(variables = {{ opts }}) %>%

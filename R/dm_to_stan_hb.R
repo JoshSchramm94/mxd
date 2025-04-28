@@ -17,7 +17,6 @@
 #'
 #' @export
 #'
-#' @examples
 dm_to_stan_hb <- function(
     design, id, cs, alt, items, ch, prior_b = NULL, prior_omega = NULL,
     prior_sigma = NULL, demos = NULL) {

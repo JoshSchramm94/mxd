@@ -1,3 +1,14 @@
+#' Convert BIBD to design matrix
+#'
+#' @param design BIBD design
+#' @param data data frame including best and worst choices
+#' @param id column name of participants' identifier
+#' @param choices column names of best and worst choices
+#' @param type type of coding
+#'
+#' @returns a data frame object
+#' @export
+#'
 bibd_to_dm <- function(design, data, id, choices, type) {
   ids <- data[[var_names(data, {{ id }})]]
 

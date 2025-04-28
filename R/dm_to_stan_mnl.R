@@ -14,7 +14,6 @@
 #'
 #' @export
 #'
-#' @examples
 dm_to_stan_mnl <- function(design, id, cs, alt, items, ch, prior_b = NULL) {
   # tests ----------------------------------------------------------------------
 
@@ -36,7 +35,7 @@ dm_to_stan_mnl <- function(design, id, cs, alt, items, ch, prior_b = NULL) {
       item = apply(.[preds], 1, function(x) which.max(abs(x))),
       obs = cumsum(c(1, diff({{ alt }}) < 0))
     ) %>%
-    dplyr::relocate(row, .before = dplyr::everything())
+    dplyr::relocate(row, .before = tidyselect::everything())
 
 
   X <- model.matrix(

@@ -14,7 +14,6 @@
 #' @returns S4
 #' @export
 #'
-#' @examples
 mxd_hb_cv <- function(data_stan,
                       folds,
                       chains = 5L,
@@ -43,7 +42,7 @@ mxd_hb_cv <- function(data_stan,
 
   seed <- seed %||% 1910L
 
-  hbmnl_mcmc <- map(seq_len(folds), function(x) {
+  hbmnl_mcmc <- purrr::map(seq_len(folds), function(x) {
     cat("Fold", x, "estimating ...", "\r")
 
     rstan::sampling(

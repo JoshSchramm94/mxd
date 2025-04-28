@@ -1,3 +1,12 @@
+#' Violin plot for beta posterior draws
+#'
+#' @param betas posterior beta draws
+#' @param vars variable names
+#' @param label_names optional vector to specify labels of alternatives
+#'
+#' @returns ggplot object
+#' @export
+#'
 betas_violin <- function(betas, vars, label_names = NULL) {
   label_names <- label_names %||% var_names(betas[[1]], {{ vars }})
   level_names <- var_names(betas[[1]], {{ vars }})
@@ -13,7 +22,8 @@ betas_violin <- function(betas, vars, label_names = NULL) {
     dplyr::mutate(
       vars = factor(vars, levels = level_names, labels = label_names)
     ) %>%
-    ggplot2::ggplot(ggplot2::aes(
+    ggplot2::ggplot(
+      ggplot2::aes(
       x = beta,
       y = forcats::fct_rev(vars)
     )) +

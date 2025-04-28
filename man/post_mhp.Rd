@@ -2,13 +2,29 @@
 % Please edit documentation in R/post_mhp.R
 \name{post_mhp}
 \alias{post_mhp}
-\title{Title}
+\title{Posterior in-sample mean hit probability}
 \usage{
 post_mhp(post, hot_data, id, opts, group, hot_choice, raw = FALSE)
 }
 \arguments{
-\item{raw}{}
+\item{post}{posterior draws}
+
+\item{hot_data}{data frame with actual hot choice}
+
+\item{id}{variable name of id}
+
+\item{opts}{variable names of items}
+
+\item{group}{optional variable name to get results by \code{group}}
+
+\item{hot_choice}{variable name of actual choice}
+
+\item{raw}{logical vector to indicate whether raw or aggregated results
+should be reported}
+}
+\value{
+a tibble
 }
 \description{
-Title
+Posterior in-sample mean hit probability
 }

@@ -1,3 +1,22 @@
+#' Convert design matrix to Stan input (cross-fold)
+#'
+#' @param design design matrix
+#' @param id column name of participants' identifier
+#' @param cs column name of the choice set variable
+#' @param alt column name of the variable marking alternatives within choice
+#' sets
+#' @param items column names of the predictor variables
+#' @param ch column name of the choice variable
+#' @param folds numeric input to define number of folds
+#' @param prior_b numeric input for the b prior
+#' @param prior_omega numeric input for the omega prior
+#' @param prior_sigma numeric input for the sigma prior
+#' @param demos matrix of demographic variables (i.e., Z variables)
+#' @param seed seed numeric input to specify seed for reproducible results
+#'
+#' @returns list
+#' @export
+#'
 dm_to_stan_hb_cv <- function(
     design, id, cs, alt, items, ch, folds, prior_b = NULL, prior_omega = NULL,
     prior_sigma = NULL, demos = NULL, seed = NULL) {

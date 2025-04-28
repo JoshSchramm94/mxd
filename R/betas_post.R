@@ -1,16 +1,15 @@
-#' Title
+#' Preparation of posterior individuals draws
 #'
-#' @param stan_output
-#' @param bw_size
-#' @param cores
-#' @param ids
-#' @param labels
-#' @param anchor
+#' @param stan_output stan_output stanfit object
+#' @param bw_size size of MaxDiff tasks in study
+#' @param cores optional numeric input to define the number of cores used for
+#' calculation (default set to 1L)
+#' @param ids optional vector to define ids
+#' @param labels optional character vector to define labels of predictors
+#' @param anchor logical vector to indicate whether it is an anchored MaxDiff
 #'
-#' @returns
+#' @returns named list
 #' @export
-#'
-#' @examples
 beta_post <- function(stan_output, bw_size, cores = 1L,
                       ids = NULL, labels = NULL, anchor = FALSE) {
   labels <- labels %||% paste0("item_", seq_len(ncol(as.data.frame(rstan::extract(stan_output)[["b"]]))))
@@ -26,7 +25,7 @@ beta_post <- function(stan_output, bw_size, cores = 1L,
         id = ids,
         ref = 0
       ) %>%
-      dplyr::relocate(id, .before = dplyr::everything()) %>%
+      dplyr::relocate(id, .before = tidyselect::everything()) %>%
       setNames(c("id", labels, "ref"))
   })
 
@@ -42,7 +41,7 @@ beta_post <- function(stan_output, bw_size, cores = 1L,
         dplyr::mutate(
           id = ids
         ) %>%
-        dplyr::relocate(id, .before = dplyr::everything())
+        dplyr::relocate(id, .before = tidyselect::everything())
     })
 
     beta_prob <- furrr::future_map(beta_raw, function(df) {
@@ -55,7 +54,7 @@ beta_post <- function(stan_output, bw_size, cores = 1L,
         dplyr::mutate(
           id = ids
         ) %>%
-        dplyr::relocate(id, .before = dplyr::everything())
+        dplyr::relocate(id, .before = tidyselect::everything())
     })
   }
 
@@ -71,7 +70,7 @@ beta_post <- function(stan_output, bw_size, cores = 1L,
         dplyr::mutate(
           id = ids
         ) %>%
-        dplyr::relocate(id, .before = dplyr::everything())
+        dplyr::relocate(id, .before = tidyselect::everything())
     })
 
     beta_prob <- furrr::future_map(beta_raw, function(df) {
@@ -86,7 +85,7 @@ beta_post <- function(stan_output, bw_size, cores = 1L,
         dplyr::mutate(
           id = ids
         ) %>%
-        dplyr::relocate(id, .before = dplyr::everything())
+        dplyr::relocate(id, .before = tidyselect::everything())
     })
   }
 

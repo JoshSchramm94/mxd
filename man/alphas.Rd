@@ -2,16 +2,22 @@
 % Please edit documentation in R/alphas.R
 \name{alphas}
 \alias{alphas}
-\title{Title}
+\title{Preparation of population mean's posterior draws}
 \usage{
 alphas(stan_output, bw_size, labels = NULL, anchor = FALSE)
 }
 \arguments{
-\item{anchor}{}
+\item{stan_output}{stanfit object}
+
+\item{bw_size}{size of MaxDiff tasks in study}
+
+\item{labels}{optional character vector to define labels of predictors}
+
+\item{anchor}{logical vector to indicate whether it is an anchored MaxDiff}
 }
 \value{
 list
 }
 \description{
-Title
+Preparation of population mean's posterior draws
 }

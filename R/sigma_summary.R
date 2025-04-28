@@ -1,12 +1,11 @@
-#' Title
+#' Preparation of population sigma's posterior draws
 #'
-#' @param stan_output
-#' @param labels
+#' @param stan_output stanfit object
+#' @param labels optional character vector to define labels of predictors
 #'
-#' @returns
+#' @returns a tibble
 #' @export
 #'
-#' @examples
 sigma_summary <- function(stan_output, labels = NULL) {
   # tests ----------------------------------------------------------------------
 

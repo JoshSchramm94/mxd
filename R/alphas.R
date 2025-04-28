@@ -1,14 +1,13 @@
-#' Title
+#' Preparation of population mean's posterior draws
 #'
-#' @param stan_output
-#' @param bw_size
-#' @param labels
-#' @param anchor
+#' @param stan_output stanfit object
+#' @param bw_size size of MaxDiff tasks in study
+#' @param labels optional character vector to define labels of predictors
+#' @param anchor logical vector to indicate whether it is an anchored MaxDiff
 #'
 #' @returns list
 #' @export
 #'
-#' @examples
 alphas <- function(stan_output, bw_size, labels = NULL, anchor = FALSE) {
   labels <- labels %||% paste0("item_", seq_len(ncol(as.data.frame(rstan::extract(stan_output)[["b"]]))))
 

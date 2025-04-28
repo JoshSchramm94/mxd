@@ -1,3 +1,11 @@
+#' Convergence stats from estimation
+#'
+#' @param stan_output stanfit object
+#' @param labels optional character vector to define labels of predictors
+#'
+#' @returns a tibble
+#' @export
+#'
 convergence_stats <- function(stan_output, labels = NULL) {
   labels <- labels %||% paste0("item_", seq_len(ncol(as.data.frame(extract(hbmnl_da)[["b"]]))))
 
@@ -13,5 +21,5 @@ convergence_stats <- function(stan_output, labels = NULL) {
     t() %>%
     as.data.frame() %>%
     tibble::rownames_to_column(var = "items") %>%
-    dplyr::rename_all(., ~ c("items", "ess_b", "rhat"))
+    setNames(c("items", "ess_b", "rhat"))
 }
