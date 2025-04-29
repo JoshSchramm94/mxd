@@ -60,21 +60,25 @@ csv_to_dm <- function(
       # prepare best choice data frame
       if (!(type %in% c("worst_best_seq", "worst-only"))) {
         best <- prepare_best_worst_ch(
-          unanchored, {{ id }}, {{ cs }}, item_vars, "b", 1, type
+          data = unanchored, id = {{ id }}, cs = {{ cs }}, vars = item_vars,
+          bw_ind = "b", stack_pos = 1, type = type
         )
       } else if (type == "worst_best_seq") {
         best <- prepare_best_worst_ch(
-          unanchored, {{ id }}, {{ cs }}, item_vars, "b", 2, type
+          data = unanchored, id = {{ id }}, cs = {{ cs }}, vars = item_vars,
+          bw_ind = "b", stack_pos = 2, type = type
         )
       }
 
       if (type %in% c("worst_best_seq", "worst-only")) {
         worst <- prepare_best_worst_ch(
-          unanchored, {{ id }}, {{ cs }}, item_vars, "w", 1, type,
+          data = unanchored, id = {{ id }}, cs = {{ cs }}, vars = item_vars,
+          bw_ind = "w", stack_pos = 1, type = type
         )
       } else if (type %in% c("best-worst", "best-worst-seq")) {
         worst <- prepare_best_worst_ch(
-          unanchored, {{ id }}, {{ cs }}, item_vars, "w", 2, type
+          data = unanchored, id = {{ id }}, cs = {{ cs }}, vars = item_vars,
+          bw_ind = "w", stack_pos = 2, type = type
         )
       }
 
@@ -101,7 +105,7 @@ csv_to_dm <- function(
     # maxdiff coding
     if (type == "maxdiff" || type == "exploded") {
       unanchored <- design %>%
-        dplyr::filter(., {{ cs }} <= mxd_tasks) %>%
+        dplyr::filter({{ cs }} <= mxd_tasks) %>%
         bw_mutate(., {{ item }}, {{ ch }}, c({{ id }}, {{ cs }})) %>%
         dplyr::arrange({{ id }}, {{ cs }}, {{ pos }}) %>%
         dplyr::select(-c({{ pos }}, {{ ch }})) %>%
@@ -121,7 +125,7 @@ csv_to_dm <- function(
           unlist(unanchored[x, ][vars]) %>%
             DescTools::CombSet(., 2, repl = FALSE, ord = TRUE) %>%
             tibble::as_tibble() %>%
-            setNames(paste0("item", seq_len(2))) %>%
+            stats::setNames(paste0("item", seq_len(2))) %>%
             dplyr::mutate(
               id = unanchored[x, ][[var_names(design, {{ id }})]],
               b = unanchored[x, ][["b"]],
@@ -171,7 +175,7 @@ csv_to_dm <- function(
           unlist(unanchored[x, ][vars]) %>%
             DescTools::CombSet(., 2, repl = FALSE, ord = FALSE) %>%
             tibble::as_tibble() %>%
-            setNames(paste0("item", seq_len(2))) %>%
+            stats::setNames(paste0("item", seq_len(2))) %>%
             dplyr::mutate(
               id = unanchored[x, ][[var_names(design, {{ id }})]],
               b = unanchored[x, ][["b"]],

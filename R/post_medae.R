@@ -46,10 +46,9 @@ post_medae <- function(post, hot_data, opts, group, hot_choice, raw = FALSE) {
         y = .,
         by = var_names(hot_data, {{ hot_choice }})
       ) %>%
-      dplyr::mutate(medae = median(abs(perc - perc_pred))) %>%
       dplyr::group_by(dplyr::pick({{ group }})) %>%
       dplyr::reframe(
-        medae = mean(medae)
+        medae = stats::median(abs(perc - perc_pred))
       ) %>%
       dplyr::ungroup()
   }) %>%

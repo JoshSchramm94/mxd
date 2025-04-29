@@ -12,8 +12,8 @@ alphas_acf_plot <- function(stan_output, labels = NULL) {
 
   rstan::extract(stan_output)[["b"]] %>%
     as.data.frame() %>%
-    setNames(labels) %>%
-    apply(., 2, function(x) acf(x, plot = FALSE, lag.max = 100)[["acf"]]) %>%
+    stats::setNames(labels) %>%
+    apply(., 2, function(x) stats::acf(x, plot = FALSE, lag.max = 100)[["acf"]]) %>%
     as.data.frame() %>%
     dplyr::mutate(id = dplyr::row_number()) %>%
     tidyr::pivot_longer(

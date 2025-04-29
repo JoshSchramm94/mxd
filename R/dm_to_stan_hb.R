@@ -58,8 +58,8 @@ dm_to_stan_hb <- function(
     dplyr::relocate(row, .before = tidyselect::everything())
 
 
-  X <- model.matrix(
-    as.formula(
+  X <- stats::model.matrix(
+    stats::as.formula(
       paste0(
         var_names(design, {{ ch }}),
         " ~ 0 + ",

@@ -46,10 +46,9 @@ post_mae <- function(post, hot_data, opts, group, hot_choice, raw = FALSE) {
         y = .,
         by = var_names(hot_data, {{ hot_choice }})
       ) %>%
-      dplyr::mutate(mae = mean(abs(perc - perc_pred))) %>%
       dplyr::group_by(dplyr::pick({{ group }})) %>%
       dplyr::reframe(
-        mae = mean(mae)
+        mae = mean(abs(perc - perc_pred))
       ) %>%
       dplyr::ungroup()
   }) %>%

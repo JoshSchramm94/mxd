@@ -38,8 +38,6 @@ MaxDiff task}
 
 \item{...}{additional arguments to define are \code{cores}, \code{thin}, \code{init}, and
 \code{algorithm}, for more information see \link[rstan]{stan} documentation}
-
-\item{cores}{numeric input to define the number of cores to be used}
 }
 \value{
 S4

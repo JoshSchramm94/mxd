@@ -2,7 +2,7 @@
 % Please edit documentation in R/post_rmse.R
 \name{post_rmse}
 \alias{post_rmse}
-\title{Posterior in-sample or out-of-sample root mean square error error}
+\title{Posterior in-sample or out-of-sample root mean square error}
 \usage{
 post_rmse(post, hot_data, opts, group, hot_choice, raw = FALSE)
 }
@@ -24,5 +24,5 @@ should be reported}
 a tibble
 }
 \description{
-Posterior in-sample or out-of-sample root mean square error error
+Posterior in-sample or out-of-sample root mean square error
 }

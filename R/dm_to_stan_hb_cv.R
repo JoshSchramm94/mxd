@@ -41,7 +41,7 @@ dm_to_stan_hb_cv <- function(
   set.seed(seed)
   sample_df <- data.frame(
     id_var = sample(ids),
-    group = rep(c(seq_len(folds)), length.out = length(ids))
+    group_id = rep(c(seq_len(folds)), length.out = length(ids))
   )
 
   # store group member
@@ -55,11 +55,11 @@ dm_to_stan_hb_cv <- function(
   # map over folds
   purrr::map(seq_len(folds), function(x) {
     ws <- design %>%
-      dplyr::filter(group != x)
+      dplyr::filter(group_id != x)
 
-    val_sample <- dplyr::filter(design, group == x) %>%
+    val_sample <- dplyr::filter(design, group_id == x) %>%
       dplyr::distinct({{ id }}, .keep_all = TRUE) %>%
-      dplyr::select({{ id }}, group)
+      dplyr::select({{ id }}, group_id)
 
     output <- ws %>%
       dm_to_stan_hb(

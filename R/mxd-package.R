@@ -5,17 +5,17 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @importFrom dplyr across arrange count distinct filter first group_by join_by
+#' @importFrom dplyr across add_row arrange count distinct filter first group_by join_by
 #' last left_join mutate pick reframe relocate rename row_number select ungroup
 #' @importFrom magrittr "%>%"
 #' @importFrom tidyr pivot_longer
 #' @importFrom tidyselect all_of everything
-#' @importFrom stats median sd
+#' @importFrom stats acf as.formula median model.matrix quantile sd setNames
 #' @importFrom tibble as_tibble remove_rownames rownames_to_column
 #' @importFrom fastDummies dummy_cols
 #' @importFrom cli cli_abort cli_warn
 #' @importFrom rlang caller_arg caller_env "%||%"
-#' @importFrom purrr list_rbind map
+#' @importFrom purrr list_rbind map map2
 #' @importFrom future multisession plan sequential
 #' @importFrom furrr future_map
 #' @importFrom forcats fct_rev
@@ -40,6 +40,45 @@ NULL
 
 utils::globalVariables(
   c(
-    "."
+    ".",
+    "alt",
+    "b",
+    "b_perc",
+    "bw",
+    "ch_share",
+    "choice",
+    "cores",
+    "est",
+    "group_id",
+    "hb_des",
+    "hit",
+    "id",
+    "id_var",
+    "item",
+    "item1",
+    "item2",
+    "items",
+    "iter",
+    "label",
+    "mae",
+    "medae",
+    "mhp",
+    "n",
+    "newcs",
+    "obs",
+    "perc",
+    "perc_pred",
+    "position",
+    "pred_choice",
+    "prob",
+    "res",
+    "rmse",
+    "set",
+    "std",
+    "var",
+    "w",
+    "w_perc",
+    "ws",
+    "zc"
   )
 )

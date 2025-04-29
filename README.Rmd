@@ -79,9 +79,15 @@ Besides that, users can also use `shinystan()` to inspect convergence.
 
 -   `post_mae()`: Function to calculate posterior mean absolute error (both in-sample and out-of-sample)
 
+-   `post_mae_cv()`: Function to calculate cross-validation mean absolute error
+
 -   `post_medae()`: Function to calculate posterior median absolute error (both in-sample and out-of-sample)
 
+-   `post_medae_cv()`: Function to calculate cross-validation median absolute error
+
 -   `post_rmse()`: Function to calculate posterior root mean square error (both in-sample and out-of-sample)
+
+-   `post_rmse_cv()`: Function to calculate cross-validation root mean square error
 
 ## Installation
 

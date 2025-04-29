@@ -166,15 +166,15 @@ res_summary <- function(.data, var) {
           c(
             mean(x),
             sd(x),
-            quantile(x, probs = 0.025),
-            quantile(x, probs = 0.975)
+            stats::quantile(x, probs = 0.025),
+            stats::quantile(x, probs = 0.975)
           )
         }
       )
     ) %>%
     t() %>%
     as.data.frame() %>%
-    setNames(c("mw", "sd", "2.5%", "97.5%"))
+    stats::setNames(c("mw", "sd", "2.5%", "97.5%"))
 }
 
 res_summary_group <- function(.data, var, group) {
@@ -187,10 +187,10 @@ res_summary_group <- function(.data, var, group) {
       dplyr::across({{ var }},
                     function(x) c(mean(x),
                                   sd(x),
-                                  quantile(x, probs = 0.025),
-                                  quantile(x, probs = 0.975)))
+                                  stats::quantile(x, probs = 0.025),
+                                  stats::quantile(x, probs = 0.975)))
     ) %>%
-    setNames(c(group_names, "res")) %>%
+    stats::setNames(c(group_names, "res")) %>%
     dplyr::mutate(est = rep(c("mw", "sd", "2.5%", "97.5%"), length.out = nrow(.))) %>%
     tidyr::pivot_wider(
       names_from = est,

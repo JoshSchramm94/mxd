@@ -1,4 +1,4 @@
-#' Posterior in-sample or out-of-sample root mean square error error
+#' Posterior in-sample or out-of-sample root mean square error
 #'
 #' @param post posterior draws
 #' @param hot_data data frame with actual hot choice
@@ -46,10 +46,9 @@ post_rmse <- function(post, hot_data, opts, group, hot_choice, raw = FALSE) {
         y = .,
         by = var_names(hot_data, {{ hot_choice }})
       ) %>%
-      dplyr::mutate(rmse = sqrt(mean(abs(perc - perc_pred)^2))) %>%
       dplyr::group_by(dplyr::pick({{ group }})) %>%
       dplyr::reframe(
-        rmse = mean(rmse)
+        rmse = sqrt(mean(abs(perc - perc_pred)^2))
       ) %>%
       dplyr::ungroup()
   }) %>%

@@ -17,6 +17,6 @@ sigma_summary <- function(stan_output, labels = NULL) {
 
   rstan::extract(stan_output)[["sigma"]] %>%
     as.data.frame() %>%
-    setNames(labels) %>%
+    stats::setNames(labels) %>%
     res_summary(tidyselect::everything())
 }

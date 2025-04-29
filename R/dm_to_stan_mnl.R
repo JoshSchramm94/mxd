@@ -38,8 +38,8 @@ dm_to_stan_mnl <- function(design, id, cs, alt, items, ch, prior_b = NULL) {
     dplyr::relocate(row, .before = tidyselect::everything())
 
 
-  X <- model.matrix(
-    as.formula(
+  X <- stats::model.matrix(
+    stats::as.formula(
       paste0(
         var_names(design, {{ ch }}),
         " ~ 0 + ",

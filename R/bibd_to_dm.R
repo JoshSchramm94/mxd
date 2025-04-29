@@ -16,7 +16,7 @@ bibd_to_dm <- function(design, data, id, choices, type) {
 
   design <- design %>%
     as.data.frame() %>%
-    setNames(paste0("c", seq_len(ncol(.)))) %>%
+    stats::setNames(paste0("c", seq_len(ncol(.)))) %>%
     dplyr::mutate(set = dplyr::row_number()) %>%
     dplyr::relocate(set, .before = tidyselect::everything()) %>%
     tidyr::pivot_longer(

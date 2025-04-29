@@ -26,7 +26,7 @@ beta_post <- function(stan_output, bw_size, cores = 1L,
         ref = 0
       ) %>%
       dplyr::relocate(id, .before = tidyselect::everything()) %>%
-      setNames(c("id", labels, "ref"))
+      stats::setNames(c("id", labels, "ref"))
   })
 
   if (isTRUE(anchor)) {
@@ -37,7 +37,7 @@ beta_post <- function(stan_output, bw_size, cores = 1L,
         apply(., 2, function(x) x - x[nrow(.)]) %>%
         t() %>%
         as.data.frame() %>%
-        setNames(c(labels, "ref")) %>%
+        stats::setNames(c(labels, "ref")) %>%
         dplyr::mutate(
           id = ids
         ) %>%
@@ -50,7 +50,7 @@ beta_post <- function(stan_output, bw_size, cores = 1L,
         apply(., 1, function(x) prob_scores(x, bw_size) * 100 / (1 / bw_size)) %>%
         t() %>%
         as.data.frame() %>%
-        setNames(c(labels, "ref")) %>%
+        stats::setNames(c(labels, "ref")) %>%
         dplyr::mutate(
           id = ids
         ) %>%
@@ -66,7 +66,7 @@ beta_post <- function(stan_output, bw_size, cores = 1L,
         apply(., 2, mean_center) %>%
         t() %>%
         as.data.frame() %>%
-        setNames(c(labels, "ref")) %>%
+        stats::setNames(c(labels, "ref")) %>%
         dplyr::mutate(
           id = ids
         ) %>%
@@ -81,7 +81,7 @@ beta_post <- function(stan_output, bw_size, cores = 1L,
         apply(., 2, function(x) x / sum(x) * 100) %>%
         t() %>%
         as.data.frame() %>%
-        setNames(c(labels, "ref")) %>%
+        stats::setNames(c(labels, "ref")) %>%
         dplyr::mutate(
           id = ids
         ) %>%

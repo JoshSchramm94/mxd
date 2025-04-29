@@ -12,7 +12,8 @@
 #' @returns a tibble
 #' @export
 #'
-post_hit <- function(post, hot_data, id, opts, group = NULL, hot_choice, raw = FALSE) {
+post_hit <- function(post, hot_data, id, opts,
+                     group = NULL, hot_choice, raw = FALSE) {
 
   opts_names <- var_names(post[[1]], {{ opts }})
 

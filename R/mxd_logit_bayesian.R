@@ -2,7 +2,6 @@
 #'
 #' @param data_stan list with parameters for stan
 #' @param chains numeric input to define the number of chains to be run
-#' @param cores numeric input to define the number of cores to be used
 #' @param iter numeric input to define the number of iterations to
 #' be run (warm-up + sampling)
 #' @param warmup numeric input to define the number of iterations to be used
@@ -64,7 +63,7 @@ mxd_logit_bayesian <- function(data_stan,
   labels <- labels %||% paste0("item_", seq_len(ncol(res$b)))
 
   beta_raw <- as.data.frame(res$b) %>%
-    setNames(labels) %>%
+    stats::setNames(labels) %>%
     dplyr::mutate(ref = 0)
 
   if (isTRUE(anchor)) {
@@ -72,12 +71,12 @@ mxd_logit_bayesian <- function(data_stan,
       apply(., 2, function(x) x - x[nrow(.)]) %>%
       t() %>%
       as.data.frame() %>%
-      setNames(c(labels, "ref"))
+      stats::setNames(c(labels, "ref"))
 
     beta_prob <- apply(beta_raw, 1, function(x) prob_scores(x, bw_size) * 100 / (1 / bw_size)) %>%
       t() %>%
       as.data.frame() %>%
-      setNames(c(labels, "ref"))
+      stats::setNames(c(labels, "ref"))
   }
 
   if (isFALSE(anchor)) {
@@ -85,14 +84,14 @@ mxd_logit_bayesian <- function(data_stan,
       apply(., 2, mean_center) %>%
       t() %>%
       as.data.frame() %>%
-      setNames(c(labels, "ref"))
+      stats::setNames(c(labels, "ref"))
 
     beta_prob <- apply(beta_raw, 1, mean_center) %>%
       apply(., 2, function(x) prob_scores(x, bw_size)) %>%
       apply(., 2, function(x) x / sum(x) * 100) %>%
       t() %>%
       as.data.frame() %>%
-      setNames(c(labels, "ref"))
+      stats::setNames(c(labels, "ref"))
   }
 
   beta_summary <- data.frame(
@@ -102,10 +101,10 @@ mxd_logit_bayesian <- function(data_stan,
         res_summary(tidyselect::everything(.)),
       res$beta_zc %>%
         res_summary(tidyselect::everything(.)) %>%
-        setNames(c(paste0("zc_", names(.)))),
+        stats::setNames(c(paste0("zc_", names(.)))),
       res$beta_prob %>%
         res_summary(tidyselect::everything(.)) %>%
-        setNames(c(paste0("prob_", names(.))))
+        stats::setNames(c(paste0("prob_", names(.))))
     )
   ) %>%
     dplyr::add_row(

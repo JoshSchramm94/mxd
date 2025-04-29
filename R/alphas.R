@@ -14,7 +14,7 @@ alphas <- function(stan_output, bw_size, labels = NULL, anchor = FALSE) {
 
   alphas_raw <- rstan::extract(stan_output)[["b"]] %>%
     as.data.frame() %>%
-    setNames(labels) %>%
+    stats::setNames(labels) %>%
     dplyr::mutate(ref = 0)
 
 
@@ -23,12 +23,12 @@ alphas <- function(stan_output, bw_size, labels = NULL, anchor = FALSE) {
       apply(., 2, function(x) x - x[nrow(.)]) %>%
       t() %>%
       as.data.frame() %>%
-      setNames(c(labels, "ref"))
+      stats::setNames(c(labels, "ref"))
 
     alphas_prob <- apply(alphas_raw, 1, function(x) prob_scores(x, bw_size) * 100 / (1 / bw_size)) %>%
       t() %>%
       as.data.frame() %>%
-      setNames(c(labels, "ref"))
+      stats::setNames(c(labels, "ref"))
   }
 
   if (isFALSE(anchor)) {
@@ -36,14 +36,14 @@ alphas <- function(stan_output, bw_size, labels = NULL, anchor = FALSE) {
       apply(., 2, mean_center) %>%
       t() %>%
       as.data.frame() %>%
-      setNames(c(labels, "ref"))
+      stats::setNames(c(labels, "ref"))
 
     alpha_prob <- apply(alphas_raw, 1, mean_center) %>%
       apply(., 2, function(x) prob_scores(x, bw_size)) %>%
       apply(., 2, function(x) x / sum(x) * 100) %>%
       t() %>%
       as.data.frame() %>%
-      setNames(c(labels, "ref"))
+      stats::setNames(c(labels, "ref"))
   }
 
   alphas_summary <- data.frame(
@@ -51,13 +51,13 @@ alphas <- function(stan_output, bw_size, labels = NULL, anchor = FALSE) {
     cbind(
       alphas_raw %>%
         res_summary(tidyselect::everything(.)) %>%
-        setNames(c(paste0("raw_", names(.)))),
+        stats::setNames(c(paste0("raw_", names(.)))),
       alphas_zc %>%
         res_summary(tidyselect::everything(.)) %>%
-        setNames(c(paste0("zc_", names(.)))),
+        stats::setNames(c(paste0("zc_", names(.)))),
       alphas_prob %>%
         res_summary(tidyselect::everything(.)) %>%
-        setNames(c(paste0("prob_", names(.))))
+        stats::setNames(c(paste0("prob_", names(.))))
     )
   ) %>%
     tibble::remove_rownames()

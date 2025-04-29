@@ -44,7 +44,7 @@ mxd_logit <- function(data,
     as.data.frame() %>%
     dplyr::select(c(1, 2)) %>%
     tibble::rownames_to_column(var = "items") %>%
-    setNames(c("items", "est", "std")) %>%
+    stats::setNames(c("items", "est", "std")) %>%
     dplyr::add_row(
       items = var_names(data, {{ reference }}),
       est = 0,
