@@ -123,6 +123,7 @@ csv_to_dm <- function(
         df <- rbind(
           df,
           unlist(unanchored[x, ][vars]) %>%
+            .[!is.na(.)] %>%
             DescTools::CombSet(., 2, repl = FALSE, ord = TRUE) %>%
             tibble::as_tibble() %>%
             stats::setNames(paste0("item", seq_len(2))) %>%
@@ -173,6 +174,7 @@ csv_to_dm <- function(
         df <- rbind(
           df,
           unlist(unanchored[x, ][vars]) %>%
+            .[!is.na(.)] %>%
             DescTools::CombSet(., 2, repl = FALSE, ord = FALSE) %>%
             tibble::as_tibble() %>%
             stats::setNames(paste0("item", seq_len(2))) %>%
