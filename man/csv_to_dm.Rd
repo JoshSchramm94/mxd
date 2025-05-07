@@ -4,7 +4,7 @@
 \alias{csv_to_dm}
 \title{Converting csv design into design matrix}
 \usage{
-csv_to_dm(design, id, cs, item, ch, anchor = NULL, mxd_tasks, type, pos)
+csv_to_dm(design, id, cs, item, ch, anchor = NULL, mxd_tasks, type)
 }
 \arguments{
 \item{design}{csv design provided by Sawtooth software}
@@ -23,8 +23,6 @@ leave empty}
 \item{mxd_tasks}{numeric input to specify number of MaxDiff tasks}
 
 \item{type}{character to specify coding method}
-
-\item{pos}{column name of the position variable}
 }
 \value{
 a data frame object

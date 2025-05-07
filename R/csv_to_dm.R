@@ -9,7 +9,6 @@
 #' leave empty
 #' @param mxd_tasks numeric input to specify number of MaxDiff tasks
 #' @param type character to specify coding method
-#' @param pos column name of the position variable
 #'
 #' @returns a data frame object
 #' @export
@@ -22,8 +21,7 @@ csv_to_dm <- function(
     ch,
     anchor = NULL,
     mxd_tasks,
-    type,
-    pos) {
+    type) {
   # tests ----------------------------------------------------------------------
 
 
@@ -31,7 +29,7 @@ csv_to_dm <- function(
   # select relevant variables from the design
   design <- dplyr::select(
     design,
-    {{ id }}, {{ cs }}, {{ pos }}, {{ item }}, {{ ch }}
+    {{ id }}, {{ cs }}, {{ item }}, {{ ch }}
   )
 
 
@@ -47,8 +45,8 @@ csv_to_dm <- function(
           y = .,
           by = c(var_names(design, variables = c({{ id }}, {{ cs }})))
         ) %>%
-        dplyr::arrange({{ id }}, {{ cs }}, {{ pos }}) %>%
-        dplyr::select(-c({{ pos }}, {{ ch }})) %>%
+        dplyr::arrange({{ id }}, {{ cs }}) %>%
+        dplyr::select(-{{ ch }}) %>%
         fastDummies::dummy_cols(.,
           select_columns = var_names(design, {{ item }}),
           remove_selected_columns = TRUE
@@ -107,8 +105,8 @@ csv_to_dm <- function(
       unanchored <- design %>%
         dplyr::filter({{ cs }} <= mxd_tasks) %>%
         bw_mutate(., {{ item }}, {{ ch }}, c({{ id }}, {{ cs }})) %>%
-        dplyr::arrange({{ id }}, {{ cs }}, {{ pos }}) %>%
-        dplyr::select(-c({{ pos }}, {{ ch }})) %>%
+        dplyr::arrange({{ id }}, {{ cs }}) %>%
+        dplyr::select(-{{ ch }}) %>%
         tidyr::pivot_wider(.,
           values_from = {{ item }},
           names_from = var
@@ -125,7 +123,7 @@ csv_to_dm <- function(
           unlist(unanchored[x, ][vars]) %>%
             .[!is.na(.)] %>%
             DescTools::CombSet(., 2, repl = FALSE, ord = TRUE) %>%
-            tibble::as_tibble() %>%
+            as.data.frame() %>%
             stats::setNames(paste0("item", seq_len(2))) %>%
             dplyr::mutate(
               id = unanchored[x, ][[var_names(design, {{ id }})]],
@@ -176,7 +174,7 @@ csv_to_dm <- function(
           unlist(unanchored[x, ][vars]) %>%
             .[!is.na(.)] %>%
             DescTools::CombSet(., 2, repl = FALSE, ord = FALSE) %>%
-            tibble::as_tibble() %>%
+            as.data.frame() %>%
             stats::setNames(paste0("item", seq_len(2))) %>%
             dplyr::mutate(
               id = unanchored[x, ][[var_names(design, {{ id }})]],
@@ -303,8 +301,8 @@ csv_to_dm <- function(
         y = .,
         by = c(var_names(design, c({{ id }}, {{ cs }})))
       ) %>%
-      dplyr::arrange({{ id }}, {{ cs }}, {{ pos }}) %>%
-      dplyr::select(-c({{ pos }}, {{ ch }})) %>%
+      dplyr::arrange({{ id }}, {{ cs }}) %>%
+      dplyr::select(-{{ ch }}) %>%
       fastDummies::dummy_cols(.,
         select_columns = var_names(design, {{ item }}),
         remove_selected_columns = TRUE

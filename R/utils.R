@@ -226,3 +226,110 @@ mnl <- function(.data, variables) {
 percentage <- function(x) {
   x / sum(x)
 }
+
+
+# test -------------------------------------------------------------------------
+
+stanfit_input <- function(
+    input,
+    arg = rlang::caller_arg(input),
+    call = rlang::caller_env()) {
+
+  if (!isS4(input)) {
+    cli::cli_abort(
+      c(
+        "{.arg {arg}} must be class {.cls stanfit}",
+        "{.arg {arg}} is of class {.cls {class(input)}}."
+      ),
+      call = call
+    )
+  }
+}
+
+labels_length <- function(
+    labels,
+    no_pars,
+    call = rlang::caller_env()) {
+
+  length_labels <- length(labels)
+  allowed_length <- no_pars
+
+  if (length_labels != no_pars) {
+    cli::cli_abort(
+      c(
+        "{.arg labels} must have length {.num {no_pars}}",
+        "currently, {.arg labels} have length {.num {length_labels}}."
+      ),
+      call = call
+    )
+  }
+}
+
+numeric_input <- function(
+    argument,
+    arg = rlang::caller_arg(argument),
+    call = rlang::caller_env()) {
+
+  input <- is.numeric(argument)
+
+  if (!input) {
+    cli::cli_abort(
+      c(
+        "{.arg {arg}} must be {.cls numeric}.",
+        "{.arg {arg}} is class {.cls {class(argument)}}."
+      ),
+      call = call
+    )
+  }
+}
+
+allowed_class <- function(
+    input,
+    allowed,
+    arg = rlang::caller_arg(input),
+    call = rlang::caller_env()) {
+  correct_input <- class(input) %in% allowed
+
+  if (!correct_input) {
+    cli::cli_abort(
+      c(
+        "{.arg {arg}} must be class {.cls character}",
+        "{.arg {arg}} currently class {.cls {class(input)}}."
+      ),
+      call = call
+    )
+  }
+}
+
+arg_not_defined <- function(
+    x,
+    arg = rlang::caller_arg(x),
+    call = rlang::caller_env()
+) {
+  if (rlang::is_missing(x)) {
+    cli::cli_abort(
+      c(
+        "{.arg {arg}} is missing."
+      ),
+      call = call
+    )
+  }
+  }
+
+# taken from validateHOT -------------------------------------------------------
+allowed_input <- function(
+    input,
+    allowed,
+    arg = rlang::caller_arg(input),
+    call = rlang::caller_env()) {
+  correct_input <- all(input %in% allowed)
+
+  if (!correct_input) {
+    cli::cli_abort(
+      c(
+        "{.arg {arg}} can only have values {.val {allowed}}."
+      ),
+      call = call
+    )
+  }
+}

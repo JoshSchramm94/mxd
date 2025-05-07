@@ -1,33 +1,75 @@
 #' Preparation of posterior individuals draws
 #'
-#' @param stan_output stan_output stanfit object
+#' @param stan_output stanfit object
 #' @param bw_size size of MaxDiff tasks in study
-#' @param cores optional numeric input to define the number of cores used for
+#' @param cores optional integer input to define the number of cores used for
 #' calculation (default set to 1L)
 #' @param ids optional vector to define ids
-#' @param labels optional character vector to define labels of predictors
+#' @param labels optional character vector to define labels of items
 #' @param anchor logical vector to indicate whether it is an anchored MaxDiff
 #'
 #' @returns named list
 #' @export
-beta_post <- function(stan_output, bw_size, cores = 1L,
+betas_post <- function(stan_output, bw_size, cores = 1L,
                       ids = NULL, labels = NULL, anchor = FALSE) {
-  labels <- labels %||% paste0("item_", seq_len(ncol(as.data.frame(rstan::extract(stan_output)[["b"]]))))
 
+  # check whether all arguments are defined ------------------------------------
+  arg_not_defined(betas)
+  arg_not_defined(vars)
+
+  # define missing arguments ---------------------------------------------------
+  labels <- labels %||% paste0(
+    "item_",
+    seq_len(
+      dim(
+        rstan::extract(stan_output)[["beta"]]
+      )[3]
+    )
+  )
+
+  # define ids if not specified
   ids <- ids %||% seq_len(dim(rstan::extract(stan_output)[["beta"]])[2])
+
+  # tests ----------------------------------------------------------------------
+  # check whether input is correct
+  stanfit_input(stan_output)
+
+  # check length of labels
+  labels_length(labels, dim(rstan::extract(stan_output)[["beta"]])[3])
+
+  # check whether labels are class character
+  allowed_class(labels, "character")
+
+  # check length of ids
+  labels_length(unique(ids), dim(rstan::extract(stan_output)[["beta"]])[2])
+
+  # check whether bw_size is numeric
+  numeric_input(bw_size)
+
+  # check whether cores is numeric
+  numeric_input(cores)
+
+  # store as integer
+  bw_size <- as.integer(bw_size)
+  cores <- as.integer(cores)
+
+  # preps ----------------------------------------------------------------------
 
   # setting multiple cores if wanted
   future::plan(strategy = future::multisession, workers = cores)
 
-  beta_raw <- furrr::future_map(seq(dim(rstan::extract(stan_output)[["beta"]])[1]), function(x) {
-    as.data.frame(rstan::extract(stan_output)[["beta"]][x, , ]) %>%
-      dplyr::mutate(
-        id = ids,
-        ref = 0
-      ) %>%
-      dplyr::relocate(id, .before = tidyselect::everything()) %>%
-      stats::setNames(c("id", labels, "ref"))
-  })
+  beta_raw <- furrr::future_map(
+    seq(dim(rstan::extract(stan_output)[["beta"]])[1]),
+    function(x) {
+      as.data.frame(rstan::extract(stan_output)[["beta"]][x, , ]) %>%
+        dplyr::mutate(
+          id = ids,
+          ref = 0
+        ) %>%
+        dplyr::relocate(id, .before = tidyselect::everything()) %>%
+        stats::setNames(c("id", labels, "ref"))
+    }
+  )
 
   if (isTRUE(anchor)) {
     beta_zc <- furrr::future_map(beta_raw, function(df) {
@@ -47,7 +89,8 @@ beta_post <- function(stan_output, bw_size, cores = 1L,
     beta_prob <- furrr::future_map(beta_raw, function(df) {
       df %>%
         dplyr::select(-id) %>%
-        apply(., 1, function(x) prob_scores(x, bw_size) * 100 / (1 / bw_size)) %>%
+        apply(., 1,
+              function(x) prob_scores(x, bw_size) * 100 / (1 / bw_size)) %>%
         t() %>%
         as.data.frame() %>%
         stats::setNames(c(labels, "ref")) %>%
@@ -88,7 +131,6 @@ beta_post <- function(stan_output, bw_size, cores = 1L,
         dplyr::relocate(id, .before = tidyselect::everything())
     })
   }
-
 
   future::plan(strategy = future::sequential)
 

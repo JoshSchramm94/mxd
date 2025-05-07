@@ -2,16 +2,49 @@
 #'
 #' @param stan_output stanfit object
 #' @param bw_size size of MaxDiff tasks in study
-#' @param labels optional character vector to define labels of predictors
+#' @param labels optional character vector to define labels of items
 #' @param anchor logical vector to indicate whether it is an anchored MaxDiff
 #'
 #' @returns list
 #' @export
 #'
 alphas <- function(stan_output, bw_size, labels = NULL, anchor = FALSE) {
-  labels <- labels %||% paste0("item_", seq_len(ncol(as.data.frame(rstan::extract(stan_output)[["b"]]))))
+  # check whether all arguments are defined ------------------------------------
 
+  arg_not_defined(stan_output)
+  arg_not_defined(bw_size)
 
+  # define missing arguments ---------------------------------------------------
+  labels <- labels %||% paste0("item_",
+                               seq_len(
+                                 ncol(
+                                   as.data.frame(
+                                     rstan::extract(stan_output)[["b"]]
+                                   )
+                                 )
+                               )
+  )
+
+  # tests ----------------------------------------------------------------------
+  # check whether input is correct
+  stanfit_input(stan_output)
+
+  # check length of labels
+  labels_length(labels, ncol(as.data.frame(rstan::extract(stan_output)[["b"]])))
+
+  # check whether labels are class character
+  allowed_class(labels, "character")
+
+  # check whether bw_size is numeric
+  numeric_input(bw_size)
+
+  # store as integer
+  bw_size <- as.integer(bw_size)
+
+  # check input anchor
+  allowed_input(toupper(anchor), c("TRUE", "FALSE"))
+
+  # preps ----------------------------------------------------------------------
   alphas_raw <- rstan::extract(stan_output)[["b"]] %>%
     as.data.frame() %>%
     stats::setNames(labels) %>%
@@ -25,7 +58,10 @@ alphas <- function(stan_output, bw_size, labels = NULL, anchor = FALSE) {
       as.data.frame() %>%
       stats::setNames(c(labels, "ref"))
 
-    alphas_prob <- apply(alphas_raw, 1, function(x) prob_scores(x, bw_size) * 100 / (1 / bw_size)) %>%
+    alphas_prob <- apply(alphas_raw,
+                         1,
+                         function(x)
+                           prob_scores(x, bw_size) * 100 / (1 / bw_size)) %>%
       t() %>%
       as.data.frame() %>%
       stats::setNames(c(labels, "ref"))

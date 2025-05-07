@@ -4,14 +4,14 @@
 \alias{betas_violin}
 \title{Violin plot for beta posterior draws}
 \usage{
-betas_violin(betas, vars, label_names = NULL)
+betas_violin(betas, vars, labels = NULL)
 }
 \arguments{
 \item{betas}{posterior beta draws}
 
 \item{vars}{variable names}
 
-\item{label_names}{optional vector to specify labels of alternatives}
+\item{labels}{optional character vector to define labels of predictors}
 }
 \value{
 ggplot object

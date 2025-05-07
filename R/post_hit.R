@@ -1,9 +1,9 @@
 #' Posterior in-sample hit rate
 #'
-#' @param post posterior draws
+#' @param betas posterior draws
 #' @param hot_data data frame with actual hot choice
-#' @param id variable name of id
-#' @param opts variable names of items
+#' @param id column name of id
+#' @param opts variable names of choice options in holdout task
 #' @param group optional variable name to get results by `group`
 #' @param hot_choice variable name of actual choice
 #' @param raw logical vector to indicate whether raw or aggregated results
@@ -12,12 +12,12 @@
 #' @returns a tibble
 #' @export
 #'
-post_hit <- function(post, hot_data, id, opts,
+post_hit <- function(betas, hot_data, id, opts,
                      group = NULL, hot_choice, raw = FALSE) {
 
-  opts_names <- var_names(post[[1]], {{ opts }})
+  opts_names <- var_names(betas[[1]], {{ opts }})
 
-  res <- purrr::map(post, function(x) {
+  res <- purrr::map(betas, function(x) {
 
     x %>%
       dplyr::select({{ id }}, {{ opts }}) %>%
@@ -26,7 +26,8 @@ post_hit <- function(post, hot_data, id, opts,
       ) %>%
       dplyr::left_join(
         x = .,
-        y = hot_data %>% dplyr::select({{ id }}, {{ group }}, {{ hot_choice }}),
+        y = hot_data %>%
+          dplyr::select({{ id }}, {{ group }}, {{ hot_choice }}),
         by = var_names(x, {{ id }})
       ) %>%
       dplyr::group_by(dplyr::pick({{ group }})) %>%

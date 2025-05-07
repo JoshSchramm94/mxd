@@ -1,18 +1,16 @@
-#' Aggregated individual estimates
+#' Summary of posterior individuals draws
 #'
 #' @param betas posterior beta draws in an object of class list
 #' @param vars column names of items
-#' @param id column name of participants' identifier
 #'
 #' @returns a tibble
 #' @export
 #'
-bpe <- function(betas, vars, id) {
+betas_summary <- function(betas, vars) {
 
   # check whether all arguments are defined ------------------------------------
   arg_not_defined(betas)
   arg_not_defined(vars)
-  arg_not_defined(id)
 
   # tests ----------------------------------------------------------------------
 
@@ -22,10 +20,12 @@ bpe <- function(betas, vars, id) {
   # preps ----------------------------------------------------------------------
 
   betas %>%
-    purrr::list_rbind() %>%
-    dplyr::reframe(
-      dplyr::across(
-      {{ vars }},
+    purrr::list_rbind(names_to = "iter") %>%
+    dplyr::select(iter, {{ vars }}) %>%
+    dplyr::reframe(dplyr::across(
+      tidyselect::everything(),
       function(x) mean(x)
-    ), .by = {{ id }})
+    ), .by = iter) %>%
+    dplyr::select(-iter) %>%
+    res_summary(tidyselect::everything(.))
 }

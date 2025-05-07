@@ -70,7 +70,6 @@ bibd_to_dm <- function(design, data, id, choices, type) {
     ch = choice,
     item = item,
     mxd_tasks = tasks,
-    type = "best-worst",
-    pos = position
+    type = type
   )
 }
