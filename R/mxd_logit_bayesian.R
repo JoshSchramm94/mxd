@@ -18,16 +18,36 @@
 #' @export
 #'
 mxd_logit_bayesian <- function(data_stan,
-                               chains,
-                               iter,
-                               warmup,
+                               chains = 5L,
+                               iter = 2000L,
+                               warmup = 1000L,
                                bw_size,
                                labels = NULL,
                                anchor = FALSE,
                                seed = NULL,
                                ...) {
-  # tests ----------------------------------------------------------------------
 
+  # define missing values
+  seed <- seed %||% 1910L
+
+  # define labels
+  labels <- labels %||% paste0("item_", seq_len(data_stan[["K"]]))
+
+  # tests ----------------------------------------------------------------------
+  # check whether input is correct
+  allowed_class(data_stan, "list")
+  allowed_class(chains, c("numeric", "integer"))
+  allowed_class(iter, c("numeric", "integer"))
+  allowed_class(warmup, c("numeric", "integer"))
+  allowed_class(seed, c("numeric", "integer"))
+  allowed_class(bw_size, c("numeric", "integer"))
+  allowed_class(labels, c("character"))
+
+  # check input anchor
+  allowed_input(toupper(anchor), c("TRUE", "FALSE"))
+
+  # store bw_size as integer
+  bw_size <- as.integer(bw_size)
 
   # (...) ----------------------------------------------------------------------
 
@@ -43,8 +63,11 @@ mxd_logit_bayesian <- function(data_stan,
 
   args <- args_list(defi_args, defa_args)
 
+  allowed_input(defa_args[["algorithm"]], c("NUTS", "HMC", "Fixed_param"))
+  allowed_class(defa_args[["cores"]], c("numeric", "integer"))
+  allowed_class(defa_args[["thin"]], c("numeric", "integer"))
+
   # preps ----------------------------------------------------------------------
-  seed <- seed %||% 1910L
 
   out <- rstan::sampling(
     object = stanmodels$mnl,

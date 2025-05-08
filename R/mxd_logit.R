@@ -44,6 +44,9 @@ mxd_logit <- function(data,
   # check input anchor
   allowed_input(toupper(anchor), c("TRUE", "FALSE"))
 
+  # only one choice per choice set
+  choice_per_cs(design, {{ id }}, {{ cs }}, {{ ch }})
+
   # (...) ----------------------------------------------------------------------
 
   # define additional arguments

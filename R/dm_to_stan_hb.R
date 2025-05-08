@@ -13,19 +13,16 @@
 #' @param demos matrix of demographic variables (i.e., Z variables)
 #'
 #' @returns
-#' a list
+#' a nested list
 #'
 #' @export
 #'
 dm_to_stan_hb <- function(
     design, id, cs, alt, items, ch, prior_b = NULL, prior_omega = NULL,
     prior_sigma = NULL, demos = NULL) {
-  # tests ----------------------------------------------------------------------
 
-
-  # preps ----------------------------------------------------------------------
-
-  # specify prior_b if not defined
+  # define missing arguments ---------------------------------------------------
+  # specify optional values
   prior_b <- prior_b %||% 5L
 
   # specify prior_omega if not defined
@@ -33,6 +30,39 @@ dm_to_stan_hb <- function(
 
   # specify prior_omega if not defined
   prior_sigma <- prior_sigma %||% 2L
+
+  if (isTRUE(is.null(demos))) {
+    demos <- matrix(1, length(unique(select(design, {{ id }}))))
+  } else {
+    demos <- cbind(matrix(1, length(unique(select(design, {{ id }})))), demos)
+  }
+
+  # check whether all arguments are defined ------------------------------------
+
+  arg_not_defined(design)
+  arg_not_defined(id)
+  arg_not_defined(cs)
+  arg_not_defined(alt)
+  arg_not_defined(items)
+  arg_not_defined(ch)
+
+  # tests ----------------------------------------------------------------------
+
+  # check length of input
+  check_demo(demos, length(unique(select(design, {{ id }}))))
+
+  # check whether priors are numeric input
+  allowed_class(prior_b, c("numeric", "integer"))
+  allowed_class(prior_omega, c("numeric", "integer"))
+  allowed_class(prior_sigma, c("numeric", "integer"))
+
+  # check whether demos is a matrix
+  allowed_class(demos, "matrix")
+
+  # only one choice per choice set
+  choice_per_cs(design, {{ id }}, {{ cs }}, {{ ch }})
+
+  # preps ----------------------------------------------------------------------
 
   # define predictors
   preds <- var_names(design, {{ items }})
@@ -53,7 +83,8 @@ dm_to_stan_hb <- function(
       obs = cumsum(c(1, diff({{ alt }}) < 0))
     ) %>%
     dplyr::mutate(
-      dplyr::across({{ id }}, ~ cumsum(c(1, diff(.x) != 0)))
+      dplyr::across({{ id }},
+                    function(x) cumsum(c(1, diff(.x) != 0)))
     ) %>%
     dplyr::relocate(row, .before = tidyselect::everything())
 
@@ -80,11 +111,7 @@ dm_to_stan_hb <- function(
       .by = obs
     )
 
-  if (isTRUE(is.null(demos))) {
-    demos <- matrix(1, nrow(id_fix))
-  } else {
-    demos <- cbind(matrix(1, nrow(id_fix)), demos)
-  }
+
 
   data_stan <- list(
     N = max(index_n$obs),

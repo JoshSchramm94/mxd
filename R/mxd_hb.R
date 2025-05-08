@@ -10,7 +10,7 @@
 #' @param ... additional arguments to define are `cores`, `thin`, `init`, and
 #' `algorithm`, for more information see \link[rstan]{stan} documentation
 #'
-#' @returns S4
+#' @returns S4 stanfit object
 #' @export
 #'
 mxd_hb <- function(data_stan,
@@ -19,8 +19,17 @@ mxd_hb <- function(data_stan,
                    warmup = 1000L,
                    seed = NULL,
                    ...) {
-  # tests ----------------------------------------------------------------------
 
+  # define missing values
+  seed <- seed %||% 1910L
+
+  # tests ----------------------------------------------------------------------
+  # check whether input is correct
+  allowed_class(data_stan, "list")
+  allowed_class(chains, c("numeric", "integer"))
+  allowed_class(iter, c("numeric", "integer"))
+  allowed_class(warmup, c("numeric", "integer"))
+  allowed_class(seed, c("numeric", "integer"))
 
   # (...) ----------------------------------------------------------------------
 
@@ -36,10 +45,11 @@ mxd_hb <- function(data_stan,
 
   args <- args_list(defi_args, defa_args)
 
+  allowed_input(defa_args[["algorithm"]], c("NUTS", "HMC", "Fixed_param"))
+  allowed_class(defa_args[["cores"]], c("numeric", "integer"))
+  allowed_class(defa_args[["thin"]], c("numeric", "integer"))
+
   # preps ----------------------------------------------------------------------
-
-  seed <- seed %||% 1910L
-
 
   hbmnl_mcmc <- rstan::sampling(
     object = stanmodels$hbmnl,

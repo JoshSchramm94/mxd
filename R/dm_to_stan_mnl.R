@@ -15,17 +15,32 @@
 #' @export
 #'
 dm_to_stan_mnl <- function(design, id, cs, alt, items, ch, prior_b = NULL) {
-  # tests ----------------------------------------------------------------------
 
 
-  # preps ----------------------------------------------------------------------
-
-  # specify prior_b if not defined
+  # define missing arguments ---------------------------------------------------
+  # specify optional values
   prior_b <- prior_b %||% 5L
 
+  # check whether all arguments are defined ------------------------------------
+
+  arg_not_defined(design)
+  arg_not_defined(id)
+  arg_not_defined(cs)
+  arg_not_defined(alt)
+  arg_not_defined(items)
+  arg_not_defined(ch)
+
+  # tests ----------------------------------------------------------------------
+
+  # check whether priors are numeric input
+  allowed_class(prior_b, c("numeric", "integer"))
+
+  # only one choice per choice set
+  choice_per_cs(design, {{ id }}, {{ cs }}, {{ ch }})
+
+  # preps ----------------------------------------------------------------------
   # define predictors
   preds <- var_names(design, {{ items }})
-
 
   # fix the design matrix
   design <- design %>%

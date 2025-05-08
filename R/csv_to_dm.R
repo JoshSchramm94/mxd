@@ -22,16 +22,49 @@ csv_to_dm <- function(
     anchor = NULL,
     mxd_tasks,
     type) {
+
+  # check whether all arguments are defined ------------------------------------
+
+  arg_not_defined(type)
+  arg_not_defined(mxd_tasks)
+  arg_not_defined(design)
+  arg_not_defined(id)
+  arg_not_defined(cs)
+  arg_not_defined(item)
+  arg_not_defined(ch)
+
   # tests ----------------------------------------------------------------------
 
+  # need best and worst choice per set
+  bw_per_cs(design, {{ id }}, {{ cs }}, {{ ch }})
 
+  # check input of anchor
+  if (!is.null(anchor)) {
+    allowed_input(anchor, c("direct", "indirect"))
+  }
 
+  # check input for type
+  allowed_input(type, c("best-worst", "best-worst-seq", "worst-best-seq",
+                        "best-only", "worst-only", "maxdiff", "exploded"))
+
+  # check length of input
+  ncol_input(design, {{ id }}, "id")
+  ncol_input(design, {{ cs }}, "cs")
+  ncol_input(design, {{ cs }}, "item")
+  ncol_input(design, {{ cs }}, "ch")
+
+  # check for numeric / integer input
+  allowed_class(mxd_tasks, c("numeric", "integer"))
+
+  # store as integer
+  mxd_tasks <- as.integer(mxd_tasks)
+
+  # preps ----------------------------------------------------------------------
   # select relevant variables from the design
   design <- dplyr::select(
     design,
     {{ id }}, {{ cs }}, {{ item }}, {{ ch }}
   )
-
 
   # check whether anchor is empty or set to direct
   if (isTRUE(is.null(anchor)) || isTRUE(anchor == "direct")) {
@@ -80,7 +113,6 @@ csv_to_dm <- function(
         )
       }
 
-
       # prepare worst choice data frame
       if (type == "best-only") {
         df_md <- best %>%
@@ -98,7 +130,6 @@ csv_to_dm <- function(
         df_md <- bw_merge(best, worst, {{ id }}, {{ cs }})
       }
     }
-
 
     # maxdiff coding
     if (type == "maxdiff" || type == "exploded") {

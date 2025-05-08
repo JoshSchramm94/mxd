@@ -268,6 +268,22 @@ labels_length <- function(
   }
 }
 
+check_demo <- function(
+    demos,
+    length_id,
+    call = rlang::caller_env()) {
+  if (nrow(demos) != length_id) {
+    cli::cli_abort(
+      c(
+        "Input for{.arg demos} must match length of {.arg id}",
+        "currently, {.arg demos} have {.num {nrow(demos)}} rows",
+        "{.arg id} has length {.num {length_id}}."
+      ),
+      call = call
+    )
+  }
+}
+
 allowed_class <- function(
     input,
     allowed,
@@ -383,6 +399,46 @@ missing_allowed <- function(data,
       )
     )
   }
+}
+
+choice_per_cs <- function(
+  data,
+  id,
+  cs,
+  choice,
+  call = rlang::caller_env()) {
+
+  ws <- reframe(data, ch = sum({{ choice }}), .by = c({{ id }}, {{ cs }}))
+
+  if (!(all(ws[["ch"]] == 1))) {
+    cli::cli_abort(
+      c(
+        "Only one {.arg alt} can be chosen per {.arg cs}."
+      )
+    )
+  }
+
+}
+
+bw_per_cs <- function(
+    data,
+    id,
+    cs,
+    choice,
+    call = rlang::caller_env()) {
+
+  ws <- reframe(data, b = sum({{ choice }} == 1),
+                      w = sum({{ choice }} == -1),
+                .by = c({{ id }}, {{ cs }}))
+
+  if (!(all(ws[["b"]] == 1) && all(ws[["w"]] == -1))) {
+    cli::cli_abort(
+      c(
+        "Only one {.arg alt} can be chosen per {.arg cs}."
+      )
+    )
+  }
+
 }
 
 # taken from validateHOT -------------------------------------------------------
