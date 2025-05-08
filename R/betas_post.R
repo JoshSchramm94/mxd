@@ -14,8 +14,8 @@ betas_post <- function(stan_output, bw_size, cores = 1L,
                       ids = NULL, labels = NULL, anchor = FALSE) {
 
   # check whether all arguments are defined ------------------------------------
-  arg_not_defined(betas)
-  arg_not_defined(vars)
+  arg_not_defined(stan_output)
+  arg_not_defined(bw_size)
 
   # define missing arguments ---------------------------------------------------
   labels <- labels %||% paste0(
@@ -43,11 +43,9 @@ betas_post <- function(stan_output, bw_size, cores = 1L,
   # check length of ids
   labels_length(unique(ids), dim(rstan::extract(stan_output)[["beta"]])[2])
 
-  # check whether bw_size is numeric
-  numeric_input(bw_size)
-
-  # check whether cores is numeric
-  numeric_input(cores)
+  # check for numeric / integer input
+  allowed_class(bw_size, c("numeric", "integer"))
+  allowed_class(cores, c("numeric", "integer"))
 
   # store as integer
   bw_size <- as.integer(bw_size)

@@ -1,23 +1,58 @@
 #' Posterior in-sample hit rate
 #'
-#' @param betas posterior draws
+#' @param betas_post posterior draws
 #' @param hot_data data frame with actual hot choice
 #' @param id column name of id
-#' @param opts variable names of choice options in holdout task
-#' @param group optional variable name to get results by `group`
-#' @param hot_choice variable name of actual choice
+#' @param opts column names of choice options in holdout task
+#' @param group optional column name to get results by `group`
+#' @param hot_choice column name of actual choice in the holdout task
 #' @param raw logical vector to indicate whether raw or aggregated results
 #' should be reported
 #'
 #' @returns a tibble
 #' @export
 #'
-post_hit <- function(betas, hot_data, id, opts,
+post_hit <- function(betas_post, hot_data, id, opts,
                      group = NULL, hot_choice, raw = FALSE) {
 
-  opts_names <- var_names(betas[[1]], {{ opts }})
+  # check whether all arguments are defined ------------------------------------
+  arg_not_defined(betas_post)
+  arg_not_defined(hot_data)
+  arg_not_defined(id)
+  arg_not_defined(opts)
+  arg_not_defined(hot_choice)
 
-  res <- purrr::map(betas, function(x) {
+  # tests ----------------------------------------------------------------------
+
+  # check whether input is correct
+  allowed_class(betas_post, "list")
+
+  # check class of hot_data
+  allowed_class(hot_data, c("data.frame", "tbl", "tbl_df"))
+
+  # id variable must be the same
+  id_match(
+    unname(unlist(dplyr::select(betas_post[[1]], {{ id }}))),
+    unname(unlist(dplyr::select(hot_data, {{ id }})))
+  )
+
+  # betas check
+  post_check(betas_post)
+
+  # check input raw
+  allowed_input(toupper(raw), c("TRUE", "FALSE"))
+
+  # check for potential missings in group & missings in hot_choice
+  missing_allowed(hot_data, var = {{ group }}, allowed = "yes")
+  missing_allowed(hot_data, var = {{ hot_choice }}, allowed = "no")
+
+  # check for length of input
+  ncol_input(hot_data, variable = {{ hot_choice }}, argument = hot_choice)
+  # preps ----------------------------------------------------------------------
+
+  opts_names <- var_names(betas_post[[1]], {{ opts }})
+
+  res <- purrr::map(betas_post, function(x) {
 
     x %>%
       dplyr::select({{ id }}, {{ opts }}) %>%
@@ -36,7 +71,7 @@ post_hit <- function(betas, hot_data, id, opts,
       ) %>%
       dplyr::ungroup()
   }) %>%
-    purrr::list_rbind(names_to = "iteration")
+    purrr::list_rbind(names_to = "iter")
 
   if (isFALSE(raw) && missing(group)) {
     res <- res_summary(res, hit)

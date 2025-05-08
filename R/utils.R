@@ -265,35 +265,17 @@ labels_length <- function(
   }
 }
 
-numeric_input <- function(
-    argument,
-    arg = rlang::caller_arg(argument),
-    call = rlang::caller_env()) {
-
-  input <- is.numeric(argument)
-
-  if (!input) {
-    cli::cli_abort(
-      c(
-        "{.arg {arg}} must be {.cls numeric}.",
-        "{.arg {arg}} is class {.cls {class(argument)}}."
-      ),
-      call = call
-    )
-  }
-}
-
 allowed_class <- function(
     input,
     allowed,
     arg = rlang::caller_arg(input),
     call = rlang::caller_env()) {
-  correct_input <- class(input) %in% allowed
+  correct_input <- any(class(input) %in% allowed)
 
   if (!correct_input) {
     cli::cli_abort(
       c(
-        "{.arg {arg}} must be class {.cls character}",
+        "{.arg {arg}} must be class {.cls {allowed}}",
         "{.arg {arg}} currently class {.cls {class(input)}}."
       ),
       call = call
@@ -314,7 +296,95 @@ arg_not_defined <- function(
       call = call
     )
   }
+}
+
+id_match <- function(
+    id1,
+    id2,
+    call = rlang::caller_env()) {
+
+  if (!(all(id1 %in% id2) && all(id2 %in% id1))) {
+    cli::cli_abort(
+      c(
+        "ids do not match."
+      ),
+      call = call
+    )
   }
+
+  if (class(id1) != class(id2)){
+    cli::cli_abort(
+      c(
+        "class of ids do not match",
+        "id currently have type {.cls {class(id1)}} and {.cls {class(id2)}}",
+        "class must match."
+      ),
+      call = call
+    )
+  }
+
+}
+
+post_check <- function(
+    betas,
+    arg = rlang::caller_arg(betas),
+    call = rlang::caller_env()) {
+
+  # check dimensions
+  dim_must <- dim(betas[[1]])
+  wrong_input <- all(unlist(lapply(betas, function(x) all(dim(x) == dim_must))))
+
+  if (!wrong_input) {
+    cli::cli_abort(
+      c(
+        "dimension of {.arg {arg}} do not match across {.arg {arg}}."
+      ),
+      call = call
+    )
+  }
+
+  # check column names
+  col_nam_must <- names(betas[[1]])
+  wrong_input <- all(unlist(
+    lapply(betas, function(x)
+      all(names(x) %in% col_nam_must) &&
+        all(col_nam_must %in% names(x)))
+    ))
+
+  if (!wrong_input) {
+    cli::cli_abort(
+      c(
+        "column names of {.arg {arg}} do not match across {.arg {arg}}."
+      ),
+      call = call
+    )
+  }
+
+}
+
+missing_allowed <- function(data,
+                            var,
+                            allowed = c("yes", "no"),
+                            arg = rlang::caller_arg(var),
+                            call = rlang::caller_env()) {
+  var <- dplyr::select(data, {{ var }})
+
+  if (allowed == "yes" && anyNA(var)) {
+    cli::cli_warn(
+      c(
+        "{.arg {arg}} contain {.cls NA} values."
+      )
+    )
+  }
+
+  if (allowed == "no" && anyNA(var)) {
+    cli::cli_abort(
+      c(
+        "{.arg {arg}} contain {.cls NA} values."
+      )
+    )
+  }
+}
 
 # taken from validateHOT -------------------------------------------------------
 allowed_input <- function(
@@ -333,3 +403,23 @@ allowed_input <- function(
     )
   }
 }
+
+ncol_input <- function(
+    data,
+    variable,
+    argument,
+    arg = rlang::caller_arg(argument),
+    call = rlang::caller_env()) {
+  var <- dplyr::select(data, {{ variable }}) %>% colnames()
+
+  if (length(var) > 1) {
+    cli::cli_abort(
+      c(
+        "{.arg {arg}} can only be {.num 1} variable.",
+        "{.num {ncol(data[var])}} variabes are provided."
+      ),
+      call = call
+    )
+  }
+}
+

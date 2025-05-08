@@ -7,9 +7,9 @@
 betas_summary(betas, vars)
 }
 \arguments{
-\item{betas}{posterior beta draws}
+\item{betas}{posterior beta draws in an object of class list}
 
-\item{vars}{column names of predictors (i.e., items)}
+\item{vars}{column names of items}
 }
 \value{
 a tibble

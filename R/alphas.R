@@ -36,7 +36,7 @@ alphas <- function(stan_output, bw_size, labels = NULL, anchor = FALSE) {
   allowed_class(labels, "character")
 
   # check whether bw_size is numeric
-  numeric_input(bw_size)
+  allowed_class(bw_size, c("numeric", "integer"))
 
   # store as integer
   bw_size <- as.integer(bw_size)

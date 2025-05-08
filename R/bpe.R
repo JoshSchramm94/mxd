@@ -19,6 +19,9 @@ bpe <- function(betas, vars, id) {
   # check whether input is correct
   allowed_class(betas, "list")
 
+  # betas check
+  post_check(betas)
+
   # preps ----------------------------------------------------------------------
 
   betas %>%

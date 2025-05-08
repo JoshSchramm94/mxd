@@ -18,18 +18,17 @@ betas_violin <- function(betas, vars, labels = NULL) {
   level_names <- var_names(betas[[1]], {{ vars }})
 
   # tests ----------------------------------------------------------------------
-
   # check whether input is correct
   allowed_class(betas, "list")
+
+  # betas check
+  post_check(betas)
 
   # check length of labels
   labels_length(labels, var_names(betas[[1]], {{ vars }}))
 
   # check whether labels are class character
   allowed_class(labels, "character")
-
-
-
   # preps ----------------------------------------------------------------------
 
   betas %>%

@@ -17,6 +17,9 @@ betas_summary <- function(betas, vars) {
   # check whether input is correct
   allowed_class(betas, "list")
 
+  # betas check
+  post_check(betas)
+
   # preps ----------------------------------------------------------------------
 
   betas %>%

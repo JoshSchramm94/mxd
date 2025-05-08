@@ -1,12 +1,14 @@
 #' Convergence stats from estimation
 #'
 #' @param stan_output stanfit object
-#' @param labels optional character vector to define labels of predictors
+#' @param pars character to define the parameter that should be plotted. Can
+#' be set to `b` or to `sigma`
+#' @param labels optional character vector to define labels of items
 #'
 #' @returns a tibble
 #' @export
 #'
-convergence_stats <- function(stan_output, labels = NULL) {
+convergence_stats <- function(stan_output, pars = c("b", "sigma"), labels = NULL) {
 
   # check whether all arguments are defined ------------------------------------
 
@@ -17,13 +19,17 @@ convergence_stats <- function(stan_output, labels = NULL) {
                                seq_len(
                                  ncol(
                                    as.data.frame(
-                                     rstan::extract(stan_output)[["b"]]
+                                     rstan::extract(stan_output)[[pars]]
                                    )
                                  )
                                )
   )
 
   # tests ----------------------------------------------------------------------
+
+  # check whether pars is correctly defined
+  allowed_input(pars, c("b", "sigma"))
+
   # check whether input is correct
   stanfit_input(stan_output)
 
@@ -34,7 +40,7 @@ convergence_stats <- function(stan_output, labels = NULL) {
   allowed_class(labels, "character")
 
   # preps ----------------------------------------------------------------------
-  rstan::extract(stan_output)[["b"]] %>%
+  rstan::extract(stan_output)[[pars]] %>%
     as.data.frame() %>%
     stats::setNames(labels) %>%
     dplyr::reframe(

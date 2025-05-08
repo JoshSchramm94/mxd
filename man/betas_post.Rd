@@ -23,7 +23,7 @@ calculation (default set to 1L)}
 
 \item{ids}{optional vector to define ids}
 
-\item{labels}{optional character vector to define labels of predictors}
+\item{labels}{optional character vector to define labels of items}
 
 \item{anchor}{logical vector to indicate whether it is an anchored MaxDiff}
 }

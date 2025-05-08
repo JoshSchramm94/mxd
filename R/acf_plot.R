@@ -1,8 +1,8 @@
 #' Autocorrelation plot
 #'
 #' @param stan_output stanfit object
-#' @param pars Character to define the parameter that should be plotted. Can
-#' be set to "b" or to "sigma"
+#' @param pars character to define the parameter that should be plotted. Can
+#' be set to `b` or to `sigma`
 #' @param labels optional character vector to define labels of items
 #'
 #' @returns a ggplot object
@@ -14,7 +14,7 @@
 #' }
 #' @export
 #'
-acf_plot <- function(stan_output, pars, labels = NULL) {
+acf_plot <- function(stan_output, pars = c("b", "sigma"), labels = NULL) {
 
   # check whether all arguments are defined ------------------------------------
   arg_not_defined(stan_output)

@@ -4,10 +4,10 @@
 \alias{post_mae}
 \title{Posterior in-sample or out-of-sample mean absolute error}
 \usage{
-post_mae(post, hot_data, opts, group, hot_choice, raw = FALSE)
+post_mae(betas_post, hot_data, opts, group, hot_choice, raw = FALSE)
 }
 \arguments{
-\item{post}{posterior draws}
+\item{betas_post}{posterior draws}
 
 \item{hot_data}{data frame with actual hot choice}
 

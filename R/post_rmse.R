@@ -1,6 +1,6 @@
 #' Posterior in-sample or out-of-sample root mean square error
 #'
-#' @param post posterior draws
+#' @param betas_post posterior draws
 #' @param hot_data data frame with actual hot choice
 #' @param opts variable names of items
 #' @param group optional variable name to get results by `group`
@@ -11,9 +11,38 @@
 #' @returns a tibble
 #' @export
 #'
-post_rmse <- function(post, hot_data, opts, group, hot_choice, raw = FALSE) {
+post_rmse <- function(betas_post, hot_data, opts, group, hot_choice, raw = FALSE) {
 
-  opts_names <- var_names(post[[1]], {{ opts }})
+  # check whether all arguments are defined ------------------------------------
+  arg_not_defined(betas_post)
+  arg_not_defined(hot_data)
+  arg_not_defined(id)
+  arg_not_defined(opts)
+  arg_not_defined(hot_choice)
+
+  # tests ----------------------------------------------------------------------
+
+  # check whether input is correct
+  allowed_class(betas_post, "list")
+
+  # check class of hot_data
+  allowed_class(hot_data, c("data.frame", "tbl", "tbl_df"))
+
+  # betas check
+  post_check(betas_post)
+
+  # check input raw
+  allowed_input(toupper(raw), c("TRUE", "FALSE"))
+
+  # check for potential missings in group & missings in hot_choice
+  missing_allowed(hot_data, var = {{ group }}, allowed = "yes")
+  missing_allowed(hot_data, var = {{ hot_choice }}, allowed = "no")
+
+  # check for length of input
+  ncol_input(hot_data, variable = {{ hot_choice }}, argument = hot_choice)
+  # preps ----------------------------------------------------------------------
+
+  opts_names <- var_names(betas_post[[1]], {{ opts }})
 
   actual_choice <- hot_data %>%
     dplyr::mutate(dplyr::across({{ hot_choice }},
@@ -25,7 +54,7 @@ post_rmse <- function(post, hot_data, opts, group, hot_choice, raw = FALSE) {
     dplyr::mutate(perc = n / sum(n) * 100) %>%
     dplyr::select({{ group }}, {{ hot_choice }}, perc)
 
-  res <- purrr::map(post, function(x) {
+  res <- purrr::map(betas_post, function(x) {
 
     x %>%
       dplyr::select({{ opts }}) %>%
@@ -52,7 +81,7 @@ post_rmse <- function(post, hot_data, opts, group, hot_choice, raw = FALSE) {
       ) %>%
       dplyr::ungroup()
   }) %>%
-    purrr::list_rbind(names_to = "iteration")
+    purrr::list_rbind(names_to = "iter")
 
   if (isFALSE(raw) && missing(group)) {
     res <- res_summary(res, rmse)

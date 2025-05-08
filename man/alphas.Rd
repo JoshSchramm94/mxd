@@ -11,7 +11,7 @@ alphas(stan_output, bw_size, labels = NULL, anchor = FALSE)
 
 \item{bw_size}{size of MaxDiff tasks in study}
 
-\item{labels}{optional character vector to define labels of predictors}
+\item{labels}{optional character vector to define labels of items}
 
 \item{anchor}{logical vector to indicate whether it is an anchored MaxDiff}
 }

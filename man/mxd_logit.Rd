@@ -4,7 +4,7 @@
 \alias{mxd_logit}
 \title{Multinomial logit estimation for MaxDiff}
 \usage{
-mxd_logit(data, ch, alt, items, reference, bw_size, anchor = FALSE)
+mxd_logit(data, ch, alt, items, bw_size, reference = NULL, anchor = FALSE, ...)
 }
 \arguments{
 \item{data}{design matrix}
@@ -16,12 +16,15 @@ sets}
 
 \item{items}{column names of the predictor variables}
 
-\item{reference}{column name of the reference variable (i.e., holdout for
-mode estimation)}
-
 \item{bw_size}{numeric input to specify size of MaxDiff tasks in survey}
 
+\item{reference}{character vector to define name of the reference variable
+(i.e., holdout for estimation)}
+
 \item{anchor}{logical vector to indicate whether it is an anchored MaxDiff}
+
+\item{...}{additional argument to define is \code{algorithm}, for more
+information see \link[logitr]{logitr} documentation}
 }
 \value{
 list

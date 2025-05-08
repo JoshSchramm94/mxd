@@ -4,10 +4,10 @@
 \alias{post_medae}
 \title{Posterior in-sample or out-of-sample median absolute error}
 \usage{
-post_medae(post, hot_data, opts, group, hot_choice, raw = FALSE)
+post_medae(betas_post, hot_data, opts, group, hot_choice, raw = FALSE)
 }
 \arguments{
-\item{post}{posterior draws}
+\item{betas_post}{posterior draws}
 
 \item{hot_data}{data frame with actual hot choice}
 

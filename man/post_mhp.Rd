@@ -4,10 +4,10 @@
 \alias{post_mhp}
 \title{Posterior in-sample mean hit probability}
 \usage{
-post_mhp(post, hot_data, id, opts, group, hot_choice, raw = FALSE)
+post_mhp(betas_post, hot_data, id, opts, group, hot_choice, raw = FALSE)
 }
 \arguments{
-\item{post}{posterior draws}
+\item{betas_post}{posterior draws}
 
 \item{hot_data}{data frame with actual hot choice}
 

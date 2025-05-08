@@ -4,15 +4,15 @@
 \alias{acf_plot}
 \title{Autocorrelation plot}
 \usage{
-acf_plot(stan_output, pars, labels = NULL)
+acf_plot(stan_output, pars = c("b", "sigma"), labels = NULL)
 }
 \arguments{
 \item{stan_output}{stanfit object}
 
-\item{pars}{Character to define the parameter that should be plotted. Can
-be set to "b" or to "sigma"}
+\item{pars}{character to define the parameter that should be plotted. Can
+be set to \code{b} or to \code{sigma}}
 
-\item{labels}{optional character vector to define labels of predictors}
+\item{labels}{optional character vector to define labels of items}
 }
 \value{
 a ggplot object

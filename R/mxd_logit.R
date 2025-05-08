@@ -5,10 +5,12 @@
 #' @param alt column name of the variable marking alternatives within choice
 #' sets
 #' @param items column names of the predictor variables
-#' @param reference column name of the reference variable (i.e., holdout for
-#' mode estimation)
 #' @param bw_size numeric input to specify size of MaxDiff tasks in survey
+#' @param reference character vector to define name of the reference variable
+#' (i.e., holdout for estimation)
 #' @param anchor logical vector to indicate whether it is an anchored MaxDiff
+#' @param ... additional argument to define is `algorithm`, for more
+#' information see \link[logitr]{logitr} documentation
 #'
 #' @returns list
 #' @export
@@ -17,15 +19,44 @@ mxd_logit <- function(data,
                       ch,
                       alt,
                       items,
-                      reference,
                       bw_size,
-                      anchor = FALSE) {
+                      reference = NULL,
+                      anchor = FALSE,
+                      ...) {
+
+  # define missing arguments ---------------------------------------------------
+  reference <- reference %||% "reference"
+
+  # check whether all arguments are defined ------------------------------------
+  arg_not_defined(data)
+  arg_not_defined(ch)
+  arg_not_defined(items)
+  arg_not_defined(alt)
+  arg_not_defined(bw_size)
+
   # tests ----------------------------------------------------------------------
+  # check whether bw_size is correct
+  allowed_class(bw_size, "numeric")
 
+  # check for length of input
+  ncol_input(data, variable = {{ alt }}, argument = alt)
+  ncol_input(data, variable = {{ ch }}, argument = ch)
 
+  # check input anchor
+  allowed_input(toupper(anchor), c("TRUE", "FALSE"))
 
+  # (...) ----------------------------------------------------------------------
 
-  # prep -----------------------------------------------------------------------
+  # define additional arguments
+  defi_args <- list(...)
+
+  defa_args <- list(
+    algorithm = "NLOPT_LD_LBFGS"
+  )
+
+  args <- args_list(defi_args, defa_args)
+
+  # preps ----------------------------------------------------------------------
 
   data <- dplyr::mutate(data, obs = cumsum(c(1, diff({{ alt }}) < 0)))
 
@@ -35,7 +66,10 @@ mxd_logit <- function(data,
     data = data,
     outcome = var_names(data, {{ ch }}),
     obsID = "obs",
-    pars = paste0(c(var_names(data, {{ items }})))
+    pars = c(var_names(data, {{ items }})),
+    options = list(
+      algorithm = args[["algorithm"]]
+    )
   )
 
 
@@ -46,7 +80,7 @@ mxd_logit <- function(data,
     tibble::rownames_to_column(var = "items") %>%
     stats::setNames(c("items", "est", "std")) %>%
     dplyr::add_row(
-      items = var_names(data, {{ reference }}),
+      items = reference,
       est = 0,
       std = NA
     )

@@ -4,20 +4,20 @@
 \alias{post_hit}
 \title{Posterior in-sample hit rate}
 \usage{
-post_hit(post, hot_data, id, opts, group = NULL, hot_choice, raw = FALSE)
+post_hit(betas_post, hot_data, id, opts, group = NULL, hot_choice, raw = FALSE)
 }
 \arguments{
-\item{post}{posterior draws}
+\item{betas_post}{posterior draws}
 
 \item{hot_data}{data frame with actual hot choice}
 
-\item{id}{variable name of id}
+\item{id}{column name of id}
 
-\item{opts}{variable names of items}
+\item{opts}{column names of choice options in holdout task}
 
-\item{group}{optional variable name to get results by \code{group}}
+\item{group}{optional column name to get results by \code{group}}
 
-\item{hot_choice}{variable name of actual choice}
+\item{hot_choice}{column name of actual choice in the holdout task}
 
 \item{raw}{logical vector to indicate whether raw or aggregated results
 should be reported}

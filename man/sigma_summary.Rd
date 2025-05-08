@@ -9,7 +9,7 @@ sigma_summary(stan_output, labels = NULL)
 \arguments{
 \item{stan_output}{stanfit object}
 
-\item{labels}{optional character vector to define labels of predictors}
+\item{labels}{optional character vector to define labels of items}
 }
 \value{
 a tibble

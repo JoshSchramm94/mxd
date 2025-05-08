@@ -4,12 +4,10 @@
 \alias{mxd_count}
 \title{MaxDiff Count Analysis}
 \usage{
-mxd_count(data, id, cs, item, ch, group, no_items, labs = NULL)
+mxd_count(data, cs, item, ch, no_items, group = NULL, labels = NULL)
 }
 \arguments{
 \item{data}{unanchored csv design}
-
-\item{id}{column name of the id variable}
 
 \item{cs}{column name of the choice set variable}
 
@@ -17,11 +15,11 @@ mxd_count(data, id, cs, item, ch, group, no_items, labs = NULL)
 
 \item{ch}{column name of the choice variable}
 
-\item{group}{optional column name to display results by grouping variable(s)}
-
 \item{no_items}{numeric input to specify number of MaxDiff tasks}
 
-\item{labs}{optional character vector to specify labels for items}
+\item{group}{optional column name to display results by grouping variable(s)}
+
+\item{labels}{optional character vector to define labels of items}
 }
 \value{
 a tibble

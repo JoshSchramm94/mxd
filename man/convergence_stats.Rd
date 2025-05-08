@@ -4,12 +4,15 @@
 \alias{convergence_stats}
 \title{Convergence stats from estimation}
 \usage{
-convergence_stats(stan_output, labels = NULL)
+convergence_stats(stan_output, pars = c("b", "sigma"), labels = NULL)
 }
 \arguments{
 \item{stan_output}{stanfit object}
 
-\item{labels}{optional character vector to define labels of predictors}
+\item{pars}{character to define the parameter that should be plotted. Can
+be set to \code{b} or to \code{sigma}}
+
+\item{labels}{optional character vector to define labels of items}
 }
 \value{
 a tibble

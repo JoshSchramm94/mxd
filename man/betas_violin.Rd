@@ -7,11 +7,11 @@
 betas_violin(betas, vars, labels = NULL)
 }
 \arguments{
-\item{betas}{posterior beta draws}
+\item{betas}{posterior beta draws in an object of class list}
 
-\item{vars}{variable names}
+\item{vars}{column names of items}
 
-\item{labels}{optional character vector to define labels of predictors}
+\item{labels}{optional character vector to define labels of items}
 }
 \value{
 ggplot object
