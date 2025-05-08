@@ -16,11 +16,7 @@
 #'
 post_mae_cv <- function(stan_cv, stan_input, hot_data, opts, hot_choice,
                         val_id, hot_id, labels = NULL, raw = FALSE) {
-
-
-
   val_sample_res <- purrr::map2(stan_cv, hb_des, function(x, y) {
-
     labels <- labels %||% paste0("item_", seq_len((dim(rstan::extract(x)[["beta"]])[3]) + 1))
 
     beta_raw <- furrr::future_map(seq(dim(rstan::extract(x)[["beta"]])[1]), function(a) {
@@ -35,20 +31,25 @@ post_mae_cv <- function(stan_cv, stan_input, hot_data, opts, hot_choice,
 
     actual_choice <- y[["val_sample"]] %>%
       dplyr::left_join(
-      x = .,
-      y = ws %>% select({{ hot_id }}, {{ hot_choice }}),
-      by = join_by({{ val_id }} == {{ hot_id }})
-    ) %>%
-      dplyr::mutate(dplyr::across({{ hot_choice }},
-                                  function(x) factor(x = x,
-                                                     levels = seq_len(length(opts_names)),
-                                                     labels = opts_names))) %>%
+        x = .,
+        y = ws %>% select({{ hot_id }}, {{ hot_choice }}),
+        by = join_by({{ val_id }} == {{ hot_id }})
+      ) %>%
+      dplyr::mutate(dplyr::across(
+        {{ hot_choice }},
+        function(x) {
+          factor(
+            x = x,
+            levels = seq_len(length(opts_names)),
+            labels = opts_names
+          )
+        }
+      )) %>%
       dplyr::count({{ hot_choice }}, .drop = FALSE) %>%
       dplyr::mutate(perc = n / sum(n) * 100)
 
 
     res <- purrr::map(beta_raw, function(z) {
-
       z %>%
         dplyr::select({{ opts }}) %>%
         mnl(tidyselect::everything()) %>%
@@ -71,7 +72,6 @@ post_mae_cv <- function(stan_cv, stan_input, hot_data, opts, hot_choice,
         dplyr::reframe(mae = mean(abs(perc - perc_pred)))
     }) %>%
       purrr::list_rbind(names_to = "iteration")
-
   }) %>%
     purrr::list_rbind(names_to = "sample")
 
@@ -80,11 +80,12 @@ post_mae_cv <- function(stan_cv, stan_input, hot_data, opts, hot_choice,
       dplyr::mutate(sample = as.character(sample))
 
     val_sample_res <- dplyr::add_row(val_sample_res,
-                          sample = "mean",
-                          mw = mean(val_sample_res$mw),
-                          sd = mean(val_sample_res$sd),
-                          `2.5%` = mean(val_sample_res$`2.5%`),
-                          `97.5%` = mean(val_sample_res$`97.5%`))
+      sample = "mean",
+      mw = mean(val_sample_res$mw),
+      sd = mean(val_sample_res$sd),
+      `2.5%` = mean(val_sample_res$`2.5%`),
+      `97.5%` = mean(val_sample_res$`97.5%`)
+    )
   }
 
   return(val_sample_res)

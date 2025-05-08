@@ -8,7 +8,6 @@
 #' @export
 #'
 betas_violin <- function(betas, vars, labels = NULL) {
-
   # check whether all arguments are defined ------------------------------------
   arg_not_defined(betas)
   arg_not_defined(vars)
@@ -44,9 +43,10 @@ betas_violin <- function(betas, vars, labels = NULL) {
     ) %>%
     ggplot2::ggplot(
       ggplot2::aes(
-      x = beta,
-      y = forcats::fct_rev(vars)
-    )) +
+        x = beta,
+        y = forcats::fct_rev(vars)
+      )
+    ) +
     ggplot2::geom_violin(aes(fill = forcats::fct_rev(vars))) +
     ggplot2::ylab("") +
     ggplot2::theme_minimal() +

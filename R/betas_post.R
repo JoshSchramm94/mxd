@@ -11,8 +11,7 @@
 #' @returns named list
 #' @export
 betas_post <- function(stan_output, bw_size, cores = 1L,
-                      ids = NULL, labels = NULL, anchor = FALSE) {
-
+                       ids = NULL, labels = NULL, anchor = FALSE) {
   # check whether all arguments are defined ------------------------------------
   arg_not_defined(stan_output)
   arg_not_defined(bw_size)
@@ -87,8 +86,10 @@ betas_post <- function(stan_output, bw_size, cores = 1L,
     beta_prob <- furrr::future_map(beta_raw, function(df) {
       df %>%
         dplyr::select(-id) %>%
-        apply(., 1,
-              function(x) prob_scores(x, bw_size) * 100 / (1 / bw_size)) %>%
+        apply(
+          ., 1,
+          function(x) prob_scores(x, bw_size) * 100 / (1 / bw_size)
+        ) %>%
         t() %>%
         as.data.frame() %>%
         stats::setNames(c(labels, "ref")) %>%

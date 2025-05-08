@@ -7,7 +7,6 @@
 #' @export
 #'
 betas_summary <- function(betas, vars) {
-
   # check whether all arguments are defined ------------------------------------
   arg_not_defined(betas)
   arg_not_defined(vars)

@@ -14,7 +14,6 @@
 #'
 post_hit <- function(betas_post, hot_data, id, opts,
                      group = NULL, hot_choice, raw = FALSE) {
-
   # check whether all arguments are defined ------------------------------------
   arg_not_defined(betas_post)
   arg_not_defined(hot_data)
@@ -53,7 +52,6 @@ post_hit <- function(betas_post, hot_data, id, opts,
   opts_names <- var_names(betas_post[[1]], {{ opts }})
 
   res <- purrr::map(betas_post, function(x) {
-
     x %>%
       dplyr::select({{ id }}, {{ opts }}) %>%
       dplyr::mutate(

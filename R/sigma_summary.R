@@ -7,20 +7,20 @@
 #' @export
 #'
 sigma_summary <- function(stan_output, labels = NULL) {
-
   # check whether all arguments are defined ------------------------------------
 
   arg_not_defined(stan_output)
 
   # define missing arguments ---------------------------------------------------
-  labels <- labels %||% paste0("item_",
-                               seq_len(
-                                 ncol(
-                                   as.data.frame(
-                                     rstan::extract(stan_output)[["sigma"]]
-                                   )
-                                 )
-                               )
+  labels <- labels %||% paste0(
+    "item_",
+    seq_len(
+      ncol(
+        as.data.frame(
+          rstan::extract(stan_output)[["sigma"]]
+        )
+      )
+    )
   )
 
   # tests ----------------------------------------------------------------------

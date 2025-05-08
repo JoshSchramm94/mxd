@@ -8,7 +8,6 @@
 #' @export
 #'
 bpe <- function(betas, vars, id) {
-
   # check whether all arguments are defined ------------------------------------
   arg_not_defined(betas)
   arg_not_defined(vars)
@@ -28,7 +27,9 @@ bpe <- function(betas, vars, id) {
     purrr::list_rbind() %>%
     dplyr::reframe(
       dplyr::across(
-      {{ vars }},
-      function(x) mean(x)
-    ), .by = {{ id }})
+        {{ vars }},
+        function(x) mean(x)
+      ),
+      .by = {{ id }}
+    )
 }

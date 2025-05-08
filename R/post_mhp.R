@@ -14,7 +14,6 @@
 #'
 post_mhp <- function(betas_post, hot_data, id, opts,
                      group, hot_choice, raw = FALSE) {
-
   # check whether all arguments are defined ------------------------------------
   arg_not_defined(betas_post)
   arg_not_defined(hot_data)

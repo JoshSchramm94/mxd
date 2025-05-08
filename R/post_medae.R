@@ -12,7 +12,6 @@
 #' @export
 #'
 post_medae <- function(betas_post, hot_data, opts, group, hot_choice, raw = FALSE) {
-
   # check whether all arguments are defined ------------------------------------
   arg_not_defined(betas_post)
   arg_not_defined(hot_data)
@@ -46,17 +45,22 @@ post_medae <- function(betas_post, hot_data, opts, group, hot_choice, raw = FALS
   opts_names <- var_names(betas_post[[1]], {{ opts }})
 
   actual_choice <- hot_data %>%
-    dplyr::mutate(dplyr::across({{ hot_choice }},
-                                function(x) factor(x = x,
-                                                   levels = seq_len(length(opts_names)),
-                                                   labels = opts_names))) %>%
+    dplyr::mutate(dplyr::across(
+      {{ hot_choice }},
+      function(x) {
+        factor(
+          x = x,
+          levels = seq_len(length(opts_names)),
+          labels = opts_names
+        )
+      }
+    )) %>%
     dplyr::group_by(dplyr::pick({{ group }})) %>%
     dplyr::count({{ hot_choice }}, .drop = FALSE) %>%
     dplyr::mutate(perc = n / sum(n) * 100) %>%
     dplyr::select({{ group }}, {{ hot_choice }}, perc)
 
   res <- purrr::map(betas_post, function(x) {
-
     x %>%
       dplyr::select({{ opts }}) %>%
       mnl(tidyselect::everything()) %>%

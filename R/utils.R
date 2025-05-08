@@ -178,17 +178,22 @@ res_summary <- function(.data, var) {
 }
 
 res_summary_group <- function(.data, var, group) {
-
   group_names <- var_names(.data, {{ group }})
 
   .data %>%
     dplyr::group_by(dplyr::pick({{ group }})) %>%
     dplyr::reframe(
-      dplyr::across({{ var }},
-                    function(x) c(mean(x),
-                                  sd(x),
-                                  stats::quantile(x, probs = 0.025),
-                                  stats::quantile(x, probs = 0.975)))
+      dplyr::across(
+        {{ var }},
+        function(x) {
+          c(
+            mean(x),
+            sd(x),
+            stats::quantile(x, probs = 0.025),
+            stats::quantile(x, probs = 0.975)
+          )
+        }
+      )
     ) %>%
     stats::setNames(c(group_names, "res")) %>%
     dplyr::mutate(est = rep(c("mw", "sd", "2.5%", "97.5%"), length.out = nrow(.))) %>%
@@ -234,7 +239,6 @@ stanfit_input <- function(
     input,
     arg = rlang::caller_arg(input),
     call = rlang::caller_env()) {
-
   if (!isS4(input)) {
     cli::cli_abort(
       c(
@@ -250,7 +254,6 @@ labels_length <- function(
     labels,
     no_pars,
     call = rlang::caller_env()) {
-
   length_labels <- length(labels)
   allowed_length <- no_pars
 
@@ -286,8 +289,7 @@ allowed_class <- function(
 arg_not_defined <- function(
     x,
     arg = rlang::caller_arg(x),
-    call = rlang::caller_env()
-) {
+    call = rlang::caller_env()) {
   if (rlang::is_missing(x)) {
     cli::cli_abort(
       c(
@@ -302,7 +304,6 @@ id_match <- function(
     id1,
     id2,
     call = rlang::caller_env()) {
-
   if (!(all(id1 %in% id2) && all(id2 %in% id1))) {
     cli::cli_abort(
       c(
@@ -312,7 +313,7 @@ id_match <- function(
     )
   }
 
-  if (class(id1) != class(id2)){
+  if (class(id1) != class(id2)) {
     cli::cli_abort(
       c(
         "class of ids do not match",
@@ -322,14 +323,12 @@ id_match <- function(
       call = call
     )
   }
-
 }
 
 post_check <- function(
     betas,
     arg = rlang::caller_arg(betas),
     call = rlang::caller_env()) {
-
   # check dimensions
   dim_must <- dim(betas[[1]])
   wrong_input <- all(unlist(lapply(betas, function(x) all(dim(x) == dim_must))))
@@ -346,10 +345,11 @@ post_check <- function(
   # check column names
   col_nam_must <- names(betas[[1]])
   wrong_input <- all(unlist(
-    lapply(betas, function(x)
+    lapply(betas, function(x) {
       all(names(x) %in% col_nam_must) &&
-        all(col_nam_must %in% names(x)))
-    ))
+        all(col_nam_must %in% names(x))
+    })
+  ))
 
   if (!wrong_input) {
     cli::cli_abort(
@@ -359,7 +359,6 @@ post_check <- function(
       call = call
     )
   }
-
 }
 
 missing_allowed <- function(data,
@@ -422,4 +421,3 @@ ncol_input <- function(
     )
   }
 }
-

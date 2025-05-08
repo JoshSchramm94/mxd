@@ -10,26 +10,25 @@
 #' @examples
 #' \dontrun{
 #' acf_plot(mxd_input, pars = "b")
-#'
 #' }
 #' @export
 #'
 acf_plot <- function(stan_output, pars = c("b", "sigma"), labels = NULL) {
-
   # check whether all arguments are defined ------------------------------------
   arg_not_defined(stan_output)
   arg_not_defined(pars)
 
   # define missing arguments ---------------------------------------------------
-  labels <- labels %||% paste0("item_",
-                               seq_len(
-                                 ncol(
-                                   as.data.frame(
-                                     rstan::extract(stan_output)[[pars]]
-                                     )
-                                   )
-                                 )
-                               )
+  labels <- labels %||% paste0(
+    "item_",
+    seq_len(
+      ncol(
+        as.data.frame(
+          rstan::extract(stan_output)[[pars]]
+        )
+      )
+    )
+  )
 
   # tests ----------------------------------------------------------------------
 
@@ -49,8 +48,9 @@ acf_plot <- function(stan_output, pars = c("b", "sigma"), labels = NULL) {
   rstan::extract(stan_output)[[pars]] %>%
     as.data.frame() %>%
     stats::setNames(labels) %>%
-    apply(., 2, function(x)
-      stats::acf(x, plot = FALSE, lag.max = 100)[["acf"]]) %>%
+    apply(., 2, function(x) {
+      stats::acf(x, plot = FALSE, lag.max = 100)[["acf"]]
+    }) %>%
     as.data.frame() %>%
     dplyr::mutate(id = dplyr::row_number()) %>%
     tidyr::pivot_longer(

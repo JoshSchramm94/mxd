@@ -23,7 +23,6 @@ mxd_logit <- function(data,
                       reference = NULL,
                       anchor = FALSE,
                       ...) {
-
   # define missing arguments ---------------------------------------------------
   reference <- reference %||% "reference"
 

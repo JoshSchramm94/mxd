@@ -15,14 +15,15 @@ alphas <- function(stan_output, bw_size, labels = NULL, anchor = FALSE) {
   arg_not_defined(bw_size)
 
   # define missing arguments ---------------------------------------------------
-  labels <- labels %||% paste0("item_",
-                               seq_len(
-                                 ncol(
-                                   as.data.frame(
-                                     rstan::extract(stan_output)[["b"]]
-                                   )
-                                 )
-                               )
+  labels <- labels %||% paste0(
+    "item_",
+    seq_len(
+      ncol(
+        as.data.frame(
+          rstan::extract(stan_output)[["b"]]
+        )
+      )
+    )
   )
 
   # tests ----------------------------------------------------------------------
@@ -58,10 +59,13 @@ alphas <- function(stan_output, bw_size, labels = NULL, anchor = FALSE) {
       as.data.frame() %>%
       stats::setNames(c(labels, "ref"))
 
-    alphas_prob <- apply(alphas_raw,
-                         1,
-                         function(x)
-                           prob_scores(x, bw_size) * 100 / (1 / bw_size)) %>%
+    alphas_prob <- apply(
+      alphas_raw,
+      1,
+      function(x) {
+        prob_scores(x, bw_size) * 100 / (1 / bw_size)
+      }
+    ) %>%
       t() %>%
       as.data.frame() %>%
       stats::setNames(c(labels, "ref"))
