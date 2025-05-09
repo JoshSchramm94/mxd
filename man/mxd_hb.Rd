@@ -23,7 +23,7 @@ for warm-up purposes}
 \code{algorithm}, for more information see \link[rstan]{stan} documentation}
 }
 \value{
-S4
+S4 stanfit object
 }
 \description{
 Hierarchical Bayes estimation for MaxDiff

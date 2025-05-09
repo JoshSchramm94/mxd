@@ -72,18 +72,17 @@ mxd_logit_bayesian <- function(data_stan,
   out <- rstan::sampling(
     object = stanmodels$mnl,
     data = data_stan,
-    init = "random",
+    init = args[["init"]],
     seed = seed,
     chains = chains,
-    cores = cores,
+    cores = args[["cores"]],
+    algorithm = args[["algorithm"]],
     iter = iter,
     warmup = warmup,
-    thin = 5
+    thin = args[["thin"]]
   )
 
   res <- rstan::extract(out)
-
-  labels <- labels %||% paste0("item_", seq_len(ncol(res$b)))
 
   beta_raw <- as.data.frame(res$b) %>%
     stats::setNames(labels) %>%
@@ -120,21 +119,16 @@ mxd_logit_bayesian <- function(data_stan,
   beta_summary <- data.frame(
     items = c(labels, "ref"),
     cbind(
-      res$beta_raw %>%
+      beta_raw %>%
         res_summary(tidyselect::everything(.)),
-      res$beta_zc %>%
+      beta_zc %>%
         res_summary(tidyselect::everything(.)) %>%
         stats::setNames(c(paste0("zc_", names(.)))),
-      res$beta_prob %>%
+      beta_prob %>%
         res_summary(tidyselect::everything(.)) %>%
         stats::setNames(c(paste0("prob_", names(.))))
     )
-  ) %>%
-    dplyr::add_row(
-      items = "Log. Likelihood = ",
-      mean_raw_mean = round(res$log_lik[(iter - warmup)])
-    ) %>%
-    tibble::remove_rownames()
+  )
 
   return(
     list(

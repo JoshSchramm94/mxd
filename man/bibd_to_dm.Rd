@@ -4,7 +4,7 @@
 \alias{bibd_to_dm}
 \title{Convert BIBD to design matrix}
 \usage{
-bibd_to_dm(design, data, id, choices, type)
+bibd_to_dm(design, data, id, best_ch, worst_ch, type)
 }
 \arguments{
 \item{design}{BIBD design}
@@ -13,7 +13,9 @@ bibd_to_dm(design, data, id, choices, type)
 
 \item{id}{column name of participants' identifier}
 
-\item{choices}{column names of best and worst choices}
+\item{best_ch}{column names of best choices}
+
+\item{worst_ch}{column names of worst choices}
 
 \item{type}{type of coding}
 }

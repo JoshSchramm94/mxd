@@ -165,7 +165,7 @@ res_summary <- function(.data, var) {
         function(x) {
           c(
             mean(x),
-            sd(x),
+            stats::sd(x),
             stats::quantile(x, probs = 0.025),
             stats::quantile(x, probs = 0.975)
           )
@@ -188,7 +188,7 @@ res_summary_group <- function(.data, var, group) {
         function(x) {
           c(
             mean(x),
-            sd(x),
+            stats::sd(x),
             stats::quantile(x, probs = 0.025),
             stats::quantile(x, probs = 0.975)
           )
@@ -306,7 +306,7 @@ arg_not_defined <- function(
     x,
     arg = rlang::caller_arg(x),
     call = rlang::caller_env()) {
-  if (rlang::is_missing(x)) {
+  if (missing(x)) {
     cli::cli_abort(
       c(
         "{.arg {arg}} is missing."
@@ -408,7 +408,7 @@ choice_per_cs <- function(
   choice,
   call = rlang::caller_env()) {
 
-  ws <- reframe(data, ch = sum({{ choice }}), .by = c({{ id }}, {{ cs }}))
+  ws <- dplyr::reframe(data, ch = sum({{ choice }} == 1), .by = c({{ id }}, {{ cs }}))
 
   if (!(all(ws[["ch"]] == 1))) {
     cli::cli_abort(
@@ -427,11 +427,11 @@ bw_per_cs <- function(
     choice,
     call = rlang::caller_env()) {
 
-  ws <- reframe(data, b = sum({{ choice }} == 1),
+  ws <- dplyr::reframe(data, b = sum({{ choice }} == 1),
                       w = sum({{ choice }} == -1),
                 .by = c({{ id }}, {{ cs }}))
 
-  if (!(all(ws[["b"]] == 1) && all(ws[["w"]] == -1))) {
+  if (!(all(ws[["b"]] == 1) && all(ws[["w"]] == 1))) {
     cli::cli_abort(
       c(
         "Only one {.arg alt} can be chosen per {.arg cs}."
@@ -440,6 +440,62 @@ bw_per_cs <- function(
   }
 
 }
+
+
+
+bw_length <- function(
+    data,
+    best_ch,
+    worst_ch,
+    call = rlang::caller_env()) {
+
+  b_len <- dplyr::select(data, {{ best_ch }}) %>% ncol(.)
+  w_len <- dplyr::select(data, {{ worst_ch }}) %>% ncol(.)
+
+  if (b_len != w_len){
+    cli::cli_abort(
+      c(
+        "Number of variables provided to {.arg best_ch} and {.arg worst_ch} do not match",
+        "{.arg best_ch} has {.num {b_len}} variables, {.arg worst_ch} has {.num {w_len}} variables."
+      )
+    )
+  }
+
+}
+
+choice_per_cs_mnl <- function(
+    data,
+    cs,
+    ch,
+    call = rlang::caller_env()) {
+
+  ws <- data %>%
+    dplyr::mutate(obs = cumsum(c(1, diff({{ cs }}) != 0))) %>%
+    dplyr::reframe(choice = sum({{ ch }} == 1), .by = obs)
+
+
+
+  if (!(all(ws[["choice"]] == 1))){
+    cli::cli_abort(
+      c(
+        "Only one {.arg alt} can be chosen per {.arg cs}."
+      )
+    )
+  }
+
+}
+
+id_vector <- function(
+    ids,
+    call = rlang::caller_env()) {
+  if (!(is.vector(ids))){
+    cli::cli_abort(
+      c(
+        "{.arg ids} must be a {.obj vector}."
+      )
+    )
+  }
+    }
 
 # taken from validateHOT -------------------------------------------------------
 allowed_input <- function(

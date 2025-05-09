@@ -3,30 +3,45 @@
 #' @param design BIBD design
 #' @param data data frame including best and worst choices
 #' @param id column name of participants' identifier
-#' @param choices column names of best and worst choices
+#' @param best_ch column names of best choices
+#' @param worst_ch column names of worst choices
 #' @param type type of coding
 #'
 #' @returns a data frame object
 #' @export
 #'
-bibd_to_dm <- function(design, data, id, choices, type) {
+bibd_to_dm <- function(design, data, id, best_ch, worst_ch, type) {
+
+  # check whether all arguments are defined ------------------------------------
+  arg_not_defined(design)
+  arg_not_defined(data)
+  arg_not_defined(best_ch)
+  arg_not_defined(worst_ch)
+  arg_not_defined(type)
+
+  # tests ----------------------------------------------------------------------
+
+  # check length of input
+  ncol_input(design, {{ id }}, "id")
+
+  # check input for type
+  allowed_input(type, c("best-worst", "best-worst-seq", "worst-best-seq",
+                        "best-only", "worst-only", "maxdiff", "exploded"))
+
+  # check number of variables to best_ch and worst_ch
+  bw_length(data, {{ best_ch }}, {{ worst_ch }})
+
+  # preps ----------------------------------------------------------------------
+
   ids <- data[[var_names(data, {{ id }})]]
 
-  tasks <- length(var_names(data, {{ choices }})) / 2
+  tasks <- length(var_names(data, {{ best_ch }}))
 
   design <- design %>%
     as.data.frame() %>%
-    stats::setNames(paste0("c", seq_len(ncol(.)))) %>%
-    dplyr::mutate(set = dplyr::row_number()) %>%
-    dplyr::relocate(set, .before = tidyselect::everything()) %>%
-    tidyr::pivot_longer(
-      cols = -set,
-      names_to = "position",
-      values_to = "item"
-    ) %>%
-    dplyr::mutate(
-      position = readr::parse_number(position)
-    )
+    stats::setNames(paste0("item", seq_len(ncol(.)))) %>%
+    dplyr::mutate(cs = dplyr::row_number()) %>%
+    dplyr::relocate(cs, .before = tidyselect::everything())
 
   design <- purrr::map(seq_along(ids), function(x) {
     design %>%
@@ -39,34 +54,44 @@ bibd_to_dm <- function(design, data, id, choices, type) {
     as.data.frame()
 
   design_data <- data %>%
-    dplyr::select({{ id }}, {{ choices }}) %>%
+    dplyr::select({{ id }}, {{ best_ch }}, {{ worst_ch }}) %>%
+    stats::setNames(c("id",
+                      paste0(
+                        rep(c("b", "w"), each = tasks),
+                        "_",
+                        rep(seq_len(tasks), times = 2)))) %>%
     tidyr::pivot_longer(
-      cols = {{ choices }},
-      names_to = "set",
-      values_to = "position"
+      cols = - id,
+      names_to = c(".value", "cs"),
+      names_pattern = "(.)_(.*)"
     ) %>%
-    dplyr::mutate(
-      set = rep(
-        seq_len(tasks),
-        each = 2
-      ),
-      choice = rep(
-        c(1, -1),
-        times = tasks
-      ),
-      .by = {{ id }}
-    ) %>%
+    dplyr::mutate(cs = as.numeric(cs)) %>%
     dplyr::left_join(
       x = design,
       y = .,
-      by = dplyr::join_by(id, set, position)
+      by = dplyr::join_by(id, cs)
     ) %>%
-    dplyr::mutate(choice = ifelse(is.na(choice), 0, choice))
+    tidyr::pivot_longer(
+      cols = tidyselect::all_of(
+        tidyselect::starts_with("item")
+      ),
+      names_to = "alt",
+      values_to = "item"
+    ) %>%
+    dplyr::mutate(
+      alt = readr::parse_number(alt),
+      choice = dplyr::case_when(
+        b == alt ~ 1,
+        w == alt ~ -1,
+        .default = 0
+    )) %>%
+    as.data.frame() %>%
+    dplyr::select(id, cs, item, choice)
 
   csv_to_dm(
     design = design_data,
     id = id,
-    cs = set,
+    cs = cs,
     ch = choice,
     item = item,
     mxd_tasks = tasks,

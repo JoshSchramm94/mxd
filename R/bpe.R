@@ -8,6 +8,7 @@
 #' @export
 #'
 bpe <- function(betas, vars, id) {
+
   # check whether all arguments are defined ------------------------------------
   arg_not_defined(betas)
   arg_not_defined(vars)

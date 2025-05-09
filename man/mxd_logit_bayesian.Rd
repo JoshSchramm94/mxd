@@ -6,9 +6,9 @@
 \usage{
 mxd_logit_bayesian(
   data_stan,
-  chains,
-  iter,
-  warmup,
+  chains = 5L,
+  iter = 2000L,
+  warmup = 1000L,
   bw_size,
   labels = NULL,
   anchor = FALSE,

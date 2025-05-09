@@ -23,6 +23,5 @@ Autocorrelation plot
 \examples{
 \dontrun{
 acf_plot(mxd_input, pars = "b")
-
 }
 }

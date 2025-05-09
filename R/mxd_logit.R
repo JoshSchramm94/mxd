@@ -2,8 +2,7 @@
 #'
 #' @param data design matrix
 #' @param ch column name of the choice variable
-#' @param alt column name of the variable marking alternatives within choice
-#' sets
+#' @param cs column name of choice set
 #' @param items column names of the predictor variables
 #' @param bw_size numeric input to specify size of MaxDiff tasks in survey
 #' @param reference character vector to define name of the reference variable
@@ -17,7 +16,7 @@
 #'
 mxd_logit <- function(data,
                       ch,
-                      alt,
+                      cs,
                       items,
                       bw_size,
                       reference = NULL,
@@ -29,8 +28,8 @@ mxd_logit <- function(data,
   # check whether all arguments are defined ------------------------------------
   arg_not_defined(data)
   arg_not_defined(ch)
+  arg_not_defined(cs)
   arg_not_defined(items)
-  arg_not_defined(alt)
   arg_not_defined(bw_size)
 
   # tests ----------------------------------------------------------------------
@@ -38,14 +37,14 @@ mxd_logit <- function(data,
   allowed_class(bw_size, "numeric")
 
   # check for length of input
-  ncol_input(data, variable = {{ alt }}, argument = alt)
   ncol_input(data, variable = {{ ch }}, argument = ch)
+  ncol_input(data, variable = {{ cs }}, argument = cs)
 
   # check input anchor
   allowed_input(toupper(anchor), c("TRUE", "FALSE"))
 
   # only one choice per choice set
-  choice_per_cs(design, {{ id }}, {{ cs }}, {{ ch }})
+  choice_per_cs_mnl(data, {{ cs }}, {{ ch }})
 
   # (...) ----------------------------------------------------------------------
 
@@ -60,7 +59,7 @@ mxd_logit <- function(data,
 
   # preps ----------------------------------------------------------------------
 
-  data <- dplyr::mutate(data, obs = cumsum(c(1, diff({{ alt }}) < 0)))
+  data <- dplyr::mutate(data, obs = cumsum(c(1, diff({{ cs }}) != 0)))
 
   # estimation -----------------------------------------------------------------
 

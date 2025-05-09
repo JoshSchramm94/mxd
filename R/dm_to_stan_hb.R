@@ -32,9 +32,12 @@ dm_to_stan_hb <- function(
   prior_sigma <- prior_sigma %||% 2L
 
   if (isTRUE(is.null(demos))) {
-    demos <- matrix(1, length(unique(select(design, {{ id }}))))
+    demos <- matrix(1,
+                    length(unique(unlist(select(design, {{ id }})))))
   } else {
-    demos <- cbind(matrix(1, length(unique(select(design, {{ id }})))), demos)
+    demos <- cbind(matrix(1,
+                          length(unique(unlist(select(design, {{ id }}))))),
+                   demos)
   }
 
   # check whether all arguments are defined ------------------------------------
@@ -49,7 +52,7 @@ dm_to_stan_hb <- function(
   # tests ----------------------------------------------------------------------
 
   # check length of input
-  check_demo(demos, length(unique(select(design, {{ id }}))))
+  check_demo(demos, length(unique(unlist(select(design, {{ id }})))))
 
   # check whether priors are numeric input
   allowed_class(prior_b, c("numeric", "integer"))
@@ -84,7 +87,7 @@ dm_to_stan_hb <- function(
     ) %>%
     dplyr::mutate(
       dplyr::across({{ id }},
-                    function(x) cumsum(c(1, diff(.x) != 0)))
+                    function(x) cumsum(c(1, diff(x) != 0)))
     ) %>%
     dplyr::relocate(row, .before = tidyselect::everything())
 
@@ -114,7 +117,7 @@ dm_to_stan_hb <- function(
 
 
   data_stan <- list(
-    N = max(index_n$obs),
+    N = as.integer(max(index_n$obs)),
     I = nrow(id_fix),
     M = nrow(X),
     K = ncol(X),

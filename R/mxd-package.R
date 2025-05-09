@@ -5,8 +5,9 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @importFrom dplyr across add_row arrange count distinct filter first group_by join_by
-#' last left_join mutate pick reframe relocate rename row_number select ungroup
+#' @importFrom dplyr across add_row arrange case_when count distinct filter
+#' first group_by join_by last left_join mutate pick reframe relocate rename
+#' row_number select ungroup
 #' @importFrom magrittr "%>%"
 #' @importFrom tidyr pivot_longer
 #' @importFrom tidyselect all_of everything

@@ -40,7 +40,7 @@ sets}
 \item{demos}{matrix of demographic variables (i.e., Z variables)}
 }
 \value{
-a list
+a nested list
 }
 \description{
 Prepare design matrix for Hierarchical Bayes estimation in Stan

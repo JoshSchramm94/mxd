@@ -1,0 +1,248 @@
+---
+title: "mxd - an R package for MaxDiff in R"
+tags:
+- R
+- MaxDiff
+- Hierarchical Bayes
+authors:
+- name: Joshua Benjamin Schramm
+  orcid: 0000-0001-5602-4632
+  corresponding: true
+  affiliation: 1
+- name: Daniel Guhl
+  orcid: 0000-0003-2114-9405
+  corresponding: false
+  affiliation: 2
+- name: Marcel Lichters
+  orcid: 0000-0002-3710-2292
+  corresponding: false
+  affiliation: 1
+affiliations:
+- name: Otto-von-Guericke-University Magdeburg
+  index: 1
+- name: Humboldt-Universität zu Berlin
+  index: 2
+date: May 2025
+output: html_document
+bibliography: paper.bib
+---
+
+# Introduction
+
+xxx
+
+# Motivation
+
+xxx
+
+# Statement of need
+
+xxx
+
+# Workflow
+
+## Preparation
+
+In the first step, we load the `mxd` package and will have a look at the design how it is usually exported.
+
+```{r}
+library(mxd)
+design <- readRDS("../data/design.rds")
+head(design)
+```
+
+To convert this into the right format, we use the `csv_to_dm()` function. For the `anchor` argument (default set to `NULL`), the user can choose from both `direct` or `indirect`. For the `type` of coding, the user can decide between `best-worst`, `best-worst-seq` (first best, afterwards worst from a reduced choice set), `worst-best-seq`, `best-only` (only considering best choices), `worst-only`, `maxdiff` (maximum difference), and `exploded` (exploded logit paired comparison). For our example, we stick to the industry standard.
+
+```{r}
+dm <- csv_to_dm(
+  design = design,
+  id = ID,
+  cs = Set,
+  item = Item,
+  ch = Response,
+  anchor = "direct",
+  mxd_tasks = 16L,
+  type = "best-worst"
+)
+
+head(dm)
+```
+
+Often, users relying on *R* use the `crossdes` [@crossdes] or `support.BWS` [@support.BWS] packages. To convert their created functions and data frames in the correct format, we implemented the `bibd_to_dm()` function.
+
+## Estimation
+
+### Classical frequentist MNL
+
+`mxd` provides the `mxd_logit()`, which relies on the `logitr` [@logitr] to run MNL. `bw_size` defines the size of the MaxDiff tasks. The output provides both raw utilities as well as centered one and important scores.
+
+```{r}
+mxd_logit(
+  data = dm,
+  ch = choice,
+  cs = Set,
+  items = c(Item_1:Item_16),
+  bw_size = 4,
+  reference = "anchor",
+  anchor = TRUE
+)
+```
+
+### Bayesian MNL
+
+Alternatively, the user can also use a Bayesian approach to run the MNL model. `mxd` relies on `rstan` to run the estimation. The model code is the following:
+
+```{r}
+cat(rstan::get_stancode(stanmodels$mnl))
+```
+
+First, we need to prepare the input for running the model, for which we can use the `dm_to_stan_mnl()` function. The default prior for `b` is set to `5` (i.e., weakly informative prior), however, can be adapted as shown in the example below.
+
+```{r}
+data_stan <- dm_to_stan_mnl(
+  design = dm, 
+  id = ID, 
+  cs = Set, 
+  alt = alt, 
+  items = c(Item_1:Item_17), 
+  ch = choice, 
+  prior_b = 10)
+```
+
+Next, we can run the estimation. For demonstration purposes, we lower the number of iterations and just use 2 chains.
+
+```{r, warning = FALSE}
+output <- mxd_logit_bayesian(
+  data_stan = data_stan,
+  chains = 2L,
+  iter = 400L,
+  warmup = 200L,
+  bw_size = 4L,
+  labels = paste0("g", seq_len(16)),
+  anchor = TRUE,
+  seed = 1910L
+)
+```
+
+Running this function provides
+
+### Bayesian HB-MNL
+
+Alternatively, we could also run a hierarchical Bayesian MNL model. The Stan code has the benefits that it allows for alternating choice set sizes, e.g., it can be implemented with each type of coding we introduced above.
+
+```{r}
+cat(rstan::get_stancode(stanmodels$hbmnl))
+```
+
+To run the function, we first need to prepare the input accordingly. To do so, the users can apply the `dm_to_stan_hb()` function.
+
+```{r}
+stan_input <- dm_to_stan_hb(
+    design = dm, 
+    id = ID, 
+    cs = Set,
+    alt = alt,
+    items = c(Item_1:Item_17), 
+    ch = choice,
+    prior_b = NULL,
+    prior_omega = NULL,
+    prior_sigma = NULL,
+    demos = NULL
+    )
+```
+
+Next, we can estimate the model.
+
+```{r, warning = FALSE}
+output <- mxd_hb(
+  data_stan = stan_input[["stan_input"]],
+  chains = 5L,
+  iter = 800L,
+  warmup = 400L,
+  seed = 1910L
+)
+```
+
+### Count Analysis
+
+For those users who are prefer to run classical count analysis, we implemented the `mxd_count()` function. The user has to provide an unanchored design to run the code. To do, we will adapt the `design` data frame briefly.
+
+```{r}
+unanc_design <- dplyr::filter(design, Set <= 16)
+```
+
+Afterwards, we can run `mxd_count()`
+
+```{r}
+mxd_count(
+  data = unanc_design,
+  cs = Set,
+  item = Item,
+  ch = Response,
+  no_items = 16L,
+  labels = paste0("Label ", seq_len(16))
+)
+```
+
+## Convergence
+
+We could also check the convergence after estimating the model. Of course, users could also use `shinystan` [@shinystan]. `mxd` provides, for example, the `acf_plot()` function to check autocorrelation between draws. `acf_plot()` exports a `ggplot2` object that can be further adjusted by the user. Either `sigma` or `b` can be plotted.
+
+```{r}
+acf_plot(
+  stan_output = output,
+  pars = "b",
+  labels = paste0("G", seq_len(16))
+)
+```
+
+Also, we could look directly at `b`'s Rhat values and effective sample sizes.
+
+```{r}
+convergence_stats(
+  stan_output = output,
+  pars = "b",
+  labels = paste0("G", seq_len(16))
+)
+```
+
+## Parameter summary
+
+### `b`
+
+To summarize the `b` draws, `mxd` provides the `alphas()` function.
+
+```{r}
+alpha_scores <- alphas(
+  stan_output = output,
+  bw_size = 4,
+  labels = paste0("G", seq_len(16)),
+  anchor = TRUE
+)
+```
+
+### `sigma`
+
+To summarize the `sigma` draws, `mxd` provides the `sigma_summary()` function.
+
+```{r}
+sigma_summary(
+  stan_output = output,
+  labels = paste0("G", seq_len(16))
+)
+```
+
+### `beta`
+
+`mxd` provides multiple functions for the `beta` scores (i.e., individual utilities). In the initial step, the user should prepare the draws accordingly, which is possible using the `betas_post()` function.
+
+```{r}
+betas_prep <- betas_post(
+  stan_output = output,
+  bw_size = 4, 
+  cores = 4L,
+  ids = stan_input[["ids"]][["orig_id"]],
+  labels = paste0("g", seq_len(16)),
+  anchor = TRUE
+)
+```

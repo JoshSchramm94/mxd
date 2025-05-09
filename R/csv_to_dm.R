@@ -13,18 +13,10 @@
 #' @returns a data frame object
 #' @export
 #'
-csv_to_dm <- function(
-    design,
-    id,
-    cs,
-    item,
-    ch,
-    anchor = NULL,
-    mxd_tasks,
+csv_to_dm <- function(design, id, cs, item, ch, anchor = NULL, mxd_tasks,
     type) {
 
   # check whether all arguments are defined ------------------------------------
-
   arg_not_defined(type)
   arg_not_defined(mxd_tasks)
   arg_not_defined(design)
@@ -34,12 +26,14 @@ csv_to_dm <- function(
   arg_not_defined(ch)
 
   # tests ----------------------------------------------------------------------
-
   # need best and worst choice per set
-  bw_per_cs(design, {{ id }}, {{ cs }}, {{ ch }})
+  if (is.null(anchor)) {
+    bw_per_cs(design, {{ id }}, {{ cs }}, {{ ch }})
+  }
 
   # check input of anchor
   if (!is.null(anchor)) {
+    choice_per_cs(design, {{ id }}, {{ cs }}, {{ ch }})
     allowed_input(anchor, c("direct", "indirect"))
   }
 
@@ -400,3 +394,5 @@ csv_to_dm <- function(
   }
   return(df_md)
 }
+
+

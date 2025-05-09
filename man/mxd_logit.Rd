@@ -4,15 +4,14 @@
 \alias{mxd_logit}
 \title{Multinomial logit estimation for MaxDiff}
 \usage{
-mxd_logit(data, ch, alt, items, bw_size, reference = NULL, anchor = FALSE, ...)
+mxd_logit(data, ch, cs, items, bw_size, reference = NULL, anchor = FALSE, ...)
 }
 \arguments{
 \item{data}{design matrix}
 
 \item{ch}{column name of the choice variable}
 
-\item{alt}{column name of the variable marking alternatives within choice
-sets}
+\item{cs}{column name of choice set}
 
 \item{items}{column names of the predictor variables}
 

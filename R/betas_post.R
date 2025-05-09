@@ -16,6 +16,9 @@ betas_post <- function(stan_output, bw_size, cores = 1L,
   arg_not_defined(stan_output)
   arg_not_defined(bw_size)
 
+  # check input of ids
+  id_vector(ids)
+
   # define missing arguments ---------------------------------------------------
   labels <- labels %||% paste0(
     "item_",
@@ -104,7 +107,7 @@ betas_post <- function(stan_output, bw_size, cores = 1L,
     beta_zc <- furrr::future_map(beta_raw, function(df) {
       df %>%
         dplyr::select(-id) %>%
-        apply(., , 1, range_100) %>%
+        apply(., 1, range_100) %>%
         apply(., 2, mean_center) %>%
         t() %>%
         as.data.frame() %>%
@@ -118,7 +121,7 @@ betas_post <- function(stan_output, bw_size, cores = 1L,
     beta_prob <- furrr::future_map(beta_raw, function(df) {
       df %>%
         dplyr::select(-id) %>%
-        apply(., , 1, mean_center) %>%
+        apply(., 1, mean_center) %>%
         apply(., 2, function(x) prob_scores(x, bw_size)) %>%
         apply(., 2, function(x) x / sum(x) * 100) %>%
         t() %>%
