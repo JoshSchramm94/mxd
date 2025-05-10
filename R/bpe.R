@@ -10,9 +10,7 @@
 bpe <- function(betas, vars, id) {
 
   # check whether all arguments are defined ------------------------------------
-  arg_not_defined(betas)
-  arg_not_defined(vars)
-  arg_not_defined(id)
+  check_input(c("betas", "vars", "id"), names(match.call()))
 
   # tests ----------------------------------------------------------------------
 

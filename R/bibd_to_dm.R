@@ -13,16 +13,18 @@
 bibd_to_dm <- function(design, data, id, best_ch, worst_ch, type) {
 
   # check whether all arguments are defined ------------------------------------
-  arg_not_defined(design)
-  arg_not_defined(data)
-  arg_not_defined(best_ch)
-  arg_not_defined(worst_ch)
-  arg_not_defined(type)
+  check_input(
+    must = c("design", "data", "id", "best_ch", "worst_ch", "type"),
+    defined = names(match.call())
+  )
 
   # tests ----------------------------------------------------------------------
 
+  # store design as data.frame
+  design <- as.data.frame(design)
+
   # check length of input
-  ncol_input(design, {{ id }}, "id")
+  ncol_input(data, {{ id }}, "id")
 
   # check input for type
   allowed_input(type, c("best-worst", "best-worst-seq", "worst-best-seq",

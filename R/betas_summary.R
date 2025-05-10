@@ -8,8 +8,7 @@
 #'
 betas_summary <- function(betas, vars) {
   # check whether all arguments are defined ------------------------------------
-  arg_not_defined(betas)
-  arg_not_defined(vars)
+  check_input(c("betas", "vars"), names(match.call()))
 
   # tests ----------------------------------------------------------------------
 

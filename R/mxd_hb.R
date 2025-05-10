@@ -25,7 +25,7 @@ mxd_hb <- function(data_stan,
 
   # tests ----------------------------------------------------------------------
   # check whether input is correct
-  allowed_class(data_stan, "list")
+  list_inputs(data_stan)
   allowed_class(chains, c("numeric", "integer"))
   allowed_class(iter, c("numeric", "integer"))
   allowed_class(warmup, c("numeric", "integer"))

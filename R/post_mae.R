@@ -59,7 +59,7 @@ post_mae <- function(betas_post, hot_data, opts, group, hot_choice, raw = FALSE)
     dplyr::mutate(perc = n / sum(n) * 100) %>%
     dplyr::select({{ group }}, {{ hot_choice }}, perc)
 
-  res <- purrr::map(post, function(x) {
+  res <- purrr::map(betas_post, function(x) {
     x %>%
       dplyr::select({{ opts }}) %>%
       mnl(tidyselect::everything()) %>%

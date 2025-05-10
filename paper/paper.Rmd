@@ -68,7 +68,31 @@ dm <- csv_to_dm(
 head(dm)
 ```
 
-Often, users relying on *R* use the `crossdes` [@crossdes] or `support.BWS` [@support.BWS] packages. To convert their created functions and data frames in the correct format, we implemented the `bibd_to_dm()` function.
+Often, users relying on *R* use the `crossdes` [@crossdes] or `support.BWS` [@support.BWS] packages. To convert their created functions and data frames in the correct format, we implemented the `bibd_to_dm()` function. To show how to prepare the design matrix, when the design was created with the `crossdes` package, we provide the following example. To prepare the design and a fake data set, we use the exemplary code provided in `support.BWS` [@support.BWS].
+
+```{r}
+library(support.BWS)
+library(crossdes)
+set.seed(1)
+bibd_design <- find.BIB(trt = 7, b = 7, k = 4)
+items <- c("apple", "orange", "grapes", "banana", "peach", "melon", "pear")
+b <- c(1, 0.6, 0.3, -0.3, -0.5, -1, 0)
+dataset <- bws.response(design = bibd_design, item.names = items, b = b, n = 100, seed = 1)
+```
+
+Next, we can apply the `bibd_to_dm()` function provided by the `mxd` package
+
+```{r}
+bibd_dm <- bibd_to_dm(
+  design = bibd_design,
+  data = dataset,
+  id = id,
+  best_ch = c(B1, B2, B3, B4, B5, B6, B7),
+  worst_ch = c(W1, W2, W3, W4, W5, W6, W7),
+  type = "best-worst"
+)
+```
+
 
 ## Estimation
 
@@ -93,7 +117,7 @@ mxd_logit(
 Alternatively, the user can also use a Bayesian approach to run the MNL model. `mxd` relies on `rstan` to run the estimation. The model code is the following:
 
 ```{r}
-cat(rstan::get_stancode(stanmodels$mnl))
+cat(rstan::get_stancode(mxd:::stanmodels$mnl))
 ```
 
 First, we need to prepare the input for running the model, for which we can use the `dm_to_stan_mnl()` function. The default prior for `b` is set to `5` (i.e., weakly informative prior), however, can be adapted as shown in the example below.
@@ -131,7 +155,7 @@ Running this function provides
 Alternatively, we could also run a hierarchical Bayesian MNL model. The Stan code has the benefits that it allows for alternating choice set sizes, e.g., it can be implemented with each type of coding we introduced above.
 
 ```{r}
-cat(rstan::get_stancode(stanmodels$hbmnl))
+cat(rstan::get_stancode(mxd:::stanmodels$hbmnl))
 ```
 
 To run the function, we first need to prepare the input accordingly. To do so, the users can apply the `dm_to_stan_hb()` function.
@@ -157,9 +181,9 @@ Next, we can estimate the model.
 output <- mxd_hb(
   data_stan = stan_input[["stan_input"]],
   chains = 5L,
-  iter = 800L,
-  warmup = 400L,
-  seed = 1910L
+  iter = 400L,
+  warmup = 200L,
+  seed = 1910L,
 )
 ```
 
@@ -246,3 +270,124 @@ betas_prep <- betas_post(
   anchor = TRUE
 )
 ```
+
+Once prepared, we can get the summary statistic of the results. Since `betas_prep()` provides three different types of `beta` preparations, namely, the raw, the zero-anchored, and the choice probabilities scores, we can choose which we want to summarise. In the example below, we will use the raw utilties.
+
+```{r}
+betas_summary(
+  betas = betas_prep[["beta_raw"]],
+  vars = c(g1:ref)
+)
+```
+
+Alternatively, we could also show the choice probabilities.
+
+```{r}
+betas_summary(
+  betas = betas_prep[["beta_prob"]],
+  vars = c(g1:ref)
+)
+```
+
+Often researchers use the aggregated utilities across all posterior draws. To get these, users can use the `bpe()` (i.e., beta point estimates) function.
+
+```{r}
+bpe(
+  betas = betas_prep[["beta_raw"]],
+  vars = c(g1:ref),
+  id = id
+) |>
+  head()
+```
+
+To plot the beta scores, `mxd` provides the `beta_violin()` function, which, similar to the `acf_plot()` provides a `ggplot2` object as output and thus can we further adjusted by the user. For example below, we adjust the colors of the items.
+
+```{r}
+betas_violin(
+  betas = betas_prep[["beta_raw"]],
+  vars = c(g1:g16),
+  labels = paste0("g", seq_len(16))
+) + 
+  ggplot2::scale_fill_manual(values = rev(c("red","blue", "green", "yellow",
+                                   "orange", "magenta", "grey", "black",
+                                   "pink", "darkgreen", "lightgreen", "brown",
+                                   "lightblue", "darkblue", "lightgrey", "darkgrey")))
+```
+
+## Validation
+
+Similar to the `validateHOT` package by [@schramm2025a], `mxd` also provides tools for validation. However, the main difference is that `validateHOT` is intended to work with the beta point estimates, while `mxd` works with the posterior draws and in addition, some of its functions can also be applied to a validation sample.
+
+### Internal fit
+
+First, we load an additional data frame, in which we stored the actual choice in the holdout task.
+
+```{r}
+hot_data <- read.csv("../data/data.csv")
+```
+
+For internal fit, `mxd` provides both the `post_hit()` function to calculate the hit rate across the posterior draws ...
+
+```{r}
+post_hit(
+  betas_post = betas_prep[["beta_raw"]],
+  hot_data = hot_data,
+  id = id,
+  opts = c(g1, g8, g9, g13, g14, g15, g16, ref),
+  hot_choice = HOT1,
+  raw = FALSE
+)
+```
+
+and also the `post_mhp()` function to calcuate the mean hit probability across posterior draws
+
+```{r}
+post_mhp(
+  betas_post = betas_prep[["beta_raw"]],
+  hot_data = hot_data,
+  id = id,
+  opts = c(g1, g8, g9, g13, g14, g15, g16, ref),
+  hot_choice = HOT1,
+  raw = FALSE
+)
+```
+
+### External fit
+
+The functions `post_mae()`, `post_medae()`, and `post_rmse()` can be used for both internal as well as external fit. `post_mae()` calculates the mean absolute error,
+
+```{r}
+post_mae(
+  betas_post = betas_prep[["beta_raw"]],
+  hot_data = hot_data,
+  opts = c(g1, g8, g9, g13, g14, g15, g16, ref),
+  hot_choice = HOT1,
+  raw = FALSE
+)
+```
+
+`post_medae()` calculates the median absolute error,
+
+```{r}
+post_medae(
+  betas_post = betas_prep[["beta_raw"]],
+  hot_data = hot_data,
+  opts = c(g1, g8, g9, g13, g14, g15, g16, ref),
+  hot_choice = HOT1,
+  raw = FALSE
+)
+```
+
+and finally, `post_rmse()` calculates the root mean square error.
+
+```{r}
+post_rmse(
+  betas_post = betas_prep[["beta_raw"]],
+  hot_data = hot_data,
+  opts = c(g1, g8, g9, g13, g14, g15, g16, ref),
+  hot_choice = HOT1,
+  raw = FALSE
+)
+```
+
+## Cross-validation

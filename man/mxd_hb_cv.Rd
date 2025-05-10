@@ -6,7 +6,6 @@
 \usage{
 mxd_hb_cv(
   data_stan,
-  folds,
   chains = 5L,
   iter = 4000L,
   warmup = 1000L,
@@ -16,8 +15,6 @@ mxd_hb_cv(
 }
 \arguments{
 \item{data_stan}{list with parameters for stan}
-
-\item{folds}{numeric input to define the number of folds}
 
 \item{chains}{numeric input to define the number of chains to be run}
 

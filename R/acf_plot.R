@@ -15,8 +15,7 @@
 #'
 acf_plot <- function(stan_output, pars = c("b", "sigma"), labels = NULL) {
   # check whether all arguments are defined ------------------------------------
-  arg_not_defined(stan_output)
-  arg_not_defined(pars)
+  check_input(c("stan_output", "pars"), names(match.call()))
 
   # define missing arguments ---------------------------------------------------
   labels <- labels %||% paste0(

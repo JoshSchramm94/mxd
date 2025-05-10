@@ -302,19 +302,37 @@ allowed_class <- function(
   }
 }
 
-arg_not_defined <- function(
-    x,
-    arg = rlang::caller_arg(x),
+list_inputs <- function(
+    input,
+    arg = rlang::caller_arg(input),
     call = rlang::caller_env()) {
-  if (missing(x)) {
+  correct_input <- is.list(input) && !is.data.frame(input)
+
+  if (!correct_input) {
+
     cli::cli_abort(
       c(
-        "{.arg {arg}} is missing."
+        "{.arg {arg}} must be class {.cls list}."
       ),
       call = call
     )
   }
 }
+
+
+# arg_not_defined <- function(
+#     x,
+#     arg = rlang::caller_arg(x),
+#     call = rlang::caller_env()) {
+#   if (missing(x)) {
+#     cli::cli_abort(
+#       c(
+#         "{.arg {arg}} is missing."
+#       ),
+#       call = call
+#     )
+#   }
+# }
 
 id_match <- function(
     id1,
@@ -329,7 +347,8 @@ id_match <- function(
     )
   }
 
-  if (class(id1) != class(id2)) {
+  if (class(id1) != class(id2) &&
+      !((class(id1) %in% c("numeric", "integer")) && (class(id2) %in% c("numeric", "integer")))) {
     cli::cli_abort(
       c(
         "class of ids do not match",
@@ -495,7 +514,27 @@ id_vector <- function(
       )
     )
   }
-    }
+}
+
+check_input <- function(
+    must,
+    defined,
+    call = rlang::caller_env()) {
+
+  def_input <- match.call()
+
+  input_defined <- must %in% defined
+
+  if (!all(input_defined)) {
+    wrong_arg <- must[which(!input_defined)[1]]
+
+    cli::cli_abort(
+      c(
+        "argument {.arg {wrong_arg}} is missing."
+      )
+    )
+  }
+}
 
 # taken from validateHOT -------------------------------------------------------
 allowed_input <- function(
@@ -533,3 +572,4 @@ ncol_input <- function(
     )
   }
 }
+

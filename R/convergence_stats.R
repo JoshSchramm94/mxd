@@ -11,7 +11,7 @@
 convergence_stats <- function(stan_output, pars = c("b", "sigma"), labels = NULL) {
   # check whether all arguments are defined ------------------------------------
 
-  arg_not_defined(stan_output)
+  check_input(c("stan_output", "pars"), names(match.call()))
 
   # define missing arguments ---------------------------------------------------
   labels <- labels %||% paste0(

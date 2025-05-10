@@ -13,8 +13,7 @@
 betas_post <- function(stan_output, bw_size, cores = 1L,
                        ids = NULL, labels = NULL, anchor = FALSE) {
   # check whether all arguments are defined ------------------------------------
-  arg_not_defined(stan_output)
-  arg_not_defined(bw_size)
+  check_input(c("stan_output", "bw_size"), names(match.call()))
 
   # check input of ids
   id_vector(ids)

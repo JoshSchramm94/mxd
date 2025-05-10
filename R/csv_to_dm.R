@@ -17,20 +17,12 @@ csv_to_dm <- function(design, id, cs, item, ch, anchor = NULL, mxd_tasks,
     type) {
 
   # check whether all arguments are defined ------------------------------------
-  arg_not_defined(type)
-  arg_not_defined(mxd_tasks)
-  arg_not_defined(design)
-  arg_not_defined(id)
-  arg_not_defined(cs)
-  arg_not_defined(item)
-  arg_not_defined(ch)
+  check_input(
+    must = c("type", "mxd_tasks", "design", "id", "cs", "ch", "item"),
+    defined = names(match.call())
+  )
 
   # tests ----------------------------------------------------------------------
-  # need best and worst choice per set
-  if (is.null(anchor)) {
-    bw_per_cs(design, {{ id }}, {{ cs }}, {{ ch }})
-  }
-
   # check input of anchor
   if (!is.null(anchor)) {
     choice_per_cs(design, {{ id }}, {{ cs }}, {{ ch }})
@@ -52,6 +44,12 @@ csv_to_dm <- function(design, id, cs, item, ch, anchor = NULL, mxd_tasks,
 
   # store as integer
   mxd_tasks <- as.integer(mxd_tasks)
+
+  # need best and worst choice per set
+  if (is.null(anchor)) {
+    bw_per_cs(dplyr::filter(design, {{ cs }} <= mxd_tasks),
+              {{ id }}, {{ cs }}, {{ ch }})
+  }
 
   # preps ----------------------------------------------------------------------
   # select relevant variables from the design

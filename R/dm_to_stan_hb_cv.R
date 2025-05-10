@@ -20,14 +20,11 @@
 dm_to_stan_hb_cv <- function(
     design, id, cs, alt, items, ch, folds, prior_b = NULL, prior_omega = NULL,
     prior_sigma = NULL, demos = NULL, seed = NULL) {
-  # tests ----------------------------------------------------------------------
 
 
-  # preps ----------------------------------------------------------------------
-  # set seed if not specified
-  seed <- seed %||% 1910L
 
-  # specify prior_b if not defined
+  # define missing arguments ---------------------------------------------------
+  # specify optional values
   prior_b <- prior_b %||% 5L
 
   # specify prior_omega if not defined
@@ -36,6 +33,40 @@ dm_to_stan_hb_cv <- function(
   # specify prior_omega if not defined
   prior_sigma <- prior_sigma %||% 2L
 
+  # set seed if not specified
+  seed <- seed %||% 1910L
+
+  # check whether all arguments are defined ------------------------------------
+
+  arg_not_defined(design)
+  arg_not_defined(id)
+  arg_not_defined(cs)
+  arg_not_defined(alt)
+  arg_not_defined(items)
+  arg_not_defined(ch)
+  arg_not_defined(folds)
+
+  # tests ----------------------------------------------------------------------
+
+
+  # check length of input
+  if (!is.null(demos)) {
+    check_demo(demos, length(unique(unlist(select(design, {{ id }})))))
+    allowed_class(demos, "matrix")
+  }
+
+  # check whether priors are numeric input
+  allowed_class(prior_b, c("numeric", "integer"))
+  allowed_class(prior_omega, c("numeric", "integer"))
+  allowed_class(prior_sigma, c("numeric", "integer"))
+  allowed_class(prior_sigma, c("numeric", "integer"))
+  allowed_class(folds, c("numeric", "integer"))
+
+  # only one choice per choice set
+  choice_per_cs(design, {{ id }}, {{ cs }}, {{ ch }})
+
+  # preps ----------------------------------------------------------------------
+
   # assign group
   ids <- unique(unlist(dplyr::select(design, {{ id }})))
   set.seed(seed)
@@ -43,6 +74,22 @@ dm_to_stan_hb_cv <- function(
     id_var = sample(ids),
     group_id = rep(c(seq_len(folds)), length.out = length(ids))
   )
+
+  # fix demos
+  if (!is.null(demos)) {
+    demos_df <- as.data.frame(
+      cbind(
+        unique(unlist(dplyr::select(design, {{ id }}))),
+        demos)
+    ) %>%
+      stats::setNames(c(var_names(design, variables = {{ id }}),
+                        paste0("var_", seq_len(ncol(demos))))) %>%
+      dplyr::left_join(
+        x = .,
+        y = sample_df,
+        by = dplyr::join_by({{ id }} == id_var)
+      )
+  }
 
   # store group member
   design <- design %>%
@@ -61,6 +108,20 @@ dm_to_stan_hb_cv <- function(
       dplyr::distinct({{ id }}, .keep_all = TRUE) %>%
       dplyr::select({{ id }}, group_id)
 
+    if (!is.null(demos)) {
+
+      demos <- demos_df %>%
+        dplyr::filter(group_id != x) %>%
+        dplyr::select(-c({{ id }}, group_id)) %>%
+        as.matrix() %>%
+        unname()
+
+    } else {
+
+      demos <- NULL
+
+    }
+
     output <- ws %>%
       dm_to_stan_hb(
         design = .,
@@ -72,8 +133,10 @@ dm_to_stan_hb_cv <- function(
         prior_b = prior_b,
         prior_omega = prior_omega,
         prior_sigma = prior_sigma,
-        demos = NULL
+        demos = demos
       )
+
+
 
     output <- append(output, list("val_sample" = val_sample))
   })

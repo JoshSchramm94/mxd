@@ -1,7 +1,6 @@
 #' K-fold hierarchical Bayesian estimation for MaxDiff
 #'
 #' @param data_stan list with parameters for stan
-#' @param folds numeric input to define the number of folds
 #' @param chains numeric input to define the number of chains to be run
 #' @param iter numeric input to define the number of iterations to
 #' be run (warm-up + sampling)
@@ -15,14 +14,22 @@
 #' @export
 #'
 mxd_hb_cv <- function(data_stan,
-                      folds,
                       chains = 5L,
                       iter = 4000L,
                       warmup = 1000L,
                       seed = NULL,
                       ...) {
-  # tests ----------------------------------------------------------------------
 
+  # define missing values
+  seed <- seed %||% 1910L
+
+  # tests ----------------------------------------------------------------------
+  # check whether input is correct
+  lapply(seq_len(length(data_stan)), function(x) list_inputs(data_stan[[x]][[2]]))
+  allowed_class(chains, c("numeric", "integer"))
+  allowed_class(iter, c("numeric", "integer"))
+  allowed_class(warmup, c("numeric", "integer"))
+  allowed_class(seed, c("numeric", "integer"))
 
   # (...) ----------------------------------------------------------------------
 
@@ -38,11 +45,13 @@ mxd_hb_cv <- function(data_stan,
 
   args <- args_list(defi_args, defa_args)
 
+  allowed_input(defa_args[["algorithm"]], c("NUTS", "HMC", "Fixed_param"))
+  allowed_class(defa_args[["cores"]], c("numeric", "integer"))
+  allowed_class(defa_args[["thin"]], c("numeric", "integer"))
+
   # preps ----------------------------------------------------------------------
 
-  seed <- seed %||% 1910L
-
-  hbmnl_mcmc <- purrr::map(seq_len(folds), function(x) {
+  hbmnl_mcmc <- purrr::map(seq_len(length(data_stan)), function(x) {
     cat("Fold", x, "estimating ...", "\r")
 
     rstan::sampling(

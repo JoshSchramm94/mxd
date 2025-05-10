@@ -9,8 +9,7 @@
 #'
 betas_violin <- function(betas, vars, labels = NULL) {
   # check whether all arguments are defined ------------------------------------
-  arg_not_defined(betas)
-  arg_not_defined(vars)
+  check_input(c("betas", "vars"), names(match.call()))
 
   # define missing arguments ---------------------------------------------------
   labels <- labels %||% var_names(betas[[1]], {{ vars }})
@@ -24,7 +23,7 @@ betas_violin <- function(betas, vars, labels = NULL) {
   post_check(betas)
 
   # check length of labels
-  labels_length(labels, var_names(betas[[1]], {{ vars }}))
+  labels_length(labels, length(var_names(betas[[1]], {{ vars }})))
 
   # check whether labels are class character
   allowed_class(labels, "character")
