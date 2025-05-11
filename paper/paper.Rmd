@@ -29,7 +29,7 @@ bibliography: paper.bib
 
 # Introduction
 
-xxx
+`mxd` uses the `tidyverse` programming logic [@tidyverse]; for more information please see [here](https://dplyr.tidyverse.org/articles/programming.html).
 
 # Motivation
 
@@ -43,13 +43,20 @@ xxx
 
 ## Preparation
 
-In the first step, we load the `mxd` package. In addition, we take a glimpse at the data structure of the design, how it is usally exported using `.csv` export. We have a total of five columns: 
+In the first step, we load the `mxd` package. In addition, we take a glimpse at the data structure of the design. We included an exemplary data frame to show how the design is usually exported. We have a total of five columns:
+
 <ul>
+
 <li>`ID`: participant's unique identifier</li>
+
 <li>`Set`: choice set variable</li>
+
 <li>`Position`: variable displaying the alternatives</li>
+
 <li>`Item`: item that was shown</li>
+
 <li>`Response`: participant's choice, `1` indicates best choice and `-1` indicates worst choice</li>
+
 </ul>
 
 ```{r}
@@ -58,7 +65,27 @@ design <- readRDS("../data/design.rds")
 head(design)
 ```
 
-To convert this into the right format, we use the `csv_to_dm()` function. For the `anchor` argument (default set to `NULL`), the user can choose from both `direct` or `indirect`. For the `type` of coding, the user can decide between `best-worst`, `best-worst-seq` (first best, afterwards worst from a reduced choice set), `worst-best-seq`, `best-only` (only considering best choices), `worst-only`, `maxdiff` (maximum difference), and `exploded` (exploded logit paired comparison). For our example, we stick to the industry standard (i.e., best-worst). Besides defining the arguments `id`, `cs`, `item`, and `ch`, the user also has to define the number of MaxDiff tasks per participant (`mxd_tasks`).
+To convert this into the right format, we use the `csv_to_dm()` function, which works both with anchored and unanchored MxDiff studies. For the `anchor` argument (default set to `NULL`), the user can choose from both `direct` or `indirect`. `csv_to_dm()` also supports different coding mechanisms, namely:
+
+<ul>
+
+<li>`best-worst`: best and worst choice set are identical and made independent of each other</li>
+
+<li>`best-worst-seq`: first best is chosen, afterwards worst from a reduced choice set (i.e., best choice set is excluded from the choice set of the worst alternative)</li>
+
+<li>`worst-best-seq`: see definition of `best-worst-seq`; however, order is switched</li>
+
+<li>`best-only`: only the best choices are considered</li>
+
+<li>`worst-only`: only the worst choices are considered</li>
+
+<li>`maxdiff`: pair of items with the maximum difference is chosen</li>
+
+<li>`exploded`: exploded pairs</li>
+
+</ul>
+
+Next, the user has to define the arguments `id` (participants' identifier), `cs` (variable indicating the choice set) `item` (variable that defines which item was shown) and `ch` (the variable that defines whether a variable was chosen as best or as worst. In addition, the user also has to define the number of MaxDiff tasks per participant (`mxd_tasks`).
 
 ```{r}
 dm <- csv_to_dm(
@@ -75,9 +102,9 @@ dm <- csv_to_dm(
 head(dm)
 ```
 
-Often, users, who rely on *R* to create the MaxDiff design, use the `crossdes` [@crossdes] or `support.BWS` [@support.BWS] packages. To convert the design and data frame in the correct format, we implemented the `bibd_to_dm()` function. To show how to prepare the design matrix, when the design was created with the `crossdes` package, we provide the following example. To prepare the design and a fake data set, we use the exemplary code provided in `support.BWS` [@support.BWS].
+Often, users, who rely on *R* to create the MaxDiff design, use the `crossdes` [@crossdes] or `support.BWS` [@support.BWS] packages. For these users, we implemented the `bibd_to_dm()` function, which allows users to convert their data set and design into the format required by `mxd`. Below, we illustrate the workflow accordingly. In the intial step, we create both design and data set by relying on the code that is provided in `support.BWS` [@support.BWS].
 
-```{r}
+```{r, warning = FALSE, message = FALSE}
 library(support.BWS)
 library(crossdes)
 set.seed(1)
@@ -87,7 +114,7 @@ b <- c(1, 0.6, 0.3, -0.3, -0.5, -1, 0)
 dataset <- bws.response(design = bibd_design, item.names = items, b = b, n = 100, seed = 1)
 ```
 
-Next, we can apply the `bibd_to_dm()` function provided by the `mxd` package.
+Next, we can apply the `bibd_to_dm()` function. The user has to provide both the `design` and data set (`data`; i.e., which includes the participants' best and worst choices). In addition, the participants' identifier (`id`), the columns that include the best choices (`best_ch`) and worst choices (`worst_ch`), and the type of coding (`type`; see above) are required.
 
 ```{r}
 bibd_dm <- bibd_to_dm(
@@ -100,14 +127,11 @@ bibd_dm <- bibd_to_dm(
 )
 ```
 
-
 ## Estimation
 
 ### Classical frequentist MNL
 
-`mxd` provides the `mxd_logit()`, which relies on the `logitr` [@logitr] to run MNL. `bw_size` defines the size of the MaxDiff tasks. The output provides both raw utilities as well as centered one and important scores. 
-
-For the `items` argument, the user has to define all items (i.e., `mxd_logit()` will exclude the `reference` item for estimation automatically). In the `bw_size` argument, the user has to define the number of MaxDiff tasks seen per choice task, which is needed to create the other scores (i.e., important scores) accordingly. Finally, the user just needs to define the `data` argument (i.e., the design matrix), the choice variable (`ch`), and the choice set variable (`cs`).
+To run the multinomial logit model, `mxd` provides the `mxd_logit()`. The function relies on the `logitr` [@logitr] package for estimation. From a user perspective, the `data`, the column that includes the actual choice (`ch`), and the choice set column (`cs`). For the `items` (i.e., predictors) the user has to provide **all** variables. In addition, the user can decide which item should be used as reference. If `reference` is left empty, the last predictor is automatically chosen as reference level. Finally, the user has to indicate whether it is an anchored or an unanchored MaxDiif (i.e., set `anchor` to `TRUE` or `FALSE`, respectively). Finally, the argument`bw_size` defines the size of the MaxDiff tasks. The output provides both raw utilities as well as centered one and important scores.
 
 ```{r}
 mxd_logit(
@@ -123,13 +147,13 @@ mxd_logit(
 
 ### Bayesian MNL
 
-Alternatively, the user can also use a Bayesian approach to run the MNL model. `mxd` relies on `rstan` to run the estimation. The stan code for the MNL model is the following:
+Alternatively, the user can also run the MNL model in a Bayesian manner. `mxd` uses the `rstan` package [@rstan] to run the Bayesian models. The Stan code for the MNL model is the following:
 
 ```{r}
 cat(rstan::get_stancode(mxd:::stanmodels$mnl))
 ```
 
-To run the Bayesian MNL model, we first need to prepare the input for the model. `mxd` provides the `dm_to_stan_mnl()` function to do so. To run the `dm_to_stan_mnl()` function, the user has to provide the design matrix (`dm`), the choice set variable (`cs`), the choice variable (`ch`), and the items (`items`; again, all items should be provided). The default prior for `b` is set to `5` (i.e., weakly informative prior), however, can be adapted as shown in the example below. 
+To run the Bayesian MNL model, we first need to prepare the input for the model. `mxd` provides the `dm_to_stan_mnl()` function to do so. To run the `dm_to_stan_mnl()` function, the user has to provide the design matrix (`dm`), the participants' identifier (`id`), the choice set variable (`cs`), the choice variable (`ch`), and the items (`items`; again, all items should be provided). The default prior for `b` is set to `5` (i.e., weakly informative prior), however, can be adapted as shown in the example below.
 
 ```{r}
 data_stan <- dm_to_stan_mnl(
@@ -141,7 +165,7 @@ data_stan <- dm_to_stan_mnl(
   prior_b = 10)
 ```
 
-Next, we can run the estimation. For demonstration purposes, we lower the number of iterations and just use 2 chains.
+Next, we can run the estimation. For demonstration purposes, we lower the number of iterations (`iter` and `warm_up`, respectively). in addition, we just use 2 `chains`. Similar to the frequentist version (`mxd_logit()`), the user has to define the size of the MaxDiff tasks (`bw_size`). The `labels` argument is optional. By default, `mxd_logit_bayesian()` uses the No-U-Turn-Sampler (NUTS); however, the algorithm can be adjusted (see more information in the `...` argument). By default, `mxd_logit_bayesian()` uses the last item specified in `dm_to_stan_mnl()` in the `items` argument as reference level.
 
 ```{r, warning = FALSE}
 output <- mxd_logit_bayesian(
@@ -156,11 +180,9 @@ output <- mxd_logit_bayesian(
 )
 ```
 
-Running this function provides
-
 ### Bayesian HB-MNL
 
-Alternatively, we could also run a hierarchical Bayesian MNL model. The Stan code has the benefits that it allows for alternating choice set sizes, e.g., it can be implemented with each type of coding we introduced above.
+Alternatively, we could also run a hierarchical Bayesian MNL model. The Stan code has the benefits that it allows for alternating choice set sizes. This means that it can be implemented with each type of coding we introduced above.
 
 ```{r}
 cat(rstan::get_stancode(mxd:::stanmodels$hbmnl))
@@ -441,3 +463,4 @@ post_mae_cv(
 )
 ```
 
+# References
