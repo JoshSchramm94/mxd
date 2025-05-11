@@ -4,7 +4,7 @@
 \alias{post_rmse}
 \title{Posterior in-sample or out-of-sample root mean square error}
 \usage{
-post_rmse(betas_post, hot_data, opts, group, hot_choice, raw = FALSE)
+post_rmse(betas_post, hot_data, opts, group = NULL, hot_choice, raw = FALSE)
 }
 \arguments{
 \item{betas_post}{posterior draws}

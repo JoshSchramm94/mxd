@@ -38,13 +38,10 @@ dm_to_stan_hb_cv <- function(
 
   # check whether all arguments are defined ------------------------------------
 
-  arg_not_defined(design)
-  arg_not_defined(id)
-  arg_not_defined(cs)
-  arg_not_defined(alt)
-  arg_not_defined(items)
-  arg_not_defined(ch)
-  arg_not_defined(folds)
+  check_input(
+    must = c("design", "id", "cs", "alt", "items", "folds", "ch"),
+    defined = names(match.call())
+  )
 
   # tests ----------------------------------------------------------------------
 

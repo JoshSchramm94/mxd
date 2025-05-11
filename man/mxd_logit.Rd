@@ -17,8 +17,8 @@ mxd_logit(data, ch, cs, items, bw_size, reference = NULL, anchor = FALSE, ...)
 
 \item{bw_size}{numeric input to specify size of MaxDiff tasks in survey}
 
-\item{reference}{character vector to define name of the reference variable
-(i.e., holdout for estimation)}
+\item{reference}{column name of variable that should be used as reference
+level}
 
 \item{anchor}{logical vector to indicate whether it is an anchored MaxDiff}
 

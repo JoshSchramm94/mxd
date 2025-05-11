@@ -30,6 +30,11 @@ mxd_logit_bayesian <- function(data_stan,
   # define missing values
   seed <- seed %||% 1910L
 
+  check_input(
+    must = c("data_stan"),
+    defined = names(match.call())
+  )
+
   # define labels
   labels <- labels %||% paste0("item_", seq_len(data_stan[["K"]]))
 

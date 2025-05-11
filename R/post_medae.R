@@ -11,18 +11,20 @@
 #' @returns a tibble
 #' @export
 #'
-post_medae <- function(betas_post, hot_data, opts, group, hot_choice, raw = FALSE) {
+post_medae <- function(betas_post, hot_data, opts, group = NULL,
+                       hot_choice, raw = FALSE) {
   # check whether all arguments are defined ------------------------------------
-  arg_not_defined(betas_post)
-  arg_not_defined(hot_data)
-  arg_not_defined(id)
-  arg_not_defined(opts)
-  arg_not_defined(hot_choice)
+
+  check_input(
+    must = c("betas_post", "hot_data", "opts", "hot_choice"),
+    defined = names(match.call())
+  )
+
 
   # tests ----------------------------------------------------------------------
 
   # check whether input is correct
-  allowed_class(betas_post, "list")
+  list_inputs(betas_post)
 
   # check class of hot_data
   allowed_class(hot_data, c("data.frame", "tbl", "tbl_df"))
@@ -57,7 +59,7 @@ post_medae <- function(betas_post, hot_data, opts, group, hot_choice, raw = FALS
     )) %>%
     dplyr::group_by(dplyr::pick({{ group }})) %>%
     dplyr::count({{ hot_choice }}, .drop = FALSE) %>%
-    dplyr::mutate(perc = n / sum(n) * 100) %>%
+    dplyr::mutate(perc = percentage(n) * 100) %>%
     dplyr::select({{ group }}, {{ hot_choice }}, perc)
 
   res <- purrr::map(betas_post, function(x) {

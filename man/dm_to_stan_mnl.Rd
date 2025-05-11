@@ -4,7 +4,7 @@
 \alias{dm_to_stan_mnl}
 \title{Prepare design matrix for Multinomial Logit Estimation in Stan}
 \usage{
-dm_to_stan_mnl(design, id, cs, alt, items, ch, prior_b = NULL)
+dm_to_stan_mnl(design, id, cs, items, ch, prior_b = NULL)
 }
 \arguments{
 \item{design}{design matrix}
@@ -12,9 +12,6 @@ dm_to_stan_mnl(design, id, cs, alt, items, ch, prior_b = NULL)
 \item{id}{column name of the id variable}
 
 \item{cs}{column name of the choice set variable}
-
-\item{alt}{column name of the variable marking alternatives within choice
-sets}
 
 \item{items}{column names of the predictor variables}
 

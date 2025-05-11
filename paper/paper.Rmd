@@ -43,7 +43,14 @@ xxx
 
 ## Preparation
 
-In the first step, we load the `mxd` package and will have a look at the design how it is usually exported.
+In the first step, we load the `mxd` package. In addition, we take a glimpse at the data structure of the design, how it is usally exported using `.csv` export. We have a total of five columns: 
+<ul>
+<li>`ID`: participant's unique identifier</li>
+<li>`Set`: choice set variable</li>
+<li>`Position`: variable displaying the alternatives</li>
+<li>`Item`: item that was shown</li>
+<li>`Response`: participant's choice, `1` indicates best choice and `-1` indicates worst choice</li>
+</ul>
 
 ```{r}
 library(mxd)
@@ -51,7 +58,7 @@ design <- readRDS("../data/design.rds")
 head(design)
 ```
 
-To convert this into the right format, we use the `csv_to_dm()` function. For the `anchor` argument (default set to `NULL`), the user can choose from both `direct` or `indirect`. For the `type` of coding, the user can decide between `best-worst`, `best-worst-seq` (first best, afterwards worst from a reduced choice set), `worst-best-seq`, `best-only` (only considering best choices), `worst-only`, `maxdiff` (maximum difference), and `exploded` (exploded logit paired comparison). For our example, we stick to the industry standard.
+To convert this into the right format, we use the `csv_to_dm()` function. For the `anchor` argument (default set to `NULL`), the user can choose from both `direct` or `indirect`. For the `type` of coding, the user can decide between `best-worst`, `best-worst-seq` (first best, afterwards worst from a reduced choice set), `worst-best-seq`, `best-only` (only considering best choices), `worst-only`, `maxdiff` (maximum difference), and `exploded` (exploded logit paired comparison). For our example, we stick to the industry standard (i.e., best-worst). Besides defining the arguments `id`, `cs`, `item`, and `ch`, the user also has to define the number of MaxDiff tasks per participant (`mxd_tasks`).
 
 ```{r}
 dm <- csv_to_dm(
@@ -68,7 +75,7 @@ dm <- csv_to_dm(
 head(dm)
 ```
 
-Often, users relying on *R* use the `crossdes` [@crossdes] or `support.BWS` [@support.BWS] packages. To convert their created functions and data frames in the correct format, we implemented the `bibd_to_dm()` function. To show how to prepare the design matrix, when the design was created with the `crossdes` package, we provide the following example. To prepare the design and a fake data set, we use the exemplary code provided in `support.BWS` [@support.BWS].
+Often, users, who rely on *R* to create the MaxDiff design, use the `crossdes` [@crossdes] or `support.BWS` [@support.BWS] packages. To convert the design and data frame in the correct format, we implemented the `bibd_to_dm()` function. To show how to prepare the design matrix, when the design was created with the `crossdes` package, we provide the following example. To prepare the design and a fake data set, we use the exemplary code provided in `support.BWS` [@support.BWS].
 
 ```{r}
 library(support.BWS)
@@ -80,7 +87,7 @@ b <- c(1, 0.6, 0.3, -0.3, -0.5, -1, 0)
 dataset <- bws.response(design = bibd_design, item.names = items, b = b, n = 100, seed = 1)
 ```
 
-Next, we can apply the `bibd_to_dm()` function provided by the `mxd` package
+Next, we can apply the `bibd_to_dm()` function provided by the `mxd` package.
 
 ```{r}
 bibd_dm <- bibd_to_dm(
@@ -98,36 +105,37 @@ bibd_dm <- bibd_to_dm(
 
 ### Classical frequentist MNL
 
-`mxd` provides the `mxd_logit()`, which relies on the `logitr` [@logitr] to run MNL. `bw_size` defines the size of the MaxDiff tasks. The output provides both raw utilities as well as centered one and important scores.
+`mxd` provides the `mxd_logit()`, which relies on the `logitr` [@logitr] to run MNL. `bw_size` defines the size of the MaxDiff tasks. The output provides both raw utilities as well as centered one and important scores. 
+
+For the `items` argument, the user has to define all items (i.e., `mxd_logit()` will exclude the `reference` item for estimation automatically). In the `bw_size` argument, the user has to define the number of MaxDiff tasks seen per choice task, which is needed to create the other scores (i.e., important scores) accordingly. Finally, the user just needs to define the `data` argument (i.e., the design matrix), the choice variable (`ch`), and the choice set variable (`cs`).
 
 ```{r}
 mxd_logit(
   data = dm,
   ch = choice,
   cs = Set,
-  items = c(Item_1:Item_16),
+  items = c(Item_1:Item_17),
   bw_size = 4,
-  reference = "anchor",
+  reference = Item_17,
   anchor = TRUE
 )
 ```
 
 ### Bayesian MNL
 
-Alternatively, the user can also use a Bayesian approach to run the MNL model. `mxd` relies on `rstan` to run the estimation. The model code is the following:
+Alternatively, the user can also use a Bayesian approach to run the MNL model. `mxd` relies on `rstan` to run the estimation. The stan code for the MNL model is the following:
 
 ```{r}
 cat(rstan::get_stancode(mxd:::stanmodels$mnl))
 ```
 
-First, we need to prepare the input for running the model, for which we can use the `dm_to_stan_mnl()` function. The default prior for `b` is set to `5` (i.e., weakly informative prior), however, can be adapted as shown in the example below.
+To run the Bayesian MNL model, we first need to prepare the input for the model. `mxd` provides the `dm_to_stan_mnl()` function to do so. To run the `dm_to_stan_mnl()` function, the user has to provide the design matrix (`dm`), the choice set variable (`cs`), the choice variable (`ch`), and the items (`items`; again, all items should be provided). The default prior for `b` is set to `5` (i.e., weakly informative prior), however, can be adapted as shown in the example below. 
 
 ```{r}
 data_stan <- dm_to_stan_mnl(
   design = dm, 
   id = ID, 
   cs = Set, 
-  alt = alt, 
   items = c(Item_1:Item_17), 
   ch = choice, 
   prior_b = 10)
@@ -391,3 +399,45 @@ post_rmse(
 ```
 
 ## Cross-validation
+
+xxx
+
+```{r}
+cv_df <- dm_to_stan_hb_cv(
+  design = dm,
+  id = ID,
+  cs = Set,
+  alt = alt,
+  items = c(Item_1:Item_17),
+  ch = choice,
+  folds = 5L
+)
+```
+
+xxx
+
+```{r, warning=FALSE}
+mxd_cv <- mxd_hb_cv(
+  data_stan = cv_df, 
+  iter = 800, 
+  warmup = 400, 
+  seed = 1910
+)
+```
+
+xxx
+
+```{r}
+post_mae_cv(
+  stan_cv = mxd_cv,
+  stan_input = cv_df,
+  hot_data = hot_data,
+  opts = c(g1, g8, g9, g13, g14, g15, g16, ref),
+  hot_choice = HOT1,
+  val_id = ID,
+  hot_id = id,
+  labels = c(paste0("g", c(1:16)), "ref"),
+  raw = FALSE
+)
+```
+

@@ -9,7 +9,11 @@
 sigma_summary <- function(stan_output, labels = NULL) {
   # check whether all arguments are defined ------------------------------------
 
-  arg_not_defined(stan_output)
+  check_input(
+    must = c("stan_output"),
+    defined = names(match.call())
+  )
+
 
   # define missing arguments ---------------------------------------------------
   labels <- labels %||% paste0(

@@ -3,8 +3,6 @@
 #' @param design design matrix
 #' @param id column name of the id variable
 #' @param cs column name of the choice set variable
-#' @param alt column name of the variable marking alternatives within choice
-#' sets
 #' @param items column names of the predictor variables
 #' @param ch column name of the choice variable
 #' @param prior_b numeric input for the b prior
@@ -14,7 +12,7 @@
 #'
 #' @export
 #'
-dm_to_stan_mnl <- function(design, id, cs, alt, items, ch, prior_b = NULL) {
+dm_to_stan_mnl <- function(design, id, cs, items, ch, prior_b = NULL) {
 
 
   # define missing arguments ---------------------------------------------------
@@ -23,12 +21,10 @@ dm_to_stan_mnl <- function(design, id, cs, alt, items, ch, prior_b = NULL) {
 
   # check whether all arguments are defined ------------------------------------
 
-  arg_not_defined(design)
-  arg_not_defined(id)
-  arg_not_defined(cs)
-  arg_not_defined(alt)
-  arg_not_defined(items)
-  arg_not_defined(ch)
+  check_input(
+    must = c("design", "id", "cs", "items", "ch"),
+    defined = names(match.call())
+  )
 
   # tests ----------------------------------------------------------------------
 
@@ -48,7 +44,7 @@ dm_to_stan_mnl <- function(design, id, cs, alt, items, ch, prior_b = NULL) {
       row = dplyr::row_number(),
       bw = apply(.[preds], 1, sum),
       item = apply(.[preds], 1, function(x) which.max(abs(x))),
-      obs = cumsum(c(1, diff({{ alt }}) < 0))
+      obs = cumsum(c(1, diff({{ cs }}) != 0))
     ) %>%
     dplyr::relocate(row, .before = tidyselect::everything())
 

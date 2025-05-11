@@ -16,10 +16,62 @@
 #'
 post_rmse_cv <- function(stan_cv, stan_input, hot_data, opts, hot_choice,
                          val_id, hot_id, labels = NULL, raw = FALSE) {
-  val_sample_res <- purrr::map2(stan_cv, hb_des, function(x, y) {
-    labels <- labels %||% paste0("item_", seq_len((dim(rstan::extract(x)[["beta"]])[3]) + 1))
+  # check whether all arguments are defined ------------------------------------
+  check_input(
+    must = c("stan_cv", "stan_input",
+             "hot_data", "opts", "hot_choice", "val_id", "hot_id"),
+    defined = names(match.call())
+  )
 
-    beta_raw <- furrr::future_map(seq(dim(rstan::extract(x)[["beta"]])[1]), function(a) {
+
+  # tests ----------------------------------------------------------------------
+
+  # check length of labels
+  if (!is.null(labels)) {
+    labels_length(labels, (dim(rstan::extract(stan_cv[[1]])[["beta"]])[3] + 1))
+  }
+
+  # check whether input is correct
+  lapply(stan_cv, stanfit_input)
+  lapply(seq_len(length(stan_input)),
+         function(x)
+           allowed_class(stan_input[[x]][["val_sample"]],
+                         "data.frame", "tbl", "tbl_df"
+           )
+  )
+
+  # check class of hot_data
+  allowed_class(hot_data, c("data.frame", "tbl", "tbl_df"))
+
+  # check whether ids match
+  lapply(
+    seq_len(length(stan_input)),
+    function(x)
+      id_match(
+        unname(unlist(stan_input[[x]][["val_sample"]] %>% dplyr::select({{ val_id }}))),
+        unname(unlist(dplyr::select(hot_data, {{ hot_id }}))),
+        cv = "yes"
+      )
+  )
+
+  # check input raw
+  allowed_input(toupper(raw), c("TRUE", "FALSE"))
+
+  # check for potential missings in hot_choice
+  missing_allowed(hot_data, var = {{ hot_choice }}, allowed = "no")
+
+  # check for length of input
+  ncol_input(hot_data, variable = {{ hot_choice }}, argument = hot_choice)
+  # preps ----------------------------------------------------------------------
+
+  val_sample_res <- purrr::map2(stan_cv, stan_input, function(x, y) {
+
+    # define missing arguments
+    labels <- labels %||% paste0(
+      "item_", seq_len((dim(rstan::extract(x)[["beta"]])[3]) + 1)
+    )
+
+    beta_raw <- purrr::map(seq(dim(rstan::extract(x)[["beta"]])[1]), function(a) {
       as.data.frame(rstan::extract(x)[["beta"]][a, , ]) %>%
         dplyr::mutate(
           ref = 0
@@ -32,8 +84,8 @@ post_rmse_cv <- function(stan_cv, stan_input, hot_data, opts, hot_choice,
     actual_choice <- y[["val_sample"]] %>%
       dplyr::left_join(
         x = .,
-        y = ws %>% select({{ hot_id }}, {{ hot_choice }}),
-        by = join_by({{ val_id }} == {{ hot_id }})
+        y = dplyr::select(hot_data, {{ hot_id }}, {{ hot_choice }}),
+        by = dplyr::join_by({{ val_id }} == {{ hot_id }})
       ) %>%
       dplyr::mutate(dplyr::across(
         {{ hot_choice }},
@@ -46,7 +98,7 @@ post_rmse_cv <- function(stan_cv, stan_input, hot_data, opts, hot_choice,
         }
       )) %>%
       dplyr::count({{ hot_choice }}, .drop = FALSE) %>%
-      dplyr::mutate(perc = n / sum(n) * 100)
+      dplyr::mutate(perc = percentage(n) * 100)
 
 
     res <- purrr::map(beta_raw, function(z) {
@@ -69,22 +121,22 @@ post_rmse_cv <- function(stan_cv, stan_input, hot_data, opts, hot_choice,
           y = .,
           by = var_names(hot_data, {{ hot_choice }})
         ) %>%
-        dplyr::reframe(rmse = sqrt(mean(abs(perc - perc_pred)^2)))
+        dplyr::reframe(mae = sqrt(mean(abs(perc - perc_pred)^2)))
     }) %>%
       purrr::list_rbind(names_to = "iteration")
   }) %>%
     purrr::list_rbind(names_to = "sample")
 
   if (isFALSE(raw)) {
-    val_sample_res <- res_summary_group(val_sample_res, medae, sample) %>%
+    val_sample_res <- res_summary_group(val_sample_res, mae, sample) %>%
       dplyr::mutate(sample = as.character(sample))
 
     val_sample_res <- dplyr::add_row(val_sample_res,
-      sample = "mean",
-      mw = mean(val_sample_res$mw),
-      sd = mean(val_sample_res$sd),
-      `2.5%` = mean(val_sample_res$`2.5%`),
-      `97.5%` = mean(val_sample_res$`97.5%`)
+                                     sample = "mean",
+                                     mw = mean(val_sample_res$mw),
+                                     sd = mean(val_sample_res$sd),
+                                     `2.5%` = mean(val_sample_res$`2.5%`),
+                                     `97.5%` = mean(val_sample_res$`97.5%`)
     )
   }
 

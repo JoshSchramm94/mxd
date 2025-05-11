@@ -334,18 +334,33 @@ list_inputs <- function(
 #   }
 # }
 
+
 id_match <- function(
     id1,
     id2,
+    cv,
     call = rlang::caller_env()) {
-  if (!(all(id1 %in% id2) && all(id2 %in% id1))) {
-    cli::cli_abort(
-      c(
-        "ids do not match."
-      ),
-      call = call
-    )
+
+  if (cv == "no") {
+    if (!(all(id1 %in% id2) && all(id2 %in% id1))) {
+      cli::cli_abort(
+        c(
+          "ids do not match."
+        ),
+        call = call
+      )
+    }
+  } else {
+    if (!all(id1 %in% id2)) {
+      cli::cli_abort(
+        c(
+          "ids do not match."
+        ),
+        call = call
+      )
+    }
   }
+
 
   if (class(id1) != class(id2) &&
       !((class(id1) %in% c("numeric", "integer")) && (class(id2) %in% c("numeric", "integer")))) {
@@ -531,6 +546,22 @@ check_input <- function(
     cli::cli_abort(
       c(
         "argument {.arg {wrong_arg}} is missing."
+      )
+    )
+  }
+}
+
+ref_in_items <- function(data,
+                         ref,
+                         vars,
+                         call = rlang::caller_env()) {
+  ref <- var_names(data, {{ ref }})
+  items <- var_names(data, {{ vars }})
+
+  if (!(ref %in% items)) {
+    cli::cli_abort(
+      c(
+        "{.arg reference} must be part of {.arg items}."
       )
     )
   }

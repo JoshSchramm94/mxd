@@ -15,16 +15,15 @@
 post_hit <- function(betas_post, hot_data, id, opts,
                      group = NULL, hot_choice, raw = FALSE) {
   # check whether all arguments are defined ------------------------------------
-  arg_not_defined(betas_post)
-  arg_not_defined(hot_data)
-  arg_not_defined(id)
-  arg_not_defined(opts)
-  arg_not_defined(hot_choice)
+  check_input(
+    must = c("betas_post", "hot_data", "id", "opts", "hot_choice"),
+    defined = names(match.call())
+  )
 
   # tests ----------------------------------------------------------------------
 
   # check whether input is correct
-  allowed_class(betas_post, "list")
+  list_inputs(betas_post)
 
   # check class of hot_data
   allowed_class(hot_data, c("data.frame", "tbl", "tbl_df"))
@@ -32,7 +31,8 @@ post_hit <- function(betas_post, hot_data, id, opts,
   # id variable must be the same
   id_match(
     unname(unlist(dplyr::select(betas_post[[1]], {{ id }}))),
-    unname(unlist(dplyr::select(hot_data, {{ id }})))
+    unname(unlist(dplyr::select(hot_data, {{ id }}))),
+    cv = "no"
   )
 
   # betas check

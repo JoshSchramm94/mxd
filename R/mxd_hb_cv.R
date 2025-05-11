@@ -23,6 +23,11 @@ mxd_hb_cv <- function(data_stan,
   # define missing values
   seed <- seed %||% 1910L
 
+  check_input(
+    must = "data_stan",
+    defined = names(match.call())
+  )
+
   # tests ----------------------------------------------------------------------
   # check whether input is correct
   lapply(seq_len(length(data_stan)), function(x) list_inputs(data_stan[[x]][[2]]))

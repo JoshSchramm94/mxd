@@ -17,7 +17,7 @@ betas_violin <- function(betas, vars, labels = NULL) {
 
   # tests ----------------------------------------------------------------------
   # check whether input is correct
-  allowed_class(betas, "list")
+  list_inputs(betas)
 
   # betas check
   post_check(betas)

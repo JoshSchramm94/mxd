@@ -17,11 +17,10 @@ mxd_count <- function(data, cs, item, ch, no_items,
                       group = NULL, labels = NULL) {
   # check whether all arguments are defined ------------------------------------
 
-  arg_not_defined(data)
-  arg_not_defined(cs)
-  arg_not_defined(item)
-  arg_not_defined(ch)
-  arg_not_defined(no_items)
+  check_input(
+    must = c("data", "cs", "item", "ch", "no_items"),
+    defined = names(match.call())
+  )
 
   # define missing arguments ---------------------------------------------------
   labels <- labels %||% paste0("item_", seq_len(no_items))
