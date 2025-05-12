@@ -140,7 +140,8 @@ mxd_logit_bayesian <- function(data_stan,
       "beta_raw" = beta_raw,
       "beta_zc" = beta_zc,
       "beta_prob" = beta_prob,
-      "summary" = beta_summary
+      "summary" = beta_summary,
+      "stanfit_object" = out
     )
   )
 }

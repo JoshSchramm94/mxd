@@ -165,7 +165,7 @@ data_stan <- dm_to_stan_mnl(
   prior_b = 10)
 ```
 
-Next, we can run the estimation. For demonstration purposes, we lower the number of iterations (`iter` and `warm_up`, respectively). in addition, we just use 2 `chains`. Similar to the frequentist version (`mxd_logit()`), the user has to define the size of the MaxDiff tasks (`bw_size`). The `labels` argument is optional. By default, `mxd_logit_bayesian()` uses the No-U-Turn-Sampler (NUTS); however, the algorithm can be adjusted (see more information in the `...` argument). By default, `mxd_logit_bayesian()` uses the last item specified in `dm_to_stan_mnl()` in the `items` argument as reference level.
+Next, we can run the estimation. For demonstration purposes, we lower the number of iterations (`iter` and `warm_up`, respectively). in addition, we just use 2 `chains`. Similar to the frequentist version (`mxd_logit()`), the user has to define the size of the MaxDiff tasks (`bw_size`). The `labels` argument is optional. By default, `mxd_logit_bayesian()` uses the No-U-Turn-Sampler [NUTS; @rstan]; however, the algorithm can be adjusted (see more information in the `...` argument). By default, `mxd_logit_bayesian()` uses the last item specified in `dm_to_stan_mnl()` in the `items` argument as reference level.
 
 ```{r, warning = FALSE}
 output <- mxd_logit_bayesian(
@@ -180,6 +180,16 @@ output <- mxd_logit_bayesian(
 )
 ```
 
+The output is a list with 4 data frames, namely 
+<ul>
+<li>`beta_raw`: the raw beta utilities for all posterior draws (the default of the thinning parameter of `mxd_logit_bayesian()` is set to `5`)</li>
+<li>`beta_zc`: the zero-centered utilities for all posterior draws</li>
+<li>`beta_prob`: the choice probabilities for all posterior draws</li>
+<li>`summary`: summary statistics of the 3 objects</li>
+<li>`stanfit_object`: stanfit object</li>
+</ul>
+
+
 ### Bayesian HB-MNL
 
 Alternatively, we could also run a hierarchical Bayesian MNL model. The Stan code has the benefits that it allows for alternating choice set sizes. This means that it can be implemented with each type of coding we introduced above.
@@ -188,7 +198,7 @@ Alternatively, we could also run a hierarchical Bayesian MNL model. The Stan cod
 cat(rstan::get_stancode(mxd:::stanmodels$hbmnl))
 ```
 
-To run the function, we first need to prepare the input accordingly. To do so, the users can apply the `dm_to_stan_hb()` function.
+Before we can estimate the model, we have to prepare the input accordingly. To do so, the users can apply the `dm_to_stan_hb()` function, which works similar to the `dm_to_stan_mnl()` function. In addition the to the `dm_to_stan_mnl()`, the user also has to define the `alt` argument (i.e., variable that stores alternatives indicator within the choice sets). In addition, the model has more hyperparameters to define, namely, `b`, `omega`, and `sigma`. The default prior for `b` is set to `5`, while the priors for `omega` and `sigma` are set to `2`. Finally, the user also has the option to define covariates (`demos`), which need to be passed to the function in form of a matrix.
 
 ```{r}
 stan_input <- dm_to_stan_hb(
@@ -205,7 +215,13 @@ stan_input <- dm_to_stan_hb(
     )
 ```
 
-Next, we can estimate the model.
+The output of `dm_to_stan_hb()` is a list of two objects:
+<ul>
+<li>`ids`: a data frame that includes the old and new ids. Since Stan requires a consecutive numbering of the ID, this data frame contains the original and new ids.</li>
+<li>`stan_input`: a list with the input relevant for model estimation</li>
+</ul>
+
+Next, we can estimate the model using the `mxd_hb()` function, which is similar to the `mxd_logit_bayesian()` function.
 
 ```{r, warning = FALSE}
 output <- mxd_hb(
@@ -213,7 +229,7 @@ output <- mxd_hb(
   chains = 5L,
   iter = 400L,
   warmup = 200L,
-  seed = 1910L,
+  seed = 1910L
 )
 ```
 
@@ -225,7 +241,7 @@ For those users who are prefer to run classical count analysis, we implemented t
 unanc_design <- dplyr::filter(design, Set <= 16)
 ```
 
-Afterwards, we can run `mxd_count()`
+Afterwards, we can run the `mxd_count()` function. Instead of defining the number of MaxDiff tasks, we have to define the number of items included (`no_items`). 
 
 ```{r}
 mxd_count(
@@ -240,7 +256,7 @@ mxd_count(
 
 ## Convergence
 
-We could also check the convergence after estimating the model. Of course, users could also use `shinystan` [@shinystan]. `mxd` provides, for example, the `acf_plot()` function to check autocorrelation between draws. `acf_plot()` exports a `ggplot2` object that can be further adjusted by the user. Either `sigma` or `b` can be plotted.
+After model estimation, you should usually first check the convergence of your model. Since the output of `mxd_hb()` is a `stanfit` object, the users could also use, for example, `shinystan` [@shinystan] to check the model. In `mxd`, we implemented couple of functions. For example, the `acf_plot()` function checks autocorrelation between draws. The user has to define the parameter, she/he wants to plot (users can choose between `b` and `simga`), and can define (optional) labels. `acf_plot()` exports a `ggplot2` object that can be further adjusted by the user.
 
 ```{r}
 acf_plot(
@@ -250,7 +266,7 @@ acf_plot(
 )
 ```
 
-Also, we could look directly at `b`'s Rhat values and effective sample sizes.
+Also, we could look directly at `b`'s Rhat values and effective sample sizes by running the `convergence_stats` function.
 
 ```{r}
 convergence_stats(
@@ -275,6 +291,14 @@ alpha_scores <- alphas(
 )
 ```
 
+The output of `alphas()` is similar to the one of `mxd_logit_bayesian()` and has 4 objects:
+<ul>
+<li>`alphas_raw`: the raw b utilities for all posterior draws (again the default for `thin`, thinning parameter, of `mxd_hb()` is set to `5`</li>
+<li>`alphas_zc`: the zero-centered utilities for all posterior `b` draws</li>
+<li>`beta_prob`: the choice probabilities for all posterior `b` draws</li>
+<li>`summary`: summary statistics of the 3 objects</li>
+</ul>
+
 ### `sigma`
 
 To summarize the `sigma` draws, `mxd` provides the `sigma_summary()` function.
@@ -288,7 +312,7 @@ sigma_summary(
 
 ### `beta`
 
-`mxd` provides multiple functions for the `beta` scores (i.e., individual utilities). In the initial step, the user should prepare the draws accordingly, which is possible using the `betas_post()` function.
+`mxd` provides multiple functions for the `beta` scores (i.e., individual utilities). In the initial step, the user should prepare the draws accordingly, which is possible using the `betas_post()` function. Here the user has to specify the size of the MaxDiff tasks `bw_size` and whether it was an anchored MaxDiff (set `anchor` to  `TRUE`) or unanchored MaxDiff (set `anchor` to `FALSE`). In addition, one can specify the *original ID's* which were stored in the Stan input created by the `dm_to_stan_hb()` function, the labels that should be used as column names. Finally, in `betas_post()`, we allow to use multiple cores (`cores` argument) to speed up computation.
 
 ```{r}
 betas_prep <- betas_post(
@@ -301,7 +325,7 @@ betas_prep <- betas_post(
 )
 ```
 
-Once prepared, we can get the summary statistic of the results. Since `betas_prep()` provides three different types of `beta` preparations, namely, the raw, the zero-anchored, and the choice probabilities scores, we can choose which we want to summarise. In the example below, we will use the raw utilties.
+Once prepared, we can get the summary statistic of the results. Since `betas_prep()` provides three different types of `beta` preparations, namely, the raw, the zero-anchored, and the choice probabilities scores, we can choose which we want to summarize. In the example below, we will use the raw utilities.
 
 ```{r}
 betas_summary(
@@ -319,7 +343,7 @@ betas_summary(
 )
 ```
 
-Often researchers use the aggregated utilities across all posterior draws. To get these, users can use the `bpe()` (i.e., beta point estimates) function.
+Often researchers use the aggregated utilities across all posterior draws. To get these, users can use the `bpe()` (i.e., beta point estimates) function. Here, the `id` argument is also required.
 
 ```{r}
 bpe(
@@ -330,7 +354,7 @@ bpe(
   head()
 ```
 
-To plot the beta scores, `mxd` provides the `beta_violin()` function, which, similar to the `acf_plot()` provides a `ggplot2` object as output and thus can we further adjusted by the user. For example below, we adjust the colors of the items.
+To plot the beta scores, `mxd` provides the `beta_violin()` function, which, similar to the `acf_plot()`, provides a `ggplot2` object as output and thus can we further adjusted by the user. For example below, we adjust the colors of the items. Below we plot the beta raw utilities and change the coloring of the violins.
 
 ```{r}
 betas_violin(
@@ -346,7 +370,7 @@ betas_violin(
 
 ## Validation
 
-Similar to the `validateHOT` package by [@schramm2025a], `mxd` also provides tools for validation. However, the main difference is that `validateHOT` is intended to work with the beta point estimates, while `mxd` works with the posterior draws and in addition, some of its functions can also be applied to a validation sample.
+Similar to the `validateHOT` package by [@schramm2025a], `mxd` also provides tools for validation. However, the main difference is that `validateHOT` is intended to work with the beta point estimates, while `mxd` works with the posterior draws and in addition, some of its functions can also be applied to a validation sample. Furthermore, `mxd` also includes cross-valdiation tools. Let us explore them step-by-step.
 
 ### Internal fit
 
@@ -356,7 +380,7 @@ First, we load an additional data frame, in which we stored the actual choice in
 hot_data <- read.csv("../data/data.csv")
 ```
 
-For internal fit, `mxd` provides both the `post_hit()` function to calculate the hit rate across the posterior draws ...
+For internal fit, `mxd` provides both the `post_hit()` function to calculate the hit rate across the posterior draws and `post_mhp()` to calculate the mean hit probability across posterior draws. The user has to define the betas (`betas_post`), the data frame with the actual choices (`hot_data`), the participants identifier (`id`; has to be the same column name in both `betas_post` and `hot_data`), the alternatives in the validation task (`opts`), and the column name of the actual choice in the validation task (`hot_choice`). The output can be either summarized (`raw` set to `FALSE`) or for each iteration (`raw` set to `TRUE`).
 
 ```{r}
 post_hit(
@@ -365,11 +389,12 @@ post_hit(
   id = id,
   opts = c(g1, g8, g9, g13, g14, g15, g16, ref),
   hot_choice = HOT1,
-  raw = FALSE
+  raw = FALSE,
+  group = NULL
 )
 ```
 
-and also the `post_mhp()` function to calcuate the mean hit probability across posterior draws
+The setup for the `post_mhp()` function is the same.
 
 ```{r}
 post_mhp(
@@ -420,9 +445,12 @@ post_rmse(
 )
 ```
 
+If the user wants to validate a validation sample instead, this data frame that should be predicted should be specified in `hot_data`.
+
 ## Cross-validation
 
-xxx
+However, often including a validation sample is not feasible for researchers. In addition, using holdout tasks is not always the recommended way of ensuring predictive validity. If no validation sample can be included, it is recommended to run a cross-validation, which we implemented in `mxd`. 
+To prepare the input for estimation, we implemented the `dm_to_stan_hb_cv()` function, which is similar to the `dm_to_stan_hb()` function, however, one also has to define the number of folds (`folds`) as well as a seed (`seed`) for reproducing group assignment.
 
 ```{r}
 cv_df <- dm_to_stan_hb_cv(
@@ -432,11 +460,13 @@ cv_df <- dm_to_stan_hb_cv(
   alt = alt,
   items = c(Item_1:Item_17),
   ch = choice,
-  folds = 5L
+  folds = 5L,
+  seed = 1910,
+  demos = NULL
 )
 ```
 
-xxx
+Next, we can run the `mxd_hb_cv()` function. This function requires the created input using the `dm_to_stan_hb_cv()`. The arguments that are required are the same as for `mxd_hb()`. 
 
 ```{r, warning=FALSE}
 mxd_cv <- mxd_hb_cv(
@@ -447,20 +477,53 @@ mxd_cv <- mxd_hb_cv(
 )
 ```
 
-xxx
+Finally, we can run the validation for each fold. `mxd` provides three functions to assess validity, `post_mae_cv()` (for mean absolute error), `post_medae_cv()` (for median absolute error), and `post_rmse_cv()` for root mean square error. The user has to define the output from the cross-validation estimation (`stan_cv`), the input that was provided to the `mxd_hb_cv()` function (`stan_input`), the data frame with the actual choices in the holdout task (`hot_data`), the alternatives in the validation task (`opts`), the column name of the participants' identifier in the estimation model `val_id`, the column name of the participants' identifier in `hot_data` (`hot_id`), and the actual choice in the validation question (`hot_choice`). Again, the output can be the summary (set `raw` to `FALSE`) or the validation results of each iteration (set `raw` to  `TRUE`).
 
 ```{r}
 post_mae_cv(
   stan_cv = mxd_cv,
   stan_input = cv_df,
   hot_data = hot_data,
-  opts = c(g1, g8, g9, g13, g14, g15, g16, ref),
-  hot_choice = HOT1,
   val_id = ID,
   hot_id = id,
+  opts = c(g1, g8, g9, g13, g14, g15, g16, ref),
+  hot_choice = HOT1,
   labels = c(paste0("g", c(1:16)), "ref"),
   raw = FALSE
 )
 ```
+
+Alternatively, we could also evaluate predictive validity relying on the median absolute error instead.
+
+```{r}
+post_medae_cv(
+  stan_cv = mxd_cv,
+  stan_input = cv_df,
+  hot_data = hot_data,
+  val_id = ID,
+  hot_id = id,
+  opts = c(g1, g8, g9, g13, g14, g15, g16, ref),
+  hot_choice = HOT1,
+  labels = c(paste0("g", c(1:16)), "ref"),
+  raw = FALSE
+)
+```
+
+For demonstration purposes, we also show the code for the root mean square error
+
+```{r}
+post_rmse_cv(
+  stan_cv = mxd_cv,
+  stan_input = cv_df,
+  hot_data = hot_data,
+  val_id = ID,
+  hot_id = id,
+  opts = c(g1, g8, g9, g13, g14, g15, g16, ref),
+  hot_choice = HOT1,
+  labels = c(paste0("g", c(1:16)), "ref"),
+  raw = FALSE
+)
+```
+
 
 # References
