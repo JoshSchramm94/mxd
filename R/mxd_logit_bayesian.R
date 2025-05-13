@@ -12,7 +12,7 @@
 #' @param anchor logical vector to indicate whether it is an anchored MaxDiff
 #' @param seed numeric input to specify seed for reproducible results
 #' @param ... additional arguments to define are `cores`, `thin`, `init`, and
-#' `algorithm`, for more information see \link[rstan]{stan} documentation
+#' `algorithm`, for more information see \code{\link[stan]{rstan}} documentation
 #'
 #' @returns S4
 #' @export

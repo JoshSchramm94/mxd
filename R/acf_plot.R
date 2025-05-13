@@ -1,15 +1,26 @@
 #' Autocorrelation plot
 #'
+#' `acf_plot()` is a function to visualize the autocorrelation of the
+#' hyperparameters. Users can choose to either plot the population mean of the
+#' (`b` parameter) or the populations standard deviation (`sigma` parameter).
+#'
 #' @param stan_output stanfit object
 #' @param pars character to define the parameter that should be plotted. Can
 #' be set to `b` or to `sigma`
 #' @param labels optional character vector to define labels of items
 #'
+#' @details
+#' `acf_plot()` helps to check the autocorrelation between the posterior draws.
+#' It uses the \code{\link[stats]{acf}} function from the stats package. The output of
+#' `acf_plot()` will be a ggplot object that can be further modified by the
+#' user.
+#'
+#'
 #' @returns a ggplot object
 #'
 #' @examples
 #' \dontrun{
-#' acf_plot(mxd_input, pars = "b")
+#' acf_plot(stan_output = mxd_model, pars = "b")
 #' }
 #' @export
 #'

@@ -16,8 +16,29 @@ alphas(stan_output, bw_size, labels = NULL, anchor = FALSE)
 \item{anchor}{logical vector to indicate whether it is an anchored MaxDiff}
 }
 \value{
-list
+list with 4 objects
 }
 \description{
-Preparation of population mean's posterior draws
+\code{alphas()} prepares the output of the means of the population-level (i.e.,
+alphas)  estimated model.
+}
+\details{
+\code{alphas()} prepares the output of the mean of the population-level of the
+model. Users have to provide the output of the stan model (e.g., estimated
+using the \code{mxd_hb()}) function. The output is a list with 4 different
+objects:
+
+\describe{
+\item{alphas_raw}{raw means}
+\item{alphas_zc}{zero-centered means}
+\item{alphas_prob}{probability scores of the means}
+\item{alphas_summary}{summary of the three scores including 95\% credible
+interval}
+}
+}
+\examples{
+\dontrun{
+alphas(stan_output = mxd_model, pars = "b")
+}
+
 }
