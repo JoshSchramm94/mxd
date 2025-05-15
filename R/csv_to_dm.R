@@ -81,19 +81,19 @@ csv_to_dm <- function(design, id, cs, item, ch, anchor = NULL, mxd_tasks,
       item_vars <- dummy_names(design, unanchored, {{ item }})
 
       # prepare best choice data frame
-      if (!(type %in% c("worst_best_seq", "worst-only"))) {
+      if (!(type %in% c("worst-best-seq", "worst-only"))) {
         best <- prepare_best_worst_ch(
           data = unanchored, id = {{ id }}, cs = {{ cs }}, vars = item_vars,
           bw_ind = "b", stack_pos = 1, type = type
         )
-      } else if (type == "worst_best_seq") {
+      } else if (type == "worst-best-seq") {
         best <- prepare_best_worst_ch(
           data = unanchored, id = {{ id }}, cs = {{ cs }}, vars = item_vars,
           bw_ind = "b", stack_pos = 2, type = type
         )
       }
 
-      if (type %in% c("worst_best_seq", "worst-only")) {
+      if (type %in% c("worst-best-seq", "worst-only")) {
         worst <- prepare_best_worst_ch(
           data = unanchored, id = {{ id }}, cs = {{ cs }}, vars = item_vars,
           bw_ind = "w", stack_pos = 1, type = type
@@ -336,17 +336,17 @@ csv_to_dm <- function(design, id, cs, item, ch, anchor = NULL, mxd_tasks,
     item_vars <- dummy_names(design, unanchored, {{ item }})
 
     # prepare best choice data frame
-    if (!(type %in% c("worst_best_seq", "worst-only"))) {
+    if (!(type %in% c("worst-best-seq", "worst-only"))) {
       best <- prepare_best_worst_ch_ind(
         unanchored, {{ id }}, {{ cs }}, item_vars, "b", 1, type
       )
-    } else if (type == "worst_best_seq") {
+    } else if (type == "worst-best-seq") {
       best <- prepare_best_worst_ch_ind(
         unanchored, {{ id }}, {{ cs }}, item_vars, "b", 2, type
       )
     }
 
-    if (type %in% c("worst_best_seq", "worst-only")) {
+    if (type %in% c("worst-best-seq", "worst-only")) {
       worst <- prepare_best_worst_ch_ind(
         unanchored, {{ id }}, {{ cs }}, item_vars, "w", 1, type
       )

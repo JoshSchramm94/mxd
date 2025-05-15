@@ -1,5 +1,9 @@
 #' Preparation of posterior individuals draws
 #'
+#' Prepares the posterior draws for the individual (i.e., `betas`). Users have
+#' to provide the output of the stan model (e.g., estimated using the
+#' `mxd_hb()`) function.
+#'
 #' @param stan_output stanfit object
 #' @param bw_size size of MaxDiff tasks in study
 #' @param cores optional integer input to define the number of cores used for
@@ -8,7 +12,26 @@
 #' @param labels optional character vector to define labels of items
 #' @param anchor logical vector to indicate whether it is an anchored MaxDiff
 #'
-#' @returns named list
+#' @returns
+#' a list with 3 objects
+#' \describe{
+#'   \item{beta_raw}{raw individual utitlies}
+#'   \item{beta_zc}{zero-centered individual utilities}
+#'   \item{beta_prob}{probability scores of the individuals}
+#' }
+#'
+#' @examples
+#' \dontrun{
+#' betas_prep <- betas_post(
+#'  stan_output = mxd_model,
+#'  bw_size = 4,
+#'  cores = 4L,
+#'  ids = stan_input[["ids"]][["orig_id"]],
+#'  labels = paste0(v, seq_len(16)),
+#'  anchor = TRUE
+#'  )
+#' }
+#'
 #' @export
 betas_post <- function(stan_output, bw_size, cores = 1L,
                        ids = NULL, labels = NULL, anchor = FALSE) {

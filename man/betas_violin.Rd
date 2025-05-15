@@ -17,5 +17,20 @@ betas_violin(betas, vars, labels = NULL)
 ggplot object
 }
 \description{
-Violin plot for beta posterior draws
+\code{betas_violin()} displays the posterior distribution of the individual draws
+via a violin plot. Users have to provide the output of the stan
+model (e.g., estimated using the \code{mxd_hb()}) function. \code{betas_violin()}
+exports a \code{ggplot} object that can be further adjusted by the user.
+}
+\examples{
+\dontrun{
+
+betas_violin(
+ betas = betas_prep[["beta_raw"]],
+ vars = c(v1:v16),
+ labels = paste0("example_", seq_len(16))
+ )
+
+}
+
 }

@@ -28,8 +28,28 @@ calculation (default set to 1L)}
 \item{anchor}{logical vector to indicate whether it is an anchored MaxDiff}
 }
 \value{
-named list
+a list with 3 objects
+\describe{
+\item{beta_raw}{raw individual utitlies}
+\item{beta_zc}{zero-centered individual utilities}
+\item{beta_prob}{probability scores of the individuals}
+}
 }
 \description{
-Preparation of posterior individuals draws
+Prepares the posterior draws for the individual (i.e., \code{betas}). Users have
+to provide the output of the stan model (e.g., estimated using the
+\code{mxd_hb()}) function.
+}
+\examples{
+\dontrun{
+betas_prep <- betas_post(
+ stan_output = mxd_model,
+ bw_size = 4,
+ cores = 4L,
+ ids = stan_input[["ids"]][["orig_id"]],
+ labels = paste0(v, seq_len(16)),
+ anchor = TRUE
+ )
+}
+
 }

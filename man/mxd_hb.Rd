@@ -20,7 +20,7 @@ for warm-up purposes}
 \item{seed}{numeric input to specify seed for reproducible results}
 
 \item{...}{additional arguments to define are \code{cores}, \code{thin}, \code{init}, and
-\code{algorithm}, for more information see \code{\link[stan]{rstan}} documentation}
+\code{algorithm}, for more information see \code{\link[rstan]{stan}} documentation}
 }
 \value{
 S4 stanfit object

@@ -1,14 +1,27 @@
 #' Summary of posterior individuals draws
 #'
+#' Calculates the aggregated results for the posterior individual draws.
+#'
 #' @param betas posterior beta draws in an object of class list
 #' @param vars column names of items
+#' @param id column name of participants' identifier
 #'
 #' @returns a tibble
+#'
+#' @examples
+#' \dontrun{
+#' betas_summary(
+#'   betas = betas_prep[["beta_raw"]],
+#'   vars = c(v1:v16),
+#'   id = id
+#'  )
+#' }
+#'
 #' @export
 #'
-betas_summary <- function(betas, vars) {
+betas_summary <- function(betas, vars, id) {
   # check whether all arguments are defined ------------------------------------
-  check_input(c("betas", "vars"), names(match.call()))
+  check_input(c("betas", "vars", "id"), names(match.call()))
 
   # tests ----------------------------------------------------------------------
 
@@ -21,12 +34,13 @@ betas_summary <- function(betas, vars) {
   # preps ----------------------------------------------------------------------
 
   betas %>%
-    purrr::list_rbind(names_to = "iter") %>%
-    dplyr::select(iter, {{ vars }}) %>%
-    dplyr::reframe(dplyr::across(
-      tidyselect::everything(),
-      function(x) mean(x)
-    ), .by = iter) %>%
-    dplyr::select(-iter) %>%
+    purrr::list_rbind() %>%
+    dplyr::reframe(
+      dplyr::across(
+        {{ vars }},
+        function(x) mean(x)
+      ),
+      .by = {{ id }}
+    ) %>%
     res_summary(tidyselect::everything(.))
 }

@@ -1,9 +1,35 @@
-#' Convergence stats from estimation
+#' Convergence diagnostics from estimation
+#'
+#' `convergence_stats()` gives you the convergence diagnostics from the
+#' estimation. Users can decide between getting convergence diagnostics for
+#' either `b` or `sigma`.
 #'
 #' @param stan_output stanfit object
 #' @param pars character to define the parameter that should be plotted. Can
 #' be set to `b` or to `sigma`
 #' @param labels optional character vector to define labels of items
+#'
+#' @details
+#' Input for `convergence_stats()` needs to be a stanfit object, e.g., from
+#' running `mxd_hb()` function. The output reports the bulk effective sample
+#' size (for more information see \code{\link[rstan]{ess_bulk}}), the tail
+#' effective sample size (for more information see
+#' \code{\link[rstan]{ess_tail}}), and the `Rhat` values (for more information
+#' see \code{\link[rstan]{Rhat}}). Users can decide to get convergence
+#' diagnostics for either `b` (population mean) or sigma (population
+#' heterogeneity).
+#'
+#' @examples
+#' \dontrun{
+#' convergence_stats(
+#'   stan_output = mxd_model,
+#'   pars = "b",
+#'   labels = paste0("v", seq_len(16))
+#' )
+#'
+#' }
+#'
+#'
 #'
 #' @returns a tibble
 #' @export
@@ -46,11 +72,11 @@ convergence_stats <- function(stan_output, pars = c("b", "sigma"), labels = NULL
     dplyr::reframe(
       dplyr::across(
         tidyselect::everything(),
-        function(x) c(rstan::ess_bulk(x), rstan::Rhat(x))
+        function(x) c(rstan::ess_bulk(x), rstan::ess_tail(x), rstan::Rhat(x))
       )
     ) %>%
     t() %>%
     as.data.frame() %>%
     tibble::rownames_to_column(var = "items") %>%
-    stats::setNames(c("items", "ess_b", "rhat"))
+    stats::setNames(c("items", "ess_b", "ess_t", "rhat"))
 }

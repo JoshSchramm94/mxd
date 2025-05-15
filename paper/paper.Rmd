@@ -343,10 +343,10 @@ betas_summary(
 )
 ```
 
-Often researchers use the aggregated utilities across all posterior draws. To get these, users can use the `bpe()` (i.e., beta point estimates) function. Here, the `id` argument is also required.
+Often researchers use the aggregated utilities across all posterior draws. To get these, users can use the `beta_point_estimates()` (i.e., beta point estimates) function. Here, the `id` argument is also required.
 
 ```{r}
-bpe(
+beta_point_estimates(
   betas = betas_prep[["beta_raw"]],
   vars = c(g1:ref),
   id = id

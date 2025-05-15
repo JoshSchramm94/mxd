@@ -8,7 +8,7 @@
 #' for warm-up purposes
 #' @param seed numeric input to specify seed for reproducible results
 #' @param ... additional arguments to define are `cores`, `thin`, `init`, and
-#' `algorithm`, for more information see \code{\link[stan]{rstan}} documentation
+#' `algorithm`, for more information see \code{\link[rstan]{stan}} documentation
 #'
 #' @returns S4
 #' @export

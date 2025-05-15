@@ -49,6 +49,7 @@ utils::globalVariables(
     "ch_share",
     "choice",
     "cores",
+    "cs",
     "est",
     "group_id",
     "hb_des",

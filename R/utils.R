@@ -53,7 +53,7 @@ prepare_best_worst_ch <- function(data, id, cs, vars, bw_ind, stack_pos, type) {
   }
 
   data <- data %>%
-    dplyr::mutate(alt = seq_len(dplyr::n()), .by = c({{ id }}, {{ cs }})) %>%
+    dplyr::mutate(alt = seq(1, dplyr::n()), .by = c({{ id }}, {{ cs }})) %>%
     dplyr::relocate(alt, .after = {{ cs }})
 
   if (bw_ind == "b") {
@@ -101,7 +101,7 @@ prepare_best_worst_ch_ind <- function(data, id, cs, vars, bw_ind, stack_pos, typ
   }
 
   data <- data %>%
-    dplyr::mutate(alt = seq_len(dplyr::n()), .by = c({{ id }}, {{ cs }})) %>%
+    dplyr::mutate(alt = seq(1, dplyr::n()), .by = c({{ id }}, {{ cs }})) %>%
     dplyr::relocate(alt, .after = {{ cs }})
 
   if (bw_ind == "b") {

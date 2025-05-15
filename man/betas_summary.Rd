@@ -4,16 +4,28 @@
 \alias{betas_summary}
 \title{Summary of posterior individuals draws}
 \usage{
-betas_summary(betas, vars)
+betas_summary(betas, vars, id)
 }
 \arguments{
 \item{betas}{posterior beta draws in an object of class list}
 
 \item{vars}{column names of items}
+
+\item{id}{column name of participants' identifier}
 }
 \value{
 a tibble
 }
 \description{
-Summary of posterior individuals draws
+Calculates the aggregated results for the posterior individual draws.
+}
+\examples{
+\dontrun{
+betas_summary(
+  betas = betas_prep[["beta_raw"]],
+  vars = c(v1:v16),
+  id = id
+ )
+}
+
 }

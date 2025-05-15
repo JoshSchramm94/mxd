@@ -2,11 +2,11 @@
 
 export(acf_plot)
 export(alphas)
+export(beta_point_estimates)
 export(betas_post)
 export(betas_summary)
 export(betas_violin)
 export(bibd_to_dm)
-export(bpe)
 export(convergence_stats)
 export(csv_to_dm)
 export(dm_to_stan_hb)

@@ -1,21 +1,16 @@
 #' Preparation of population mean's posterior draws
 #'
 #' `alphas()` prepares the output of the means of the population-level (i.e.,
-#' alphas)  estimated model.
+#' alphas) of the estimated model. Users have to provide the output of the stan
+#' model (e.g., estimated using the `mxd_hb()`) function.
 #'
 #' @param stan_output stanfit object
 #' @param bw_size size of MaxDiff tasks in study
 #' @param labels optional character vector to define labels of items
 #' @param anchor logical vector to indicate whether it is an anchored MaxDiff
 #'
-#' @returns list with 4 objects
-#'
-#' @details
-#' `alphas()` prepares the output of the mean of the population-level of the
-#' model. Users have to provide the output of the stan model (e.g., estimated
-#' using the `mxd_hb()`) function. The output is a list with 4 different
-#' objects:
-#'
+#' @returns
+#' a list with 4 objects
 #' \describe{
 #'   \item{alphas_raw}{raw means}
 #'   \item{alphas_zc}{zero-centered means}
@@ -26,7 +21,10 @@
 #'
 #' @examples
 #' \dontrun{
-#' alphas(stan_output = mxd_model, pars = "b")
+#' alphas(
+#'   stan_output = mxd_model,
+#'   pars = "b"
+#'  )
 #' }
 #'
 #' @export

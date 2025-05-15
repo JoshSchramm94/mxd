@@ -2,7 +2,7 @@
 % Please edit documentation in R/convergence_stats.R
 \name{convergence_stats}
 \alias{convergence_stats}
-\title{Convergence stats from estimation}
+\title{Convergence diagnostics from estimation}
 \usage{
 convergence_stats(stan_output, pars = c("b", "sigma"), labels = NULL)
 }
@@ -18,5 +18,30 @@ be set to \code{b} or to \code{sigma}}
 a tibble
 }
 \description{
-Convergence stats from estimation
+\code{convergence_stats()} gives you the convergence diagnostics from the
+estimation. Users can decide between getting convergence diagnostics for
+either \code{b} or \code{sigma}.
+}
+\details{
+Input for \code{convergence_stats()} needs to be a stanfit object, e.g., from
+running \code{mxd_hb()} function. The output reports the bulk effective sample
+size (for more information see \code{\link[rstan]{ess_bulk}}), the tail
+effective sample size (for more information see
+\code{\link[rstan]{ess_tail}}), and the \code{Rhat} values (for more information
+see \code{\link[rstan]{Rhat}}). Users can decide to get convergence
+diagnostics for either \code{b} (population mean) or sigma (population
+heterogeneity).
+}
+\examples{
+\dontrun{
+convergence_stats(
+  stan_output = mxd_model,
+  pars = "b",
+  labels = paste0("v", seq_len(16))
+)
+
+}
+
+
+
 }
