@@ -390,7 +390,7 @@ csv_to_dm <- function(design, id, cs, item, ch, anchor = NULL, mxd_tasks,
       df_md <- bw_merge(best, worst, {{ id }}, {{ cs }})
     }
   }
-  return(df_md)
+  return(as.data.frame(df_md))
 }
 
 
