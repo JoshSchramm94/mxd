@@ -436,15 +436,18 @@ missing_allowed <- function(data,
 }
 
 choice_per_cs <- function(
-  data,
-  id,
-  cs,
-  choice,
-  call = rlang::caller_env()) {
+    data,
+    id,
+    cs,
+    choice,
+    call = rlang::caller_env()) {
 
-  ws <- dplyr::reframe(data, ch = sum({{ choice }} == 1), .by = c({{ id }}, {{ cs }}))
+  ws <- dplyr::reframe(data,
+                       b = sum({{ choice }} == 1),
+                       w = sum({{ choice }} == -1),
+                       .by = c({{ id }}, {{ cs }}))
 
-  if (!(all(ws[["ch"]] == 1))) {
+  if (!(all(ws[["b"]] <= 1 && ws[["w"]] <= 1))) {
     cli::cli_abort(
       c(
         "Only one {.arg alt} can be chosen per {.arg cs}."

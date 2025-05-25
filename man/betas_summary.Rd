@@ -17,7 +17,15 @@ betas_summary(betas, vars, id)
 a tibble
 }
 \description{
-Calculates the aggregated results for the posterior individual draws.
+This function calculates the aggregated results from the posterior
+distribution of the individuals.
+}
+\details{
+\code{betas_summary()} provides the aggregated results of the posterior
+distribution of the individuals (i.e., \code{beta}). The output of
+\code{betas_summary()} provides the posterior mean for all items across all
+posterior draws, their standard deviation as well as th 2.5\% and 97.5\%
+credible intervals of the item's posterior means.
 }
 \examples{
 \dontrun{

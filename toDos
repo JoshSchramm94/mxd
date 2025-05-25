@@ -1,0 +1,4 @@
+1) To do: fix the STAN model for type = "maxdiff" --> afterwards adjust
+estimation or input fucntion
+
+2) double-check `betas_summary()`

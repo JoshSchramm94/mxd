@@ -23,5 +23,5 @@ bibd_to_dm(design, data, id, best_ch, worst_ch, type)
 a data frame object
 }
 \description{
-Convert BIBD to design matrix
+Converts a
 }

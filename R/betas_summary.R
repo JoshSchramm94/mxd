@@ -1,10 +1,18 @@
 #' Summary of posterior individuals draws
 #'
-#' Calculates the aggregated results for the posterior individual draws.
+#' This function calculates the aggregated results from the posterior
+#' distribution of the individuals.
 #'
 #' @param betas posterior beta draws in an object of class list
 #' @param vars column names of items
 #' @param id column name of participants' identifier
+#'
+#' @details
+#' `betas_summary()` provides the aggregated results of the posterior
+#' distribution of the individuals (i.e., `beta`). The output of
+#' `betas_summary()` provides the posterior mean for all items across all
+#' posterior draws, their standard deviation as well as th 2.5% and 97.5%
+#' credible intervals of the item's posterior means.
 #'
 #' @returns a tibble
 #'
@@ -34,13 +42,13 @@ betas_summary <- function(betas, vars, id) {
   # preps ----------------------------------------------------------------------
 
   betas %>%
-    purrr::list_rbind() %>%
+    purrr::list_rbind(names_to = "iteration") %>%
     dplyr::reframe(
       dplyr::across(
         {{ vars }},
         function(x) mean(x)
       ),
-      .by = {{ id }}
+      .by = iteration
     ) %>%
     res_summary(tidyselect::everything(.))
 }

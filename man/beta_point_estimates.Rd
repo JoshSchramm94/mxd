@@ -18,8 +18,16 @@ a tibble
 }
 \description{
 \code{beta_point_estimates()} converts the individual point estimates from the
-provided list of \code{betas}. Thus, the list is reduced to a id times vars
+provided list of \code{betas}. Thus, the list is reduced to a \code{id} x \code{vars}
 output.
+}
+\details{
+While the output of a stan object usually contains the estimations from the
+posterior distribution, \code{beta_point_estimates()} creates the individuals'
+posterior means. The posterior mean is created across all stored posterior
+draws. The number of stored posterior draws depends on your settings for the
+estimation. The \code{id} argument ensures that posterior beta point estimates
+have the same original \code{id} as provided to \code{dm_to_stan_hb()}.
 }
 \examples{
 \dontrun{
@@ -31,4 +39,11 @@ beta_point_estimates(
 }
 
 
+}
+\seealso{
+{
+\code{\link[=betas_post]{betas_post()}} for extracting individuals' posterior
+distribution from stan object
+\code{\link[=mxd_hb]{mxd_hb()}} for estimation
+}
 }

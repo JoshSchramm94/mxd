@@ -1,5 +1,7 @@
 #' Convert BIBD to design matrix
 #'
+#' Converts a
+#'
 #' @param design BIBD design
 #' @param data data frame including best and worst choices
 #' @param id column name of participants' identifier
