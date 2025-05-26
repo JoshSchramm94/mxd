@@ -1,6 +1,9 @@
 #' MaxDiff Count Analysis
 #'
-#' @param data unanchored csv design
+#' Function to run the count analysis to get best and worst counts as well as
+#' difference between best and worst.
+#'
+#' @param design unanchored csv design
 #' @param cs column name of the choice set variable
 #' @param item column name of the item variable
 #' @param ch column name of the choice variable
@@ -8,17 +11,39 @@
 #' @param group optional column name to display results by grouping variable(s)
 #' @param labels optional character vector to define labels of items
 #'
+#' @details
+#' Input has to be the **unanchored** csv export from Sawtooth Software that
+#' also includes the participants' choices. Users have to specify the
+#' (`design`), the variable indicating the choice set (`cs`), the column that
+#' indicates which item was shown (`item`), the choice column (`ch`), the total
+#' number of items included (`no_items`). Further, the user can define an
+#' optional grouping variable (`group`) as well as labels for the items
+#' (`labels`).
+#'
+#'
 #' @returns
 #' a tibble
 #'
+#' @examples
+#' \dontrun{
+#' mxd_count(
+#'   design = design,
+#'   cs = Set,
+#'   item = Item,
+#'   ch = Response,
+#'   no_items = 16L,
+#'   labels = paste("Item", seq_len(16)))
+#' }
+#'
+#'
 #' @export
 #'
-mxd_count <- function(data, cs, item, ch, no_items,
+mxd_count <- function(design, cs, item, ch, no_items,
                       group = NULL, labels = NULL) {
   # check whether all arguments are defined ------------------------------------
 
   check_input(
-    must = c("data", "cs", "item", "ch", "no_items"),
+    must = c("design", "cs", "item", "ch", "no_items"),
     defined = names(match.call())
   )
 
@@ -33,11 +58,11 @@ mxd_count <- function(data, cs, item, ch, no_items,
   allowed_class(labels, "character")
 
   # check for missings in groups
-  missing_allowed(data, var = {{ group }}, allowed = "yes")
-  missing_allowed(data, var = {{ ch }}, allowed = "no")
+  missing_allowed(design, var = {{ group }}, allowed = "yes")
+  missing_allowed(design, var = {{ ch }}, allowed = "no")
 
   # preps ----------------------------------------------------------------------
-  shown <- data %>%
+  shown <- design %>%
     dplyr::group_by({{ group }}) %>%
     dplyr::mutate(dplyr::across({{ item }}, ~ factor(.x,
       levels = seq_len(no_items),
@@ -46,7 +71,7 @@ mxd_count <- function(data, cs, item, ch, no_items,
     dplyr::count({{ item }}, .drop = FALSE) %>%
     dplyr::rename("label" = {{ item }})
 
-  ws <- data %>%
+  ws <- design %>%
     bw_summary(., {{ item }}, {{ ch }}) %>%
     dplyr::mutate(dplyr::across(c(b, w), ~ factor(.x,
       levels = seq_len(no_items),
@@ -63,7 +88,7 @@ mxd_count <- function(data, cs, item, ch, no_items,
     dplyr::left_join(
       x = .,
       y = shown,
-      by = (c("label", var_names(data, {{ group }})))
+      by = (c("label", var_names(design, {{ group }})))
     ) %>%
     dplyr::mutate(
       b_perc = b / n * 100,

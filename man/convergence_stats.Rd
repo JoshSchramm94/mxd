@@ -29,7 +29,7 @@ size (for more information see \code{\link[rstan]{ess_bulk}}), the tail
 effective sample size (for more information see
 \code{\link[rstan]{ess_tail}}), and the \code{Rhat} values (for more information
 see \code{\link[rstan]{Rhat}}). Users can decide to get convergence
-diagnostics for either \code{b} (population mean) or sigma (population
+diagnostics for either \code{b} (population mean) or \code{sigma} (population
 heterogeneity).
 }
 \examples{

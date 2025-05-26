@@ -27,8 +27,15 @@ interval}
 }
 \description{
 \code{alphas()} prepares the output of the means of the population-level (i.e.,
-alphas) of the estimated model. Users have to provide the output of the stan
-model (e.g., estimated using the \code{mxd_hb()}) function.
+alphas) of the estimated model.
+}
+\details{
+\code{alphas()} is a function to extract the posterior distribution from the
+hyperparameter \code{b}, i.e., the population's mean. Users have to provide the
+output of the stan model (e.g., estimated using the \code{mxd_hb()}) function. In
+addition, \code{bw_size} needs to be defined. Optionally, users can define labels
+for the items. Finally, in case an anchored MaxDiff was used, this has to be
+defined via a logical vector in the \code{anchor} argument.
 }
 \examples{
 \dontrun{

@@ -1,8 +1,7 @@
 #' Preparation of posterior individuals draws
 #'
-#' Prepares the posterior draws for the individual (i.e., `betas`). Users have
-#' to provide the output of the stan model (e.g., estimated using the
-#' `mxd_hb()`) function.
+#' Function to prepare the posterior distribution from the individual draws
+#' (i.e., `beta` draws).
 #'
 #' @param stan_output stanfit object
 #' @param bw_size size of MaxDiff tasks in study
@@ -11,6 +10,20 @@
 #' @param ids optional vector to define ids
 #' @param labels optional character vector to define labels of items
 #' @param anchor logical vector to indicate whether it is an anchored MaxDiff
+#'
+#' @details
+#' `betas_post()` prepares the posterior distribution for the individual (i.e.,
+#' `betas`). Users have to provide the output of the stan model (e.g.,
+#' estimated using the `mxd_hb()`) function. Since the utilities from the
+#' posterior distribution are also transformed into choice probabilities, users
+#' have to specify the number of items shown per MaxDiff task (i.e., `bw_size`).
+#' Similiarily, if an anchored MaxDiff was applied (default set to `FALSE`),
+#' this has to be specified in the `anchor` argument. To speed up the
+#' calculation, multiple cores can be used (`cores`). To determine how many
+#' cores are available users can use, for example, the
+#' \code{\link[parallelly]{availableCores}} function. To match the utilities
+#' with the original ids, specify a vector with actual ids in `ids`.
+#'
 #'
 #' @returns
 #' a list with 3 objects

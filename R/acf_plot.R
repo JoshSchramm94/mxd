@@ -8,7 +8,7 @@
 #' @param labels optional character vector to define labels of items
 #'
 #' @details
-#' acf_plot()` is a function to visualize the autocorrelation of the
+#' `acf_plot()` is a function to visualize the autocorrelation of the
 #' hyperparameters. Users can choose to either plot the population mean of the
 #' (`b` parameter) or the populations standard deviation (`sigma` parameter).
 #' `acf_plot()` helps to check the autocorrelation between the posterior draws.

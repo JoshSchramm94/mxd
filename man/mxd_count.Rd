@@ -4,10 +4,10 @@
 \alias{mxd_count}
 \title{MaxDiff Count Analysis}
 \usage{
-mxd_count(data, cs, item, ch, no_items, group = NULL, labels = NULL)
+mxd_count(design, cs, item, ch, no_items, group = NULL, labels = NULL)
 }
 \arguments{
-\item{data}{unanchored csv design}
+\item{design}{unanchored csv design}
 
 \item{cs}{column name of the choice set variable}
 
@@ -25,5 +25,28 @@ mxd_count(data, cs, item, ch, no_items, group = NULL, labels = NULL)
 a tibble
 }
 \description{
-MaxDiff Count Analysis
+Function to run the count analysis to get best and worst counts as well as
+difference between best and worst.
+}
+\details{
+Input has to be the \strong{unanchored} csv export from Sawtooth Software that
+also includes the participants' choices. Users have to specify the
+(\code{design}), the variable indicating the choice set (\code{cs}), the column that
+indicates which item was shown (\code{item}), the choice column (\code{ch}), the total
+number of items included (\code{no_items}). Further, the user can define an
+optional grouping variable (\code{group}) as well as labels for the items
+(\code{labels}).
+}
+\examples{
+\dontrun{
+mxd_count(
+  design = design,
+  cs = Set,
+  item = Item,
+  ch = Response,
+  no_items = 16L,
+  labels = paste("Item", seq_len(16)))
+}
+
+
 }

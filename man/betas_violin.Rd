@@ -17,10 +17,16 @@ betas_violin(betas, vars, labels = NULL)
 ggplot object
 }
 \description{
+Function to display the posterior distribution of the individual draws via
+violin plot.
+}
+\details{
 \code{betas_violin()} displays the posterior distribution of the individual draws
 via a violin plot. Users have to provide the output of the stan
-model (e.g., estimated using the \code{mxd_hb()}) function. \code{betas_violin()}
-exports a \code{ggplot} object that can be further adjusted by the user.
+model (e.g., estimated using the \code{mxd_hb()}) function. In addition, users
+have to define the items in the \verb{vars argument}.
+\code{betas_violin()} exports a \code{ggplot} object that can be further adjusted by
+the user.
 }
 \examples{
 \dontrun{

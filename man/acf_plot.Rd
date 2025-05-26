@@ -21,7 +21,12 @@ a ggplot object
 This function visualizes the autocorrelation of the hyperparameters.
 }
 \details{
-acf_plot()\verb{ is a function to visualize the autocorrelation of the hyperparameters. Users can choose to either plot the population mean of the (}b\verb{ parameter) or the populations standard deviation (}sigma\verb{parameter).}acf_plot()\verb{helps to check the autocorrelation between the posterior draws. It uses the \code{\link[stats]{acf}} function from the stats package. The output of}acf_plot()` will be a ggplot object that can be further modified
+\code{acf_plot()} is a function to visualize the autocorrelation of the
+hyperparameters. Users can choose to either plot the population mean of the
+(\code{b} parameter) or the populations standard deviation (\code{sigma} parameter).
+\code{acf_plot()} helps to check the autocorrelation between the posterior draws.
+It uses the \code{\link[stats]{acf}} function from the stats package. The
+output of \code{acf_plot()} will be a ggplot object that can be further modified
 by the user.
 }
 \examples{

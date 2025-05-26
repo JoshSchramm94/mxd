@@ -36,9 +36,21 @@ a list with 3 objects
 }
 }
 \description{
-Prepares the posterior draws for the individual (i.e., \code{betas}). Users have
-to provide the output of the stan model (e.g., estimated using the
-\code{mxd_hb()}) function.
+Function to prepare the posterior distribution from the individual draws
+(i.e., \code{beta} draws).
+}
+\details{
+\code{betas_post()} prepares the posterior distribution for the individual (i.e.,
+\code{betas}). Users have to provide the output of the stan model (e.g.,
+estimated using the \code{mxd_hb()}) function. Since the utilities from the
+posterior distribution are also transformed into choice probabilities, users
+have to specify the number of items shown per MaxDiff task (i.e., \code{bw_size}).
+Similiarily, if an anchored MaxDiff was applied (default set to \code{FALSE}),
+this has to be specified in the \code{anchor} argument. To speed up the
+calculation, multiple cores can be used (\code{cores}). To determine how many
+cores are available users can use, for example, the
+\code{\link[parallelly]{availableCores}} function. To match the utilities
+with the original ids, specify a vector with actual ids in \code{ids}.
 }
 \examples{
 \dontrun{

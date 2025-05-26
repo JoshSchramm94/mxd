@@ -23,5 +23,17 @@ dm_to_stan_mnl(design, id, cs, items, ch, prior_b = NULL)
 a list
 }
 \description{
-Prepare design matrix for Multinomial Logit Estimation in Stan
+Function to convert the design matrix into input required for
+\code{mxd_logit_bayesian()}.
+}
+\details{
+\code{dm_to_stan_mnl()} converts the design matrix into a list that is required
+to run the hierarchical multinomial logit model using \code{mxd_logit_bayesian()}.
+Users have to define the design matrix (\code{design}), the variables for the
+participants identifier (\code{id}), the choice set (\code{cs}), the alternative
+within the choice set (\code{alt}), the items (i.e., predictors; \code{items}) and the
+actual choice variable (\code{ch}).
+Further, the use can specify the prior for the hyperparameter \code{b}, the
+prior for the population mean (mean of hyperparameter) of the utilities. The
+default value for \code{prior_b} is set to \code{5}.
 }

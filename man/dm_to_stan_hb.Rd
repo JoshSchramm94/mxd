@@ -40,8 +40,37 @@ sets}
 \item{demos}{matrix of demographic variables (i.e., Z variables)}
 }
 \value{
-a nested list
+a nested list with 2 elements
+
+\describe{
+\item{ids}{a data frame with 2 variables, namely, the original ids
+(\code{orig_id}) and the new ids (\code{new_id}). \code{mxd_hb()} requires the id to
+be counted up sequentially. To ensure this the id is fixed.}
+\item{stan_input}{names list that is required for the model of \code{mxd_hb()}.}
+}
 }
 \description{
-Prepare design matrix for Hierarchical Bayes estimation in Stan
+Function to convert the design matrix to input required for \code{mxd_hb()}.
+}
+\details{
+\code{dm_to_stan_hb()} converts the design matrix into a nested list. The input
+is required to run the hierarchical Bayes estimation using \code{mxd_hb()}.
+Users have to define the design matrix (\code{design}), the variables for the
+participants identifier (\code{id}), the choice set (\code{cs}), the alternative
+within the choice set (\code{alt}), the items (i.e., predictors; \code{items}) and the
+actual choice variable (\code{ch}).
+Further, the use can specify the priors for the hyperparameters \code{b},
+\code{omega}, and \code{sigma}.
+
+\describe{
+\item{prior_b}{prior for the population mean (mean of hyperparameter) of
+the utilities; default is set to \code{5}}
+\item{prior_omega}{prior for the LKJ cholesky of the correlation matrix;
+default is set to \code{2}}
+\item{prior_sigma}{prior for the scale parameter of the utilities;
+default is set to \code{5}}
+}
+
+In addition, \emph{Z} variables can be defined, i.e., demographic variables. The
+intercept for \code{demos} will be added in the function.
 }

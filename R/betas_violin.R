@@ -1,15 +1,23 @@
 #' Violin plot for beta posterior draws
 #'
-#' `betas_violin()` displays the posterior distribution of the individual draws
-#' via a violin plot. Users have to provide the output of the stan
-#' model (e.g., estimated using the `mxd_hb()`) function. `betas_violin()`
-#' exports a `ggplot` object that can be further adjusted by the user.
+#' Function to display the posterior distribution of the individual draws via
+#' violin plot.
 #'
 #' @param betas posterior beta draws in an object of class list
 #' @param vars column names of items
 #' @param labels optional character vector to define labels of items
 #'
 #' @returns ggplot object
+#'
+#' @details
+#' `betas_violin()` displays the posterior distribution of the individual draws
+#' via a violin plot. Users have to provide the output of the stan
+#' model (e.g., estimated using the `mxd_hb()`) function. In addition, users
+#' have to define the items in the `vars argument`.
+#' `betas_violin()` exports a `ggplot` object that can be further adjusted by
+#' the user.
+#'
+#'
 #'
 #' @examples
 #' \dontrun{

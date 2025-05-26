@@ -1,13 +1,20 @@
 #' Preparation of population mean's posterior draws
 #'
 #' `alphas()` prepares the output of the means of the population-level (i.e.,
-#' alphas) of the estimated model. Users have to provide the output of the stan
-#' model (e.g., estimated using the `mxd_hb()`) function.
+#' alphas) of the estimated model.
 #'
 #' @param stan_output stanfit object
 #' @param bw_size size of MaxDiff tasks in study
 #' @param labels optional character vector to define labels of items
 #' @param anchor logical vector to indicate whether it is an anchored MaxDiff
+#'
+#' @details
+#' `alphas()` is a function to extract the posterior distribution from the
+#' hyperparameter `b`, i.e., the population's mean. Users have to provide the
+#' output of the stan model (e.g., estimated using the `mxd_hb()`) function. In
+#' addition, `bw_size` needs to be defined. Optionally, users can define labels
+#' for the items. Finally, in case an anchored MaxDiff was used, this has to be
+#' defined via a logical vector in the `anchor` argument.
 #'
 #' @returns
 #' a list with 4 objects

@@ -1,5 +1,7 @@
 #' Prepare design matrix for Hierarchical Bayes estimation in Stan
 #'
+#' Function to convert the design matrix to input required for `mxd_hb()`.
+#'
 #' @param design design matrix
 #' @param id column name of the id variable
 #' @param cs column name of the choice set variable
@@ -12,8 +14,40 @@
 #' @param prior_sigma numeric input for the sigma prior
 #' @param demos matrix of demographic variables (i.e., Z variables)
 #'
+#' @details
+#' `dm_to_stan_hb()` converts the design matrix into a nested list. The input
+#' is required to run the hierarchical Bayes estimation using `mxd_hb()`.
+#' Users have to define the design matrix (`design`), the variables for the
+#' participants identifier (`id`), the choice set (`cs`), the alternative
+#' within the choice set (`alt`), the items (i.e., predictors; `items`) and the
+#' actual choice variable (`ch`).
+#' Further, the use can specify the priors for the hyperparameters `b`,
+#' `omega`, and `sigma`.
+#'
+#' \describe{
+#'   \item{prior_b}{prior for the population mean (mean of hyperparameter) of
+#'    the utilities; default is set to `5`}
+#'   \item{prior_omega}{prior for the LKJ cholesky of the correlation matrix;
+#'   default is set to `2`}
+#'   \item{prior_sigma}{prior for the scale parameter of the utilities;
+#'   default is set to `5`}
+#' }
+#'
+#' In addition, *Z* variables can be defined, i.e., demographic variables. The
+#' intercept for `demos` will be added in the function.
+#'
+#'
+#'
 #' @returns
-#' a nested list
+#' a nested list with 2 elements
+#'
+#' \describe{
+#'   \item{ids}{a data frame with 2 variables, namely, the original ids
+#'   (`orig_id`) and the new ids (`new_id`). `mxd_hb()` requires the id to
+#'   be counted up sequentially. To ensure this the id is fixed.}
+#'   \item{stan_input}{names list that is required for the model of `mxd_hb()`.}
+#' }
+#'
 #'
 #' @export
 #'

@@ -1,5 +1,8 @@
 #' Converting csv design into design matrix
 #'
+#' Converts a Sawtooth .csv export to a design matrix including assumed choice
+#' process. Allows for both direct or indirect anchoring.
+#'
 #' @param design csv design provided by Sawtooth software
 #' @param id column name of participants' identifier
 #' @param cs column name of the choice set variable
@@ -10,7 +13,47 @@
 #' @param mxd_tasks numeric input to specify number of MaxDiff tasks
 #' @param type character to specify coding method
 #'
+#' @details
+#' `csv_to_dm()` converts a design export (including participants' responses)
+#' from Sawtooth Software into a design matrix needed for `mxd`. Users have to
+#' specify the design (`design`), the participant's unique identifier (`id`),
+#' the variable indicating the choice set (`cs`), the column that indicates
+#' which item was shown (`item`), the choice column (`ch`), whether it was an
+#' anchored MaxDiff (if yes, participants can choose between `direct` and
+#' `indirect`), the number of MaxDiff tasks (`mxd_tasks`). Finally, the
+#' participant has to choose the assumed decision process. mxd currently offers
+#' the following assumed decision processes:
+#'
+#' \describe{
+#'   \item{best-worst}{participants make best and worst choices simultaneously,
+#'   i.e., they choose both best and worst choices from the same choice set}
+#'   \item{best-worst-seq}{sequential best first and worst second, thus, the
+#'   participant chooses the worst choice choice from a reduced set of
+#'   alternatives (i.e., best choice is omitted from worst choice set)}
+#'   \item{worst-best-seq}{sequential worst first and best second, thus, the
+#'   participant chooses the best choice choice from a reduced set of
+#'   alternatives (i.e., worst choice is omitted from best choice set)}
+#'   \item{maxdiff}{maximum difference model, i.e., participant compares each
+#'   possible pair of alternatives and chooses the one that has the maximum
+#'   difference}
+#'   \item{exploded}{exploded logit pairs, where each choice set is transformed
+#'   into multiple pairwise comparisons (e.g., in a choice set of 4
+#'   alternatives, where the participant chooses both the best and worst
+#'   alternative, there are 5 pairwise comparisons)}
+#'   \item{best-worst-seq}{sequential best first and worst second, thus, the
+#'   participant chooses the worst choice choice from a reduced set of
+#'   alternatives (i.e., best choice is omitted from worst choice set)}
+#'   \item{best-only}{only the best choice from the choice set is considered}
+#'   \item{worst-only}{only the worst choice from the choice set is considered}
+#' }
+#'
+#' Currently, all types are working for the standard MaxDiff and the direct
+#' anchored MaxDiff. For the indirect anchored MaxDiff, only `best-worst`,
+#' `best-worst-seq`, and `worst-best-seq` is working.
+#'
 #' @returns a data frame object
+#'
+#'
 #' @export
 #'
 csv_to_dm <- function(design, id, cs, item, ch, anchor = NULL, mxd_tasks,
@@ -30,9 +73,11 @@ csv_to_dm <- function(design, id, cs, item, ch, anchor = NULL, mxd_tasks,
   }
 
   # check input for type
+  ##############################################################################
+  # make this dependent on the anchor choice
   allowed_input(type, c("best-worst", "best-worst-seq", "worst-best-seq",
                         "best-only", "worst-only", "maxdiff", "exploded"))
-
+  ##############################################################################
   # check length of input
   ncol_input(design, {{ id }}, "id")
   ncol_input(design, {{ cs }}, "cs")
@@ -313,6 +358,7 @@ csv_to_dm <- function(design, id, cs, item, ch, anchor = NULL, mxd_tasks,
   # fix indirect anchor
 
   if (isFALSE(is.null(anchor)) && isTRUE(anchor == "indirect")) {
+
     unanchored <- design %>%
       dplyr::reframe(
         b = ifelse(any({{ ch }} != -1), {{ item }}[{{ ch }} == 1], NA),
