@@ -42,13 +42,13 @@ betas_summary <- function(betas, vars, id) {
   # preps ----------------------------------------------------------------------
 
   betas %>%
-    purrr::list_rbind(names_to = "iteration") %>%
+    purrr::list_rbind(names_to = "iter") %>%
     dplyr::reframe(
       dplyr::across(
         {{ vars }},
         function(x) mean(x)
       ),
-      .by = iteration
+      .by = iter
     ) %>%
     res_summary(tidyselect::everything(.))
 }

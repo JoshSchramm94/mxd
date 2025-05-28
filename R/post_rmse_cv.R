@@ -123,7 +123,7 @@ post_rmse_cv <- function(stan_cv, stan_input, hot_data, opts, hot_choice,
         ) %>%
         dplyr::reframe(mae = sqrt(mean(abs(perc - perc_pred)^2)))
     }) %>%
-      purrr::list_rbind(names_to = "iteration")
+      purrr::list_rbind(names_to = "iter")
   }) %>%
     purrr::list_rbind(names_to = "sample")
 

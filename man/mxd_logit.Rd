@@ -4,10 +4,19 @@
 \alias{mxd_logit}
 \title{Multinomial logit estimation for MaxDiff}
 \usage{
-mxd_logit(data, ch, cs, items, bw_size, reference = NULL, anchor = FALSE, ...)
+mxd_logit(
+  design,
+  ch,
+  cs,
+  items,
+  bw_size,
+  reference = NULL,
+  anchor = FALSE,
+  ...
+)
 }
 \arguments{
-\item{data}{design matrix}
+\item{design}{design matrix}
 
 \item{ch}{column name of the choice variable}
 
@@ -26,8 +35,20 @@ level}
 information see \link[logitr]{logitr} documentation}
 }
 \value{
-list
+object of class data frame
 }
 \description{
-Multinomial logit estimation for MaxDiff
+Function to estimate frequentist multinomial logit model.
+}
+\details{
+\code{mxd_logit()} is a function that runs the frequentist multinomial logit model
+(MNL) for MaxDiff data. Users first need to define the design matrix which
+can be created using, for example, the \code{csv_to_dm()} function. In addition,
+the column name of the choice (\code{ch}), the choice set (\code{cs}), the items (i.e.,
+predictors), and the size of the MaxDiff tasks (i.e., how many alternatives
+were shown per choice set; \code{bw_size}). Optionally, users can define their
+reference level, otherwise the last item defined in \code{items} is used as
+reference level. Finally, if an anchored MaxDiff was used, set \code{anchor} to
+\code{TRUE} (default is set to \code{FALSE}). The output provides the MNL raw
+coefficients, the zero-centered scores, and the probability scores.
 }

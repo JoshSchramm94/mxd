@@ -1,9 +1,27 @@
 #' Preparation of population sigma's posterior draws
 #'
+#' `sigma()` prepares the output of the means of the population-level (i.e.,
+#' sigma) of the estimated model.
+#'
 #' @param stan_output stanfit object
 #' @param labels optional character vector to define labels of items
 #'
+#' @details
+#' `sigma()` is a function to extract the posterior distribution from the
+#' hyperparameter `sigma`, i.e., the standard deviation. Users have to provide the
+#' output of the stan model (e.g., estimated using the `mxd_hb()`) function.
+#' Optionally, users can define labels for the items.
+#'
 #' @returns a tibble
+#'
+#' @examples
+#' \dontrun{
+#' sigma(
+#'   stan_output = mxd_model,
+#'   pars = "b"
+#'  )
+#' }
+#'
 #' @export
 #'
 sigma_summary <- function(stan_output, labels = NULL) {

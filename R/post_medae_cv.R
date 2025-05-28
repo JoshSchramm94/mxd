@@ -123,7 +123,7 @@ post_medae_cv <- function(stan_cv, stan_input, hot_data, opts, hot_choice,
         ) %>%
         dplyr::reframe(mae = stats::median(abs(perc - perc_pred)))
     }) %>%
-      purrr::list_rbind(names_to = "iteration")
+      purrr::list_rbind(names_to = "iter")
   }) %>%
     purrr::list_rbind(names_to = "sample")
 

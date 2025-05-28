@@ -447,7 +447,7 @@ choice_per_cs <- function(
                        w = sum({{ choice }} == -1),
                        .by = c({{ id }}, {{ cs }}))
 
-  if (!(all(ws[["b"]] <= 1 && ws[["w"]] <= 1))) {
+  if (!(all(ws[["b"]] <= 1 & ws[["w"]] <= 1))) {
     cli::cli_abort(
       c(
         "Only one {.arg alt} can be chosen per {.arg cs}."

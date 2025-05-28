@@ -1,5 +1,7 @@
 #' Bayesian logit estimation for MaxDiff
 #'
+#' Function to run bayesian multinomial logit regression.
+#'
 #' @param data_stan list with parameters for stan
 #' @param chains numeric input to define the number of chains to be run
 #' @param iter numeric input to define the number of iterations to
@@ -13,6 +15,10 @@
 #' @param seed numeric input to specify seed for reproducible results
 #' @param ... additional arguments to define are `cores`, `thin`, `init`, and
 #' `algorithm`, more information see \code{\link[rstan]{stan}} documentation
+#'
+#' @details
+#' Additional details...
+#'
 #'
 #' @returns S4
 #' @export

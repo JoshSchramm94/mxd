@@ -43,5 +43,8 @@ MaxDiff task}
 S4
 }
 \description{
-Bayesian logit estimation for MaxDiff
+Function to run bayesian multinomial logit regression.
+}
+\details{
+Additional details...
 }
