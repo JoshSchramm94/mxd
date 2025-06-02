@@ -190,8 +190,7 @@ csv_to_dm <- function(design, id, cs, item, ch, anchor = NULL, mxd_tasks,
           df,
           unlist(unanchored[x, ][vars]) %>%
             .[!is.na(.)] %>%
-            DescTools::CombSet(., 2, repl = FALSE, ord = TRUE) %>%
-            as.data.frame() %>%
+            combi(., order = TRUE) %>%
             stats::setNames(paste0("item", seq_len(2))) %>%
             dplyr::mutate(
               id = unanchored[x, ][[var_names(design, {{ id }})]],
@@ -241,8 +240,7 @@ csv_to_dm <- function(design, id, cs, item, ch, anchor = NULL, mxd_tasks,
           df,
           unlist(unanchored[x, ][vars]) %>%
             .[!is.na(.)] %>%
-            DescTools::CombSet(., 2, repl = FALSE, ord = FALSE) %>%
-            as.data.frame() %>%
+            combi(., order = FALSE) %>%
             stats::setNames(paste0("item", seq_len(2))) %>%
             dplyr::mutate(
               id = unanchored[x, ][[var_names(design, {{ id }})]],

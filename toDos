@@ -4,3 +4,5 @@ estimation or input fucntion
 2) double-check `betas_summary()`
 
 3) can we not adjust the `id` problem in transformed parameters?
+
+4) acf() for each chain individually or together?
