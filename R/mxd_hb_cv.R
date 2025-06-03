@@ -6,6 +6,7 @@
 #' be run (warm-up + sampling)
 #' @param warmup numeric input to define the number of iterations to be used
 #' for warm-up purposes
+#' @param type character to specify coding method
 #' @param seed numeric input to specify seed for reproducible results
 #' @param ... additional arguments to define are `cores`, `thin`, `init`, and
 #' `algorithm`, for more information see \code{\link[rstan]{stan}} documentation
@@ -17,6 +18,7 @@ mxd_hb_cv <- function(data_stan,
                       chains = 5L,
                       iter = 4000L,
                       warmup = 1000L,
+                      type,
                       seed = NULL,
                       ...) {
 
@@ -60,7 +62,7 @@ mxd_hb_cv <- function(data_stan,
     cat("Fold", x, "estimating ...", "\r")
 
     rstan::sampling(
-      object = stanmodels$hbmnl,
+      object = stanmodels$hb,
       data = data_stan[[x]][["stan_input"]],
       pars = c("b", "sigma", "Omega", "beta", "log_lik"),
       algorithm = args[["algorithm"]],

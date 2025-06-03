@@ -4,14 +4,7 @@
 \alias{betas_post}
 \title{Preparation of posterior individuals draws}
 \usage{
-betas_post(
-  stan_output,
-  bw_size,
-  cores = 1L,
-  ids = NULL,
-  labels = NULL,
-  anchor = FALSE
-)
+betas_post(stan_output, bw_size, cores = 1L, labels = NULL, anchor = FALSE)
 }
 \arguments{
 \item{stan_output}{stanfit object}
@@ -21,11 +14,11 @@ betas_post(
 \item{cores}{optional integer input to define the number of cores used for
 calculation (default set to 1L)}
 
-\item{ids}{optional vector to define ids}
-
 \item{labels}{optional character vector to define labels of items}
 
 \item{anchor}{logical vector to indicate whether it is an anchored MaxDiff}
+
+\item{ids}{optional vector to define ids}
 }
 \value{
 a list with 3 objects
@@ -58,7 +51,6 @@ betas_prep <- betas_post(
  stan_output = mxd_model,
  bw_size = 4,
  cores = 4L,
- ids = stan_input[["ids"]][["orig_id"]],
  labels = paste0(v, seq_len(16)),
  anchor = TRUE
  )

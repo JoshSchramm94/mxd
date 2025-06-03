@@ -40,14 +40,7 @@ sets}
 \item{demos}{matrix of demographic variables (i.e., Z variables)}
 }
 \value{
-a nested list with 2 elements
-
-\describe{
-\item{ids}{a data frame with 2 variables, namely, the original ids
-(\code{orig_id}) and the new ids (\code{new_id}). \code{mxd_hb()} requires the id to
-be counted up sequentially. To ensure this the id is fixed.}
-\item{stan_input}{names list that is required for the model of \code{mxd_hb()}.}
-}
+a named list with stan input that is required for the model of \code{mxd_hb()}
 }
 \description{
 Function to convert the design matrix to input required for \code{mxd_hb()}.

@@ -11,6 +11,7 @@ data {
   int<lower=1> start_n[N];            // row number in X where nth choice task starts
   int<lower=1> end_n[N];              // row number in X where nth choice task ends
   int<lower=1, upper=I> id[N];        // id identifying each individual
+  vector<lower=1>[I] orig_id;         // original ids
   real<lower=0> prior_omega;          // prior for correlation (lkj)
   real<lower=0> prior_b;              // prior for mean (sd normal)
   real<lower=0> prior_sigma;          // prior for sigma (sd half-normal)
@@ -48,5 +49,8 @@ model {
 
 generated quantities {
   matrix[K, K] Omega;
+  matrix[I, K + 2] beta_prep;
+
+  beta_prep = append_col(append_col(orig_id, beta), rep_vector(0, I));
   Omega = multiply_lower_tri_self_transpose(L_Omega);
 }

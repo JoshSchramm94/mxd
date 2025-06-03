@@ -21,8 +21,6 @@ dm_to_stan_hb_cv <- function(
     design, id, cs, alt, items, ch, folds, prior_b = NULL, prior_omega = NULL,
     prior_sigma = NULL, demos = NULL, seed = NULL) {
 
-
-
   # define missing arguments ---------------------------------------------------
   # specify optional values
   prior_b <- prior_b %||% 5L
@@ -105,6 +103,8 @@ dm_to_stan_hb_cv <- function(
       dplyr::distinct({{ id }}, .keep_all = TRUE) %>%
       dplyr::select({{ id }}, group_id)
 
+    id_orig <- ids[!(ids %in% val_sample[[1]])]
+
     if (!is.null(demos)) {
 
       demos <- demos_df %>%
@@ -127,13 +127,12 @@ dm_to_stan_hb_cv <- function(
         alt = {{ alt }},
         items = {{ items }},
         ch = {{ ch }},
+        orig_id = id_orig,
         prior_b = prior_b,
         prior_omega = prior_omega,
         prior_sigma = prior_sigma,
         demos = demos
       )
-
-
 
     output <- append(output, list("val_sample" = val_sample))
   })

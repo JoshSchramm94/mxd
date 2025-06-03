@@ -195,7 +195,7 @@ The output is a list with 4 data frames, namely
 Alternatively, we could also run a hierarchical Bayesian MNL model. The Stan code has the benefits that it allows for alternating choice set sizes. This means that it can be implemented with each type of coding we introduced above.
 
 ```{r}
-cat(rstan::get_stancode(mxd:::stanmodels$hbmnl))
+cat(rstan::get_stancode(mxd:::stanmodels$hb))
 ```
 
 Before we can estimate the model, we have to prepare the input accordingly. To do so, the users can apply the `dm_to_stan_hb()` function, which works similar to the `dm_to_stan_mnl()` function. In addition the to the `dm_to_stan_mnl()`, the user also has to define the `alt` argument (i.e., variable that stores alternatives indicator within the choice sets). In addition, the model has more hyperparameters to define, namely, `b`, `omega`, and `sigma`. The default prior for `b` is set to `5`, while the priors for `omega` and `sigma` are set to `2`. Finally, the user also has the option to define covariates (`demos`), which need to be passed to the function in form of a matrix.
@@ -225,7 +225,7 @@ Next, we can estimate the model using the `mxd_hb()` function, which is similar 
 
 ```{r, warning = FALSE}
 output <- mxd_hb(
-  data_stan = stan_input[["stan_input"]],
+  data_stan = stan_input,
   chains = 5L,
   iter = 400L,
   warmup = 200L,
@@ -319,7 +319,6 @@ betas_prep <- betas_post(
   stan_output = output,
   bw_size = 4, 
   cores = 4L,
-  ids = stan_input[["ids"]][["orig_id"]],
   labels = paste0("g", seq_len(16)),
   anchor = TRUE
 )

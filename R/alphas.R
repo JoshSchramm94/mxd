@@ -30,7 +30,7 @@
 #' \dontrun{
 #' alphas(
 #'   stan_output = mxd_model,
-#'   pars = "b"
+#'   bw_size = 4
 #'  )
 #' }
 #'
@@ -40,6 +40,18 @@ alphas <- function(stan_output, bw_size, labels = NULL, anchor = FALSE) {
   # check whether all arguments are defined ------------------------------------
 
   check_input(c("stan_output", "bw_size"), names(match.call()))
+
+  # check whether input is correct
+  stanfit_input(stan_output)
+
+  # check whether bw_size is numeric
+  allowed_class(bw_size, c("numeric", "integer"))
+
+  # store as integer
+  bw_size <- as.integer(bw_size)
+
+  # check input anchor
+  allowed_input(anchor, c("TRUE", "FALSE", "T", "F"))
 
   # define missing arguments ---------------------------------------------------
   labels <- labels %||% paste0(
@@ -54,23 +66,11 @@ alphas <- function(stan_output, bw_size, labels = NULL, anchor = FALSE) {
   )
 
   # tests ----------------------------------------------------------------------
-  # check whether input is correct
-  stanfit_input(stan_output)
-
   # check length of labels
   labels_length(labels, ncol(as.data.frame(rstan::extract(stan_output)[["b"]])))
 
   # check whether labels are class character
   allowed_class(labels, "character")
-
-  # check whether bw_size is numeric
-  allowed_class(bw_size, c("numeric", "integer"))
-
-  # store as integer
-  bw_size <- as.integer(bw_size)
-
-  # check input anchor
-  allowed_input(toupper(anchor), c("TRUE", "FALSE"))
 
   # preps ----------------------------------------------------------------------
   alphas_raw <- rstan::extract(stan_output)[["b"]] %>%

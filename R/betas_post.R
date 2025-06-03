@@ -39,7 +39,6 @@
 #'  stan_output = mxd_model,
 #'  bw_size = 4,
 #'  cores = 4L,
-#'  ids = stan_input[["ids"]][["orig_id"]],
 #'  labels = paste0(v, seq_len(16)),
 #'  anchor = TRUE
 #'  )
@@ -47,12 +46,9 @@
 #'
 #' @export
 betas_post <- function(stan_output, bw_size, cores = 1L,
-                       ids = NULL, labels = NULL, anchor = FALSE) {
+                       labels = NULL, anchor = FALSE) {
   # check whether all arguments are defined ------------------------------------
   check_input(c("stan_output", "bw_size"), names(match.call()))
-
-  # check input of ids
-  id_vector(ids)
 
   # define missing arguments ---------------------------------------------------
   labels <- labels %||% paste0(
@@ -64,8 +60,6 @@ betas_post <- function(stan_output, bw_size, cores = 1L,
     )
   )
 
-  # define ids if not specified
-  ids <- ids %||% seq_len(dim(rstan::extract(stan_output)[["beta"]])[2])
 
   # tests ----------------------------------------------------------------------
   # check whether input is correct
@@ -76,9 +70,6 @@ betas_post <- function(stan_output, bw_size, cores = 1L,
 
   # check whether labels are class character
   allowed_class(labels, "character")
-
-  # check length of ids
-  labels_length(unique(ids), dim(rstan::extract(stan_output)[["beta"]])[2])
 
   # check for numeric / integer input
   allowed_class(bw_size, c("numeric", "integer"))
@@ -94,17 +85,14 @@ betas_post <- function(stan_output, bw_size, cores = 1L,
   future::plan(strategy = future::multisession, workers = cores)
 
   beta_raw <- furrr::future_map(
-    seq(dim(rstan::extract(stan_output)[["beta"]])[1]),
+    seq(dim(rstan::extract(stan_output)[["beta_prep"]])[1]),
     function(x) {
-      as.data.frame(rstan::extract(stan_output)[["beta"]][x, , ]) %>%
-        dplyr::mutate(
-          id = ids,
-          ref = 0
-        ) %>%
-        dplyr::relocate(id, .before = tidyselect::everything()) %>%
+      as.data.frame(rstan::extract(stan_output)[["beta_prep"]][x, , ]) %>%
         stats::setNames(c("id", labels, "ref"))
     }
   )
+
+  ids <- unlist(beta_raw[[1]]$id)
 
   if (isTRUE(anchor)) {
     beta_zc <- furrr::future_map(beta_raw, function(df) {

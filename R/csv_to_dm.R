@@ -73,11 +73,16 @@ csv_to_dm <- function(design, id, cs, item, ch, anchor = NULL, mxd_tasks,
   }
 
   # check input for type
-  ##############################################################################
-  # make this dependent on the anchor choice
-  allowed_input(type, c("best-worst", "best-worst-seq", "worst-best-seq",
+  if (isTRUE(is.null(anchor)) || isTRUE(anchor == "direct")) {
+    allowed_input(type, c("best-worst", "best-worst-seq", "worst-best-seq",
                         "best-only", "worst-only", "maxdiff", "exploded"))
-  ##############################################################################
+  }
+
+  if (isFALSE(is.null(anchor)) && isTRUE(anchor == "indirect")) {
+    allowed_input(type, c("best-worst", "best-worst-seq", "worst-best-seq",
+                          "best-only", "worst-only"))
+  }
+
   # check length of input
   ncol_input(design, {{ id }}, "id")
   ncol_input(design, {{ cs }}, "cs")

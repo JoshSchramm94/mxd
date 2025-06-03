@@ -41,7 +41,7 @@ defined via a logical vector in the \code{anchor} argument.
 \dontrun{
 alphas(
   stan_output = mxd_model,
-  pars = "b"
+  bw_size = 4
  )
 }
 

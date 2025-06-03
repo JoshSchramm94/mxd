@@ -37,16 +37,8 @@
 #' intercept for `demos` will be added in the function.
 #'
 #'
-#'
 #' @returns
-#' a nested list with 2 elements
-#'
-#' \describe{
-#'   \item{ids}{a data frame with 2 variables, namely, the original ids
-#'   (`orig_id`) and the new ids (`new_id`). `mxd_hb()` requires the id to
-#'   be counted up sequentially. To ensure this the id is fixed.}
-#'   \item{stan_input}{names list that is required for the model of `mxd_hb()`.}
-#' }
+#' a named list with stan input that is required for the model of `mxd_hb()`
 #'
 #'
 #' @export
@@ -103,10 +95,7 @@ dm_to_stan_hb <- function(
   preds <- var_names(design, {{ items }})
 
   # fix ids
-  id_fix <- data.frame(
-    orig_id = unique(design[[var_names(design, {{ id }})]]),
-    new_id = seq_len(length(unique(design[[var_names(design, {{ id }})]])))
-  )
+  orig_id <- unique(unlist(dplyr::select(design, {{ id }})))
 
 
   # fix the design matrix
@@ -150,7 +139,7 @@ dm_to_stan_hb <- function(
 
   data_stan <- list(
     N = as.integer(max(index_n$obs)),
-    I = nrow(id_fix),
+    I = length(orig_id),
     M = nrow(X),
     K = ncol(X),
     D = ncol(demos),
@@ -158,6 +147,7 @@ dm_to_stan_hb <- function(
     bw = design$bw,
     Z = demos,
     y = index_n$y,
+    orig_id = orig_id,
     start_n = index_n$start_n,
     end_n = index_n$end_n,
     id = index_n$id,
@@ -167,8 +157,5 @@ dm_to_stan_hb <- function(
   )
 
 
-  return(list(
-    "ids" = id_fix,
-    "stan_input" = data_stan
-  ))
+  return(data_stan)
 }
