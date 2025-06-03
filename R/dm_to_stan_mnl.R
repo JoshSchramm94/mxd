@@ -27,8 +27,6 @@
 #' @export
 #'
 dm_to_stan_mnl <- function(design, id, cs, items, ch, prior_b = NULL) {
-
-
   # define missing arguments ---------------------------------------------------
   # specify optional values
   prior_b <- prior_b %||% 5L

@@ -31,14 +31,12 @@
 #'   betas = betas_prep[["beta_raw"]],
 #'   vars = c(v1:v16),
 #'   id = id
-#'  )
+#' )
 #' }
-#'
 #'
 #' @export
 #'
 beta_point_estimates <- function(betas, vars, id) {
-
   # check whether all arguments are defined ------------------------------------
   check_input(c("betas", "vars", "id"), names(match.call()))
 

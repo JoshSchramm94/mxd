@@ -34,15 +34,15 @@
 #' @examples
 #' \dontrun{
 #' post_mhp(
-#'  betas_post = betas_prep[["beta_raw"]],
-#'  hot_data = hot_data,
-#'  id = id,
-#'  opts = c(g1, g8, g9, g13, g14, g15, g16, ref),
-#'  hot_choice = HOT1,
-#'  raw = FALSE,
-#'  group = NULL
-#'  )
-#'}
+#'   betas_post = betas_prep[["beta_raw"]],
+#'   hot_data = hot_data,
+#'   id = id,
+#'   opts = c(g1, g8, g9, g13, g14, g15, g16, ref),
+#'   hot_choice = HOT1,
+#'   raw = FALSE,
+#'   group = NULL
+#' )
+#' }
 #'
 post_mhp <- function(betas_post, hot_data, id, opts, hot_choice,
                      group = NULL, raw = FALSE) {

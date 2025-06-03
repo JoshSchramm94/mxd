@@ -36,12 +36,12 @@
 #' @examples
 #' \dontrun{
 #' betas_prep <- betas_post(
-#'  stan_output = mxd_model,
-#'  bw_size = 4,
-#'  cores = 4L,
-#'  labels = paste0(v, seq_len(16)),
-#'  anchor = TRUE
-#'  )
+#'   stan_output = mxd_model,
+#'   bw_size = 4,
+#'   cores = 4L,
+#'   labels = paste0(v, seq_len(16)),
+#'   anchor = TRUE
+#' )
 #' }
 #'
 #' @export

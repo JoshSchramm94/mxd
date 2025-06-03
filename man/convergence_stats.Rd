@@ -39,9 +39,6 @@ convergence_stats(
   pars = "b",
   labels = paste0("v", seq_len(16))
 )
-
 }
-
-
 
 }

@@ -54,7 +54,6 @@ mxd_hb <- function(data_stan,
                    type,
                    seed = NULL,
                    ...) {
-
   # define missing values
   seed <- seed %||% 1910L
 
@@ -70,8 +69,10 @@ mxd_hb <- function(data_stan,
   allowed_class(iter, c("numeric", "integer"))
   allowed_class(warmup, c("numeric", "integer"))
   allowed_class(seed, c("numeric", "integer"))
-  allowed_input(type, c("best-worst", "best-worst-seq", "worst-best-seq",
-                        "best-only", "worst-only", "maxdiff", "exploded"))
+  allowed_input(type, c(
+    "best-worst", "best-worst-seq", "worst-best-seq",
+    "best-only", "worst-only", "maxdiff", "exploded"
+  ))
 
   # (...) ----------------------------------------------------------------------
 

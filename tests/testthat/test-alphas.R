@@ -6,8 +6,8 @@ model <- readRDS(testthat::test_path("data", "test_model.rds"))
 test_that("Error if stan_output is missing ", {
   expect_error(
     alphas(
-     # stan_output = mxd_model,
-     bw_size = 4
+      # stan_output = mxd_model,
+      bw_size = 4
     )
   )
 })
@@ -65,4 +65,3 @@ test_that("Can provide labels ", {
   ))
 })
 # end --------------------------------------------------------------------------
-

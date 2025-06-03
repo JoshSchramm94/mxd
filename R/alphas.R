@@ -31,7 +31,7 @@
 #' alphas(
 #'   stan_output = mxd_model,
 #'   bw_size = 4
-#'  )
+#' )
 #' }
 #'
 #' @export

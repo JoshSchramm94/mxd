@@ -42,7 +42,7 @@ defined via a logical vector in the \code{anchor} argument.
 alphas(
   stan_output = mxd_model,
   bw_size = 4
- )
+)
 }
 
 }

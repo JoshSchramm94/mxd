@@ -21,7 +21,6 @@ mxd_hb_cv <- function(data_stan,
                       type,
                       seed = NULL,
                       ...) {
-
   # define missing values
   seed <- seed %||% 1910L
 

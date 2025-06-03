@@ -46,7 +46,6 @@
 dm_to_stan_hb <- function(
     design, id, cs, alt, items, ch, prior_b = NULL, prior_omega = NULL,
     prior_sigma = NULL, demos = NULL) {
-
   # define missing arguments ---------------------------------------------------
   # specify optional values
   prior_b <- prior_b %||% 5L
@@ -58,12 +57,18 @@ dm_to_stan_hb <- function(
   prior_sigma <- prior_sigma %||% 2L
 
   if (isTRUE(is.null(demos))) {
-    demos <- matrix(1,
-                    length(unique(unlist(select(design, {{ id }})))))
+    demos <- matrix(
+      1,
+      length(unique(unlist(select(design, {{ id }}))))
+    )
   } else {
-    demos <- cbind(matrix(1,
-                          length(unique(unlist(select(design, {{ id }}))))),
-                   demos)
+    demos <- cbind(
+      matrix(
+        1,
+        length(unique(unlist(select(design, {{ id }}))))
+      ),
+      demos
+    )
   }
 
   # check whether all arguments are defined ------------------------------------
@@ -107,8 +112,10 @@ dm_to_stan_hb <- function(
       obs = cumsum(c(1, diff({{ alt }}) < 0))
     ) %>%
     dplyr::mutate(
-      dplyr::across({{ id }},
-                    function(x) cumsum(c(1, diff(x) != 0)))
+      dplyr::across(
+        {{ id }},
+        function(x) cumsum(c(1, diff(x) != 0))
+      )
     ) %>%
     dplyr::relocate(row, .before = tidyselect::everything())
 

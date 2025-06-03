@@ -26,10 +26,7 @@
 #'   pars = "b",
 #'   labels = paste0("v", seq_len(16))
 #' )
-#'
 #' }
-#'
-#'
 #'
 #' @returns a tibble
 #' @export

@@ -35,9 +35,8 @@ beta_point_estimates(
   betas = betas_prep[["beta_raw"]],
   vars = c(v1:v16),
   id = id
- )
+)
 }
-
 
 }
 \seealso{

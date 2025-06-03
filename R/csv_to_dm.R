@@ -56,9 +56,9 @@
 #'
 #' @export
 #'
-csv_to_dm <- function(design, id, cs, item, ch, anchor = NULL, mxd_tasks,
+csv_to_dm <- function(
+    design, id, cs, item, ch, anchor = NULL, mxd_tasks,
     type) {
-
   # check whether all arguments are defined ------------------------------------
   check_input(
     must = c("type", "mxd_tasks", "design", "id", "cs", "ch", "item"),
@@ -74,13 +74,17 @@ csv_to_dm <- function(design, id, cs, item, ch, anchor = NULL, mxd_tasks,
 
   # check input for type
   if (isTRUE(is.null(anchor)) || isTRUE(anchor == "direct")) {
-    allowed_input(type, c("best-worst", "best-worst-seq", "worst-best-seq",
-                        "best-only", "worst-only", "maxdiff", "exploded"))
+    allowed_input(type, c(
+      "best-worst", "best-worst-seq", "worst-best-seq",
+      "best-only", "worst-only", "maxdiff", "exploded"
+    ))
   }
 
   if (isFALSE(is.null(anchor)) && isTRUE(anchor == "indirect")) {
-    allowed_input(type, c("best-worst", "best-worst-seq", "worst-best-seq",
-                          "best-only", "worst-only"))
+    allowed_input(type, c(
+      "best-worst", "best-worst-seq", "worst-best-seq",
+      "best-only", "worst-only"
+    ))
   }
 
   # check length of input
@@ -97,8 +101,10 @@ csv_to_dm <- function(design, id, cs, item, ch, anchor = NULL, mxd_tasks,
 
   # need best and worst choice per set
   if (is.null(anchor)) {
-    bw_per_cs(dplyr::filter(design, {{ cs }} <= mxd_tasks),
-              {{ id }}, {{ cs }}, {{ ch }})
+    bw_per_cs(
+      dplyr::filter(design, {{ cs }} <= mxd_tasks),
+      {{ id }}, {{ cs }}, {{ ch }}
+    )
   }
 
   # preps ----------------------------------------------------------------------
@@ -361,7 +367,6 @@ csv_to_dm <- function(design, id, cs, item, ch, anchor = NULL, mxd_tasks,
   # fix indirect anchor
 
   if (isFALSE(is.null(anchor)) && isTRUE(anchor == "indirect")) {
-
     unanchored <- design %>%
       dplyr::reframe(
         b = ifelse(any({{ ch }} != -1), {{ item }}[{{ ch }} == 1], NA),
@@ -441,5 +446,3 @@ csv_to_dm <- function(design, id, cs, item, ch, anchor = NULL, mxd_tasks,
   }
   return(as.data.frame(df_md))
 }
-
-

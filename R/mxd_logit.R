@@ -77,7 +77,7 @@ mxd_logit <- function(design,
   # define names of items
   item_var <- var_names(design, variables = {{ items }})
 
-  ref_level <- var_names(design, {{reference}}) %||% item_var[length(item_var)]
+  ref_level <- var_names(design, {{ reference }}) %||% item_var[length(item_var)]
 
   item_est <- item_var[!(item_var %in% ref_level)]
 

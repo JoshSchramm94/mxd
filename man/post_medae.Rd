@@ -47,13 +47,13 @@ all posterior draws (i.e., set \code{raw} to \code{FALSE}).
 \examples{
 \dontrun{
 post_medae(
- betas_post = betas_prep[["beta_raw"]],
- hot_data = hot_data,
- opts = c(g1, g8, g9, g13, g14, g15, g16, ref),
- hot_choice = HOT1,
- raw = FALSE,
- group = NULL
- )
+  betas_post = betas_prep[["beta_raw"]],
+  hot_data = hot_data,
+  opts = c(g1, g8, g9, g13, g14, g15, g16, ref),
+  hot_choice = HOT1,
+  raw = FALSE,
+  group = NULL
+)
 }
 
 }

@@ -309,7 +309,6 @@ list_inputs <- function(
   correct_input <- is.list(input) && !is.data.frame(input)
 
   if (!correct_input) {
-
     cli::cli_abort(
       c(
         "{.arg {arg}} must be class {.cls list}."
@@ -340,7 +339,6 @@ id_match <- function(
     id2,
     cv,
     call = rlang::caller_env()) {
-
   if (cv == "no") {
     if (!(all(id1 %in% id2) && all(id2 %in% id1))) {
       cli::cli_abort(
@@ -363,7 +361,7 @@ id_match <- function(
 
 
   if (class(id1) != class(id2) &&
-      !((class(id1) %in% c("numeric", "integer")) && (class(id2) %in% c("numeric", "integer")))) {
+    !((class(id1) %in% c("numeric", "integer")) && (class(id2) %in% c("numeric", "integer")))) {
     cli::cli_abort(
       c(
         "class of ids do not match",
@@ -441,11 +439,11 @@ choice_per_cs <- function(
     cs,
     choice,
     call = rlang::caller_env()) {
-
   ws <- dplyr::reframe(data,
-                       b = sum({{ choice }} == 1),
-                       w = sum({{ choice }} == -1),
-                       .by = c({{ id }}, {{ cs }}))
+    b = sum({{ choice }} == 1),
+    w = sum({{ choice }} == -1),
+    .by = c({{ id }}, {{ cs }})
+  )
 
   if (!(all(ws[["b"]] <= 1 & ws[["w"]] <= 1))) {
     cli::cli_abort(
@@ -454,7 +452,6 @@ choice_per_cs <- function(
       )
     )
   }
-
 }
 
 bw_per_cs <- function(
@@ -463,10 +460,11 @@ bw_per_cs <- function(
     cs,
     choice,
     call = rlang::caller_env()) {
-
-  ws <- dplyr::reframe(data, b = sum({{ choice }} == 1),
-                      w = sum({{ choice }} == -1),
-                .by = c({{ id }}, {{ cs }}))
+  ws <- dplyr::reframe(data,
+    b = sum({{ choice }} == 1),
+    w = sum({{ choice }} == -1),
+    .by = c({{ id }}, {{ cs }})
+  )
 
   if (!(all(ws[["b"]] == 1) && all(ws[["w"]] == 1))) {
     cli::cli_abort(
@@ -475,7 +473,6 @@ bw_per_cs <- function(
       )
     )
   }
-
 }
 
 
@@ -485,11 +482,10 @@ bw_length <- function(
     best_ch,
     worst_ch,
     call = rlang::caller_env()) {
-
   b_len <- dplyr::select(data, {{ best_ch }}) %>% ncol(.)
   w_len <- dplyr::select(data, {{ worst_ch }}) %>% ncol(.)
 
-  if (b_len != w_len){
+  if (b_len != w_len) {
     cli::cli_abort(
       c(
         "Number of variables provided to {.arg best_ch} and {.arg worst_ch} do not match",
@@ -497,7 +493,6 @@ bw_length <- function(
       )
     )
   }
-
 }
 
 choice_per_cs_mnl <- function(
@@ -505,27 +500,25 @@ choice_per_cs_mnl <- function(
     cs,
     ch,
     call = rlang::caller_env()) {
-
   ws <- data %>%
     dplyr::mutate(obs = cumsum(c(1, diff({{ cs }}) != 0))) %>%
     dplyr::reframe(choice = sum({{ ch }} == 1), .by = obs)
 
 
 
-  if (!(all(ws[["choice"]] == 1))){
+  if (!(all(ws[["choice"]] == 1))) {
     cli::cli_abort(
       c(
         "Only one {.arg alt} can be chosen per {.arg cs}."
       )
     )
   }
-
 }
 
 id_vector <- function(
     ids,
     call = rlang::caller_env()) {
-  if (!(is.vector(ids))){
+  if (!(is.vector(ids))) {
     cli::cli_abort(
       c(
         "{.arg ids} must be a {.obj vector}."
@@ -538,7 +531,6 @@ check_input <- function(
     must,
     defined,
     call = rlang::caller_env()) {
-
   def_input <- match.call()
 
   input_defined <- must %in% defined
@@ -571,14 +563,13 @@ ref_in_items <- function(data,
 }
 
 combi <- function(x, order = FALSE) {
-
   if (order == FALSE) {
     combn(x, 2) %>%
       t() %>%
       as.data.frame()
   }
 
-  if (order == TRUE){
+  if (order == TRUE) {
     cbind(combn(x, 2), combn(rev(x), 2)) %>%
       t() %>%
       as.data.frame()
@@ -621,4 +612,3 @@ ncol_input <- function(
     )
   }
 }
-

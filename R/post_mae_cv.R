@@ -16,12 +16,12 @@
 #'
 post_mae_cv <- function(stan_cv, stan_input, hot_data, opts, hot_choice,
                         val_id, hot_id, labels = NULL, raw = FALSE) {
-
-
   # check whether all arguments are defined ------------------------------------
   check_input(
-    must = c("stan_cv", "stan_input",
-             "hot_data", "opts", "hot_choice", "val_id", "hot_id"),
+    must = c(
+      "stan_cv", "stan_input",
+      "hot_data", "opts", "hot_choice", "val_id", "hot_id"
+    ),
     defined = names(match.call())
   )
 
@@ -35,11 +35,14 @@ post_mae_cv <- function(stan_cv, stan_input, hot_data, opts, hot_choice,
 
   # check whether input is correct
   lapply(stan_cv, stanfit_input)
-  lapply(seq_len(length(stan_input)),
-         function(x)
-           allowed_class(stan_input[[x]][["val_sample"]],
-                         "data.frame", "tbl", "tbl_df"
-                         )
+  lapply(
+    seq_len(length(stan_input)),
+    function(x) {
+      allowed_class(
+        stan_input[[x]][["val_sample"]],
+        "data.frame", "tbl", "tbl_df"
+      )
+    }
   )
 
   # check class of hot_data
@@ -48,12 +51,13 @@ post_mae_cv <- function(stan_cv, stan_input, hot_data, opts, hot_choice,
   # check whether ids match
   lapply(
     seq_len(length(stan_input)),
-    function(x)
+    function(x) {
       id_match(
         unname(unlist(stan_input[[x]][["val_sample"]] %>% dplyr::select({{ val_id }}))),
         unname(unlist(dplyr::select(hot_data, {{ hot_id }}))),
         cv = "yes"
       )
+    }
   )
 
   # check input raw
@@ -67,7 +71,6 @@ post_mae_cv <- function(stan_cv, stan_input, hot_data, opts, hot_choice,
   # preps ----------------------------------------------------------------------
 
   val_sample_res <- purrr::map2(stan_cv, stan_input, function(x, y) {
-
     # define missing arguments
     labels <- labels %||% paste0(
       "item_", seq_len((dim(rstan::extract(x)[["beta"]])[3]) + 1)

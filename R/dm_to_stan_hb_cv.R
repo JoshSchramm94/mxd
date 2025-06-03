@@ -20,7 +20,6 @@
 dm_to_stan_hb_cv <- function(
     design, id, cs, alt, items, ch, folds, prior_b = NULL, prior_omega = NULL,
     prior_sigma = NULL, demos = NULL, seed = NULL) {
-
   # define missing arguments ---------------------------------------------------
   # specify optional values
   prior_b <- prior_b %||% 5L
@@ -75,10 +74,13 @@ dm_to_stan_hb_cv <- function(
     demos_df <- as.data.frame(
       cbind(
         unique(unlist(dplyr::select(design, {{ id }}))),
-        demos)
+        demos
+      )
     ) %>%
-      stats::setNames(c(var_names(design, variables = {{ id }}),
-                        paste0("var_", seq_len(ncol(demos))))) %>%
+      stats::setNames(c(
+        var_names(design, variables = {{ id }}),
+        paste0("var_", seq_len(ncol(demos)))
+      )) %>%
       dplyr::left_join(
         x = .,
         y = sample_df,
@@ -106,17 +108,13 @@ dm_to_stan_hb_cv <- function(
     id_orig <- ids[!(ids %in% val_sample[[1]])]
 
     if (!is.null(demos)) {
-
       demos <- demos_df %>%
         dplyr::filter(group_id != x) %>%
         dplyr::select(-c({{ id }}, group_id)) %>%
         as.matrix() %>%
         unname()
-
     } else {
-
       demos <- NULL
-
     }
 
     output <- ws %>%

@@ -33,7 +33,7 @@ betas_summary(
   betas = betas_prep[["beta_raw"]],
   vars = c(v1:v16),
   id = id
- )
+)
 }
 
 }

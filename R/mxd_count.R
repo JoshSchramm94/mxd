@@ -32,9 +32,9 @@
 #'   item = Item,
 #'   ch = Response,
 #'   no_items = 16L,
-#'   labels = paste("Item", seq_len(16)))
+#'   labels = paste("Item", seq_len(16))
+#' )
 #' }
-#'
 #'
 #' @export
 #'

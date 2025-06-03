@@ -29,7 +29,7 @@ Optionally, users can define labels for the items.
 sigma(
   stan_output = mxd_model,
   pars = "b"
- )
+)
 }
 
 }

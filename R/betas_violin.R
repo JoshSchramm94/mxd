@@ -23,11 +23,10 @@
 #' \dontrun{
 #'
 #' betas_violin(
-#'  betas = betas_prep[["beta_raw"]],
-#'  vars = c(v1:v16),
-#'  labels = paste0("example_", seq_len(16))
-#'  )
-#'
+#'   betas = betas_prep[["beta_raw"]],
+#'   vars = c(v1:v16),
+#'   labels = paste0("example_", seq_len(16))
+#' )
 #' }
 #'
 #' @export

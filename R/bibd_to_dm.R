@@ -13,7 +13,6 @@
 #' @export
 #'
 bibd_to_dm <- function(design, data, id, best_ch, worst_ch, type) {
-
   # check whether all arguments are defined ------------------------------------
   check_input(
     must = c("design", "data", "id", "best_ch", "worst_ch", "type"),
@@ -29,8 +28,10 @@ bibd_to_dm <- function(design, data, id, best_ch, worst_ch, type) {
   ncol_input(data, {{ id }}, "id")
 
   # check input for type
-  allowed_input(type, c("best-worst", "best-worst-seq", "worst-best-seq",
-                        "best-only", "worst-only", "maxdiff", "exploded"))
+  allowed_input(type, c(
+    "best-worst", "best-worst-seq", "worst-best-seq",
+    "best-only", "worst-only", "maxdiff", "exploded"
+  ))
 
   # check number of variables to best_ch and worst_ch
   bw_length(data, {{ best_ch }}, {{ worst_ch }})
@@ -59,13 +60,16 @@ bibd_to_dm <- function(design, data, id, best_ch, worst_ch, type) {
 
   design_data <- data %>%
     dplyr::select({{ id }}, {{ best_ch }}, {{ worst_ch }}) %>%
-    stats::setNames(c("id",
-                      paste0(
-                        rep(c("b", "w"), each = tasks),
-                        "_",
-                        rep(seq_len(tasks), times = 2)))) %>%
+    stats::setNames(c(
+      "id",
+      paste0(
+        rep(c("b", "w"), each = tasks),
+        "_",
+        rep(seq_len(tasks), times = 2)
+      )
+    )) %>%
     tidyr::pivot_longer(
-      cols = - id,
+      cols = -id,
       names_to = c(".value", "cs"),
       names_pattern = "(.)_(.*)"
     ) %>%
@@ -88,7 +92,8 @@ bibd_to_dm <- function(design, data, id, best_ch, worst_ch, type) {
         b == alt ~ 1,
         w == alt ~ -1,
         .default = 0
-    )) %>%
+      )
+    ) %>%
     as.data.frame() %>%
     dplyr::select(id, cs, item, choice)
 

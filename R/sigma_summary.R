@@ -19,7 +19,7 @@
 #' sigma(
 #'   stan_output = mxd_model,
 #'   pars = "b"
-#'  )
+#' )
 #' }
 #'
 #' @export
