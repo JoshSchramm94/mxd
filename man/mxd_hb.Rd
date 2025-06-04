@@ -4,15 +4,7 @@
 \alias{mxd_hb}
 \title{Hierarchical Bayes estimation for MaxDiff}
 \usage{
-mxd_hb(
-  data_stan,
-  chains = 5L,
-  iter = 4000L,
-  warmup = 1000L,
-  type,
-  seed = NULL,
-  ...
-)
+mxd_hb(data_stan, chains = 5L, iter = 4000L, warmup = 1000L, seed = NULL, ...)
 }
 \arguments{
 \item{data_stan}{list with parameters for stan}
@@ -24,8 +16,6 @@ be run (warm-up + sampling)}
 
 \item{warmup}{numeric input to define the number of iterations to be used
 for warm-up purposes}
-
-\item{type}{character to specify coding method}
 
 \item{seed}{numeric input to specify seed for reproducible results}
 
@@ -47,8 +37,7 @@ set to \code{5}. \code{iter} defines the number of iterations that should be run
 also includes the number of \code{warmup} iteration. Both have to be a positive
 integer. For more information on how to define them, see
 \code{\link[rstan]{stan}} documentation. The defaults for \code{iter} and \code{warmup}
-are \code{4000L} and \code{1000L}, respectively. For \code{type}, please specify the type
-of coding assumed (see also \code{\link[mxd]{csv_to_dm}}).The \code{seed}
+are \code{4000L} and \code{1000L}, respectively. The \code{seed}
 must be a numeric input and is needed for reproduce results. Finally,
 other optional arguments can be defined, namely
 

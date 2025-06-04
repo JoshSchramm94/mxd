@@ -36,6 +36,9 @@ convergence_stats <- function(stan_output, pars = c("b", "sigma"), labels = NULL
 
   check_input(c("stan_output", "pars"), names(match.call()))
 
+  # check whether input is correct
+  stanfit_input(stan_output)
+
   # define missing arguments ---------------------------------------------------
   labels <- labels %||% paste0(
     "item_",
@@ -52,9 +55,6 @@ convergence_stats <- function(stan_output, pars = c("b", "sigma"), labels = NULL
 
   # check whether pars is correctly defined
   allowed_input(pars, c("b", "sigma"))
-
-  # check whether input is correct
-  stanfit_input(stan_output)
 
   # check length of labels
   labels_length(labels, ncol(as.data.frame(rstan::extract(stan_output)[["b"]])))

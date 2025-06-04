@@ -9,6 +9,7 @@
 #' sets
 #' @param items column names of the predictor variables
 #' @param ch column name of the choice variable
+#' @param type character to specify coding method
 #' @param prior_b numeric input for the b prior
 #' @param prior_omega numeric input for the omega prior
 #' @param prior_sigma numeric input for the sigma prior
@@ -20,7 +21,8 @@
 #' Users have to define the design matrix (`design`), the variables for the
 #' participants identifier (`id`), the choice set (`cs`), the alternative
 #' within the choice set (`alt`), the items (i.e., predictors; `items`) and the
-#' actual choice variable (`ch`).
+#' actual choice variable (`ch`). For `type`, please specify the type
+#' of coding assumed (see also \code{\link[mxd]{csv_to_dm}}).
 #' Further, the use can specify the priors for the hyperparameters `b`,
 #' `omega`, and `sigma`.
 #'
@@ -44,7 +46,7 @@
 #' @export
 #'
 dm_to_stan_hb <- function(
-    design, id, cs, alt, items, ch, prior_b = NULL, prior_omega = NULL,
+    design, id, cs, alt, items, ch, type, prior_b = NULL, prior_omega = NULL,
     prior_sigma = NULL, demos = NULL) {
   # define missing arguments ---------------------------------------------------
   # specify optional values
@@ -93,6 +95,12 @@ dm_to_stan_hb <- function(
 
   # only one choice per choice set
   choice_per_cs(design, {{ id }}, {{ cs }}, {{ ch }})
+
+  # check input for type
+  allowed_input(type, c(
+    "best-worst", "best-worst-seq", "worst-best-seq",
+    "best-only", "worst-only", "maxdiff", "exploded"
+  ))
 
   # preps ----------------------------------------------------------------------
 
@@ -160,7 +168,8 @@ dm_to_stan_hb <- function(
     id = index_n$id,
     prior_omega = prior_omega,
     prior_b = prior_b,
-    prior_sigma = prior_sigma
+    prior_sigma = prior_sigma,
+    type = type
   )
 
 

@@ -7,6 +7,7 @@
 #' sets
 #' @param items column names of the predictor variables
 #' @param ch column name of the choice variable
+#' @param type character to specify coding method
 #' @param folds numeric input to define number of folds
 #' @param prior_b numeric input for the b prior
 #' @param prior_omega numeric input for the omega prior
@@ -18,8 +19,8 @@
 #' @export
 #'
 dm_to_stan_hb_cv <- function(
-    design, id, cs, alt, items, ch, folds, prior_b = NULL, prior_omega = NULL,
-    prior_sigma = NULL, demos = NULL, seed = NULL) {
+    design, id, cs, alt, items, ch, type, folds, prior_b = NULL,
+    prior_omega = NULL, prior_sigma = NULL, demos = NULL, seed = NULL) {
   # define missing arguments ---------------------------------------------------
   # specify optional values
   prior_b <- prior_b %||% 5L
@@ -64,6 +65,12 @@ dm_to_stan_hb_cv <- function(
 
   # only one choice per choice set
   choice_per_cs(design, {{ id }}, {{ cs }}, {{ ch }})
+
+  # check input for type
+  allowed_input(type, c(
+    "best-worst", "best-worst-seq", "worst-best-seq",
+    "best-only", "worst-only", "maxdiff", "exploded"
+  ))
 
   # preps ----------------------------------------------------------------------
 
@@ -131,6 +138,7 @@ dm_to_stan_hb_cv <- function(
         alt = {{ alt }},
         items = {{ items }},
         ch = {{ ch }},
+        type = type,
         prior_b = prior_b,
         prior_omega = prior_omega,
         prior_sigma = prior_sigma,

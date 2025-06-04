@@ -9,7 +9,6 @@ mxd_hb_cv(
   chains = 5L,
   iter = 4000L,
   warmup = 1000L,
-  type,
   seed = NULL,
   ...
 )
@@ -24,8 +23,6 @@ be run (warm-up + sampling)}
 
 \item{warmup}{numeric input to define the number of iterations to be used
 for warm-up purposes}
-
-\item{type}{character to specify coding method}
 
 \item{seed}{numeric input to specify seed for reproducible results}
 

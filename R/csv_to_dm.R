@@ -66,11 +66,6 @@ csv_to_dm <- function(
   )
 
   # tests ----------------------------------------------------------------------
-  # check input of anchor
-  if (!is.null(anchor)) {
-    choice_per_cs(design, {{ id }}, {{ cs }}, {{ ch }})
-    allowed_input(anchor, c("direct", "indirect"))
-  }
 
   # check input for type
   if (isTRUE(is.null(anchor)) || isTRUE(anchor == "direct")) {
@@ -90,8 +85,8 @@ csv_to_dm <- function(
   # check length of input
   ncol_input(design, {{ id }}, "id")
   ncol_input(design, {{ cs }}, "cs")
-  ncol_input(design, {{ cs }}, "item")
-  ncol_input(design, {{ cs }}, "ch")
+  ncol_input(design, {{ item }}, "item")
+  ncol_input(design, {{ ch }}, "ch")
 
   # check for numeric / integer input
   allowed_class(mxd_tasks, c("numeric", "integer"))
@@ -100,6 +95,12 @@ csv_to_dm <- function(
   check_integer(list(
     "mxd_tasks" = mxd_tasks
   ))
+
+  # check input of anchor
+  if (!is.null(anchor)) {
+    choice_per_cs(design, {{ id }}, {{ cs }}, {{ ch }})
+    allowed_input(anchor, c("direct", "indirect"))
+  }
 
   # need best and worst choice per set
   if (is.null(anchor)) {

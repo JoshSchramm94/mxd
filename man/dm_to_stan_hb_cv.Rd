@@ -11,6 +11,7 @@ dm_to_stan_hb_cv(
   alt,
   items,
   ch,
+  type,
   folds,
   prior_b = NULL,
   prior_omega = NULL,
@@ -32,6 +33,8 @@ sets}
 \item{items}{column names of the predictor variables}
 
 \item{ch}{column name of the choice variable}
+
+\item{type}{character to specify coding method}
 
 \item{folds}{numeric input to define number of folds}
 

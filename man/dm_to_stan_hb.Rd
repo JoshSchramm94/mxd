@@ -11,6 +11,7 @@ dm_to_stan_hb(
   alt,
   items,
   ch,
+  type,
   prior_b = NULL,
   prior_omega = NULL,
   prior_sigma = NULL,
@@ -30,6 +31,8 @@ sets}
 \item{items}{column names of the predictor variables}
 
 \item{ch}{column name of the choice variable}
+
+\item{type}{character to specify coding method}
 
 \item{prior_b}{numeric input for the b prior}
 
@@ -51,7 +54,8 @@ is required to run the hierarchical Bayes estimation using \code{mxd_hb()}.
 Users have to define the design matrix (\code{design}), the variables for the
 participants identifier (\code{id}), the choice set (\code{cs}), the alternative
 within the choice set (\code{alt}), the items (i.e., predictors; \code{items}) and the
-actual choice variable (\code{ch}).
+actual choice variable (\code{ch}). For \code{type}, please specify the type
+of coding assumed (see also \code{\link[mxd]{csv_to_dm}}).
 Further, the use can specify the priors for the hyperparameters \code{b},
 \code{omega}, and \code{sigma}.
 

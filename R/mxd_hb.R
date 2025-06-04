@@ -8,7 +8,6 @@
 #' be run (warm-up + sampling)
 #' @param warmup numeric input to define the number of iterations to be used
 #' for warm-up purposes
-#' @param type character to specify coding method
 #' @param seed numeric input to specify seed for reproducible results
 #' @param ... additional arguments to define are `cores`, `thin`, `init`, and
 #' `algorithm`, for more information see \code{\link[rstan]{stan}} documentation
@@ -22,8 +21,7 @@
 #' also includes the number of `warmup` iteration. Both have to be a positive
 #' integer. For more information on how to define them, see
 #' \code{\link[rstan]{stan}} documentation. The defaults for `iter` and `warmup`
-#' are `4000L` and `1000L`, respectively. For `type`, please specify the type
-#' of coding assumed (see also \code{\link[mxd]{csv_to_dm}}).The `seed`
+#' are `4000L` and `1000L`, respectively. The `seed`
 #' must be a numeric input and is needed for reproduce results. Finally,
 #' other optional arguments can be defined, namely
 #'
@@ -51,7 +49,6 @@ mxd_hb <- function(data_stan,
                    chains = 5L,
                    iter = 4000L,
                    warmup = 1000L,
-                   type,
                    seed = NULL,
                    ...) {
   # define missing values
@@ -69,10 +66,6 @@ mxd_hb <- function(data_stan,
   allowed_class(iter, c("numeric", "integer"))
   allowed_class(warmup, c("numeric", "integer"))
   allowed_class(seed, c("numeric", "integer"))
-  allowed_input(type, c(
-    "best-worst", "best-worst-seq", "worst-best-seq",
-    "best-only", "worst-only", "maxdiff", "exploded"
-  ))
 
   # (...) ----------------------------------------------------------------------
 

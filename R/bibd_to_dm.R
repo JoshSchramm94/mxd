@@ -1,6 +1,7 @@
 #' Convert BIBD to design matrix
 #'
-#' Converts a
+#' Function to convert a BIBD (balanced incomplete block design) into the
+#' design matrix that is required for mxd package.
 #'
 #' @param design BIBD design
 #' @param data data frame including best and worst choices
@@ -10,6 +11,20 @@
 #' @param type type of coding
 #'
 #' @returns a data frame object
+#'
+#' @details
+#' `bibd_to_dm()` is a function that converts a balanced incomplete block design
+#' (BIBD) with collected best and worst data from the support.BWS package to a
+#' design matrix that is required for the mxd package. To create the BIBD in the
+#' first place users often use the \code{\link[crossdes]{find.BIB}} function.
+#' To run the `bibd_to_dm()` function users have to define the BIBD (`design`),
+#' the data frame that includes the best and worst choices from the
+#' respondents (`data`), the variable name of the participants' identifier
+#' (`id`), the variables names of the best (`best_ch`) and the worst
+#' (`worst_ch`) choices, and finally the type of coding that should be used
+#' (`type`; see also \code{\link[mxd]{csv_to_dm}}).
+#'
+#'
 #' @export
 #'
 bibd_to_dm <- function(design, data, id, best_ch, worst_ch, type) {

@@ -68,7 +68,7 @@ mxd_count <- function(design, cs, item, ch, no_items,
 
   # preps ----------------------------------------------------------------------
   shown <- design %>%
-    dplyr::group_by({{ group }}) %>%
+    dplyr::group_by(dplyr::pick({{ group }})) %>%
     dplyr::mutate(dplyr::across({{ item }}, ~ factor(.x,
       levels = seq_len(no_items),
       labels = labels
@@ -77,7 +77,8 @@ mxd_count <- function(design, cs, item, ch, no_items,
     dplyr::rename("label" = {{ item }})
 
   ws <- design %>%
-    bw_summary(., {{ item }}, {{ ch }}) %>%
+    # dplyr::group_by(dplyr::pick({{ group }})) %>%
+    bw_summary(., {{ item }}, {{ ch }}, {{ group }}) %>%
     dplyr::mutate(dplyr::across(c(b, w), ~ factor(.x,
       levels = seq_len(no_items),
       labels = labels
