@@ -73,6 +73,11 @@ mxd_logit <- function(design,
 
   args <- args_list(defi_args, defa_args)
 
+  # check right input
+  check_integer(list(
+    "bw_size" = bw_size
+  ))
+
   # preps ----------------------------------------------------------------------
   # define names of items
   item_var <- var_names(design, variables = {{ items }})

@@ -21,7 +21,7 @@
 #' @importFrom furrr future_map
 #' @importFrom forcats fct_rev
 #' @importFrom readr parse_number
-#' @importFrom DescTools CombSet
+#' @importFrom DescTools IsWhole
 #' @importFrom logitr logitr
 #' @importFrom ggplot2 aes facet_wrap geom_segment geom_violin ggplot guides
 #' labs theme_bw theme_minimal ylab
@@ -31,6 +31,7 @@
 #' @importFrom rstan extract sampling
 #' @importFrom rstantools rstan_config
 #' @importFrom RcppParallel RcppParallelLibs
+#' @importFrom utils combn
 
 
 #'

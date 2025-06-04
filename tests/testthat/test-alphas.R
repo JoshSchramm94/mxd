@@ -48,7 +48,7 @@ test_that("Anchor only accepts TRUE and FALSE ", {
 # end --------------------------------------------------------------------------
 
 # no errors for examples -------------------------------------------------------
-test_that("Error no error for example ", {
+test_that("No error for example ", {
   expect_no_error(alphas(
     stan_output = model,
     bw_size = 4,
@@ -64,4 +64,25 @@ test_that("Can provide labels ", {
     labels = paste0("test", c(1:16))
   ))
 })
+# end --------------------------------------------------------------------------
+
+# check output -----------------------------------------------------------------
+test_that("Check length of output ", {
+  expect_equal(length(alphas(
+    stan_output = model,
+    bw_size = 4,
+    anchor = TRUE,
+    labels = paste0("test", c(1:16))
+  )), 4L)
+})
+
+test_that("Check length of output ", {
+  expect_equal(names(alphas(
+    stan_output = model,
+    bw_size = 4,
+    anchor = TRUE,
+    labels = paste0("test", c(1:16))
+  )), c("alphas_raw", "alphas_zc", "alphas_prob", "summary"))
+})
+
 # end --------------------------------------------------------------------------

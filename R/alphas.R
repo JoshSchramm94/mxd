@@ -47,8 +47,8 @@ alphas <- function(stan_output, bw_size, labels = NULL, anchor = FALSE) {
   # check whether bw_size is numeric
   allowed_class(bw_size, c("numeric", "integer"))
 
-  # store as integer
-  bw_size <- as.integer(bw_size)
+  # check right intput
+  check_integer(list("bw_size" = bw_size))
 
   # check input anchor
   allowed_input(anchor, c("TRUE", "FALSE", "T", "F"))

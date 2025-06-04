@@ -56,6 +56,12 @@ dm_to_stan_hb_cv <- function(
   allowed_class(prior_sigma, c("numeric", "integer"))
   allowed_class(folds, c("numeric", "integer"))
 
+  # check right input
+  check_integer(list(
+    "folds" = folds,
+    "seed" = seed
+  ))
+
   # only one choice per choice set
   choice_per_cs(design, {{ id }}, {{ cs }}, {{ ch }})
 
@@ -125,7 +131,6 @@ dm_to_stan_hb_cv <- function(
         alt = {{ alt }},
         items = {{ items }},
         ch = {{ ch }},
-        orig_id = id_orig,
         prior_b = prior_b,
         prior_omega = prior_omega,
         prior_sigma = prior_sigma,

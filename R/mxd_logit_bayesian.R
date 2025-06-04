@@ -77,6 +77,16 @@ mxd_logit_bayesian <- function(data_stan,
   allowed_class(defa_args[["cores"]], c("numeric", "integer"))
   allowed_class(defa_args[["thin"]], c("numeric", "integer"))
 
+  # check right input
+  check_integer(list(
+    "seed" = seed,
+    "chains" = chains,
+    "iter" = iter,
+    "warmup" = warmup,
+    "cores" = cores,
+    "thin" = defa_args[["thin"]]
+  ))
+
   # preps ----------------------------------------------------------------------
 
   out <- rstan::sampling(

@@ -31,3 +31,15 @@ mxd_model <- mxd_hb(
 )
 
 saveRDS(mxd_model, "tests/testthat/data/test_model.rds")
+
+hb <- readRDS(testthat::test_path("data", "test_model.rds"))
+
+betas_prep <- betas_post(
+  stan_output = hb,
+  bw_size = 4,
+  cores = 4L,
+  labels = paste0("v", seq_len(16)),
+  anchor = TRUE
+)
+
+saveRDS(betas_prep, "tests/testthat/data/betas_prep.rds")

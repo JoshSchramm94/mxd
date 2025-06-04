@@ -30,14 +30,14 @@ test_that("Error if pars or sigma ", {
 # end --------------------------------------------------------------------------
 
 # no errors for examples -------------------------------------------------------
-test_that("Error no error for example I ", {
+test_that("No error for example I ", {
   expect_no_error(acf_plot(
     stan_output = model,
     pars = "b"
   ))
 })
 
-test_that("Error no error for example II ", {
+test_that("No error for example II ", {
   expect_no_error(acf_plot(
     stan_output = model,
     pars = "sigma"

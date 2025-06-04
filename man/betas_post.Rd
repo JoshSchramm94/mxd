@@ -17,8 +17,6 @@ calculation (default set to 1L)}
 \item{labels}{optional character vector to define labels of items}
 
 \item{anchor}{logical vector to indicate whether it is an anchored MaxDiff}
-
-\item{ids}{optional vector to define ids}
 }
 \value{
 a list with 3 objects
@@ -51,7 +49,7 @@ betas_prep <- betas_post(
   stan_output = mxd_model,
   bw_size = 4,
   cores = 4L,
-  labels = paste0(v, seq_len(16)),
+  labels = paste0("v", seq_len(16)),
   anchor = TRUE
 )
 }

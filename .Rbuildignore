@@ -5,3 +5,5 @@
 ^paper$
 ^data$
 ^toDos$
+^data-raw$
+^download

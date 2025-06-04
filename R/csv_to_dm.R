@@ -96,8 +96,10 @@ csv_to_dm <- function(
   # check for numeric / integer input
   allowed_class(mxd_tasks, c("numeric", "integer"))
 
-  # store as integer
-  mxd_tasks <- as.integer(mxd_tasks)
+  # check right input
+  check_integer(list(
+    "mxd_tasks" = mxd_tasks
+  ))
 
   # need best and worst choice per set
   if (is.null(anchor)) {

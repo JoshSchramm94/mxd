@@ -35,14 +35,14 @@ betas_violin <- function(betas, vars, labels = NULL) {
   # check whether all arguments are defined ------------------------------------
   check_input(c("betas", "vars"), names(match.call()))
 
+  # check whether input is correct
+  list_inputs(betas)
+
   # define missing arguments ---------------------------------------------------
   labels <- labels %||% var_names(betas[[1]], {{ vars }})
   level_names <- var_names(betas[[1]], {{ vars }})
 
   # tests ----------------------------------------------------------------------
-  # check whether input is correct
-  list_inputs(betas)
-
   # betas check
   post_check(betas)
 

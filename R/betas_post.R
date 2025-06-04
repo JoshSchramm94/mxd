@@ -7,7 +7,6 @@
 #' @param bw_size size of MaxDiff tasks in study
 #' @param cores optional integer input to define the number of cores used for
 #' calculation (default set to 1L)
-#' @param ids optional vector to define ids
 #' @param labels optional character vector to define labels of items
 #' @param anchor logical vector to indicate whether it is an anchored MaxDiff
 #'
@@ -39,7 +38,7 @@
 #'   stan_output = mxd_model,
 #'   bw_size = 4,
 #'   cores = 4L,
-#'   labels = paste0(v, seq_len(16)),
+#'   labels = paste0("v", seq_len(16)),
 #'   anchor = TRUE
 #' )
 #' }
@@ -49,6 +48,9 @@ betas_post <- function(stan_output, bw_size, cores = 1L,
                        labels = NULL, anchor = FALSE) {
   # check whether all arguments are defined ------------------------------------
   check_input(c("stan_output", "bw_size"), names(match.call()))
+
+  # check whether input is correct
+  stanfit_input(stan_output)
 
   # define missing arguments ---------------------------------------------------
   labels <- labels %||% paste0(
@@ -62,9 +64,6 @@ betas_post <- function(stan_output, bw_size, cores = 1L,
 
 
   # tests ----------------------------------------------------------------------
-  # check whether input is correct
-  stanfit_input(stan_output)
-
   # check length of labels
   labels_length(labels, dim(rstan::extract(stan_output)[["beta"]])[3])
 
@@ -75,9 +74,11 @@ betas_post <- function(stan_output, bw_size, cores = 1L,
   allowed_class(bw_size, c("numeric", "integer"))
   allowed_class(cores, c("numeric", "integer"))
 
-  # store as integer
-  bw_size <- as.integer(bw_size)
-  cores <- as.integer(cores)
+  # check right input
+  check_integer(list(
+    "bw_size" = bw_size,
+    "cores" = cores
+  ))
 
   # preps ----------------------------------------------------------------------
 

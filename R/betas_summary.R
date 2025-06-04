@@ -50,5 +50,6 @@ betas_summary <- function(betas, vars, id) {
       ),
       .by = iter
     ) %>%
+    dplyr::select(-iter) %>%
     res_summary(tidyselect::everything(.))
 }

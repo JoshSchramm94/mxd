@@ -61,6 +61,11 @@ mxd_count <- function(design, cs, item, ch, no_items,
   missing_allowed(design, var = {{ group }}, allowed = "yes")
   missing_allowed(design, var = {{ ch }}, allowed = "no")
 
+  # check right input
+  check_integer(list(
+    "no_items" = no_items
+  ))
+
   # preps ----------------------------------------------------------------------
   shown <- design %>%
     dplyr::group_by({{ group }}) %>%

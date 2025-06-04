@@ -546,6 +546,27 @@ check_input <- function(
   }
 }
 
+check_integer <- function(
+    input,
+    arg = rlang::caller_arg(input),
+    call = rlang::caller_env()) {
+  user_input <- vapply(
+    X = input,
+    FUN = DescTools::IsWhole,
+    FUN.VALUE = TRUE
+  )
+
+  if (!all(user_input)) {
+    wrong_arg <- names(input[which(!user_input)[1]])
+
+    cli::cli_abort(
+      c(
+        "{.arg {wrong_arg}} must be a whole number."
+      )
+    )
+  }
+}
+
 ref_in_items <- function(data,
                          ref,
                          vars,
