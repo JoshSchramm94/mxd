@@ -8,6 +8,7 @@
 #' @param cs column name of the choice set variable
 #' @param items column names of the predictor variables
 #' @param ch column name of the choice variable
+#' @param type character to specify coding method
 #' @param prior_b numeric input for the b prior
 #'
 #' @details
@@ -16,7 +17,8 @@
 #' Users have to define the design matrix (`design`), the variables for the
 #' participants identifier (`id`), the choice set (`cs`), the alternative
 #' within the choice set (`alt`), the items (i.e., predictors; `items`) and the
-#' actual choice variable (`ch`).
+#' actual choice variable (`ch`). For `type`, please specify the type
+#' of coding assumed (see also \code{\link[mxd]{csv_to_dm}}).
 #' Further, the use can specify the prior for the hyperparameter `b`, the
 #' prior for the population mean (mean of hyperparameter) of the utilities. The
 #' default value for `prior_b` is set to `5`.
@@ -26,7 +28,7 @@
 #'
 #' @export
 #'
-dm_to_stan_mnl <- function(design, id, cs, items, ch, prior_b = NULL) {
+dm_to_stan_mnl <- function(design, id, cs, items, ch, type, prior_b = NULL) {
   # define missing arguments ---------------------------------------------------
   # specify optional values
   prior_b <- prior_b %||% 5L
@@ -45,6 +47,12 @@ dm_to_stan_mnl <- function(design, id, cs, items, ch, prior_b = NULL) {
 
   # only one choice per choice set
   choice_per_cs(design, {{ id }}, {{ cs }}, {{ ch }})
+
+  # check input for type
+  allowed_input(type, c(
+    "best-worst", "best-worst-seq", "worst-best-seq",
+    "best-only", "worst-only", "maxdiff", "exploded"
+  ))
 
   # preps ----------------------------------------------------------------------
   # define predictors

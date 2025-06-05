@@ -1,12 +1,11 @@
 # read in test data ------------------------------------------------------------
-data("mxd_design")
-
+data <- readRDS(testthat::test_path("data", "mxd_design.rds"))
 # end --------------------------------------------------------------------------
 
 # check for error messages for missing arguments -------------------------------
 test_that("Error if design is missing ", {
   expect_error(csv_to_dm(
-    # design = mxd_design,
+    # design = data,
     id = id,
     cs = set,
     item = item,
@@ -19,7 +18,7 @@ test_that("Error if design is missing ", {
 
 test_that("Error if id is missing ", {
   expect_error(csv_to_dm(
-    design = mxd_design,
+    design = data,
     # id = id,
     cs = set,
     item = item,
@@ -32,7 +31,7 @@ test_that("Error if id is missing ", {
 
 test_that("Error if cs is missing ", {
   expect_error(csv_to_dm(
-    design = mxd_design,
+    design = data,
     id = id,
     # cs = set,
     item = item,
@@ -45,7 +44,7 @@ test_that("Error if cs is missing ", {
 
 test_that("Error if item is missing ", {
   expect_error(csv_to_dm(
-    design = mxd_design,
+    design = data,
     id = id,
     cs = set,
     # item = item,
@@ -58,7 +57,7 @@ test_that("Error if item is missing ", {
 
 test_that("Error if ch is missing ", {
   expect_error(csv_to_dm(
-    design = mxd_design,
+    design = data,
     id = id,
     cs = set,
     item = item,
@@ -71,7 +70,7 @@ test_that("Error if ch is missing ", {
 
 test_that("Error if mxd_tasks is missing ", {
   expect_error(csv_to_dm(
-    design = mxd_design,
+    design = data,
     id = id,
     cs = set,
     item = item,
@@ -84,7 +83,7 @@ test_that("Error if mxd_tasks is missing ", {
 
 test_that("Error if type is missing ", {
   expect_error(csv_to_dm(
-    design = mxd_design,
+    design = data,
     id = id,
     cs = set,
     item = item,
@@ -99,7 +98,7 @@ test_that("Error if type is missing ", {
 # check for wrong input --------------------------------------------------------
 test_that("type falsely defined ", {
   expect_error(csv_to_dm(
-    design = mxd_design,
+    design = data,
     id = id,
     cs = set,
     item = item,
@@ -112,7 +111,7 @@ test_that("type falsely defined ", {
 
 test_that("id more than one variable ", {
   expect_error(csv_to_dm(
-    design = mxd_design,
+    design = data,
     id = c(id, position),
     cs = set,
     item = item,
@@ -125,7 +124,7 @@ test_that("id more than one variable ", {
 
 test_that("cs more than one variable ", {
   expect_error(csv_to_dm(
-    design = mxd_design,
+    design = data,
     id = id,
     cs = c(set, position),
     item = item,
@@ -138,7 +137,7 @@ test_that("cs more than one variable ", {
 
 test_that("item more than one variable ", {
   expect_error(csv_to_dm(
-    design = mxd_design,
+    design = data,
     id = id,
     cs = set,
     item = c(item, position),
@@ -151,7 +150,7 @@ test_that("item more than one variable ", {
 
 test_that("ch more than one variable ", {
   expect_error(csv_to_dm(
-    design = mxd_design,
+    design = data,
     id = id,
     cs = set,
     item = item,
@@ -164,7 +163,7 @@ test_that("ch more than one variable ", {
 
 test_that("anchor falsely defined ", {
   expect_error(csv_to_dm(
-    design = mxd_design,
+    design = data,
     id = id,
     cs = set,
     item = item,
@@ -177,7 +176,7 @@ test_that("anchor falsely defined ", {
 
 test_that("mxd_tasks not numeric ", {
   expect_error(csv_to_dm(
-    design = mxd_design,
+    design = data,
     id = id,
     cs = set,
     item = item,
@@ -190,7 +189,7 @@ test_that("mxd_tasks not numeric ", {
 
 test_that("mxd_tasks not whole number ", {
   expect_error(csv_to_dm(
-    design = mxd_design,
+    design = data,
     id = id,
     cs = set,
     item = item,
@@ -203,7 +202,7 @@ test_that("mxd_tasks not whole number ", {
 
 test_that("indirect anchor not combinable with all ", {
   expect_error(csv_to_dm(
-    design = mxd_design,
+    design = data,
     id = id,
     cs = set,
     item = item,
@@ -218,7 +217,7 @@ test_that("indirect anchor not combinable with all ", {
 # test whether example works ---------------------------------------------------
 test_that("No error for example ", {
   expect_no_error(csv_to_dm(
-    design = mxd_design,
+    design = data,
     id = id,
     cs = set,
     item = item,
@@ -231,7 +230,7 @@ test_that("No error for example ", {
 
 test_that("No error for example with other type ", {
   expect_no_error(csv_to_dm(
-    design = mxd_design,
+    design = data,
     id = id,
     cs = set,
     item = item,
@@ -243,10 +242,10 @@ test_that("No error for example with other type ", {
 })
 
 test_that("Not multiple choices per choice set ", {
-  mxd_test <- mxd_design
-  mxd_test[["response"]][which(mxd_design$response == 0)[1]] <- 1
+  mxd_test <- data
+  mxd_test[["response"]][which(data$response == 0)[1]] <- 1
 
-  expect_no_error(csv_to_dm(
+  expect_error(csv_to_dm(
     design = mxd_test,
     id = id,
     cs = set,
@@ -263,7 +262,7 @@ test_that("Not multiple choices per choice set ", {
 # check output -----------------------------------------------------------------
 test_that("Output is data frame ", {
   expect_true(is.data.frame(csv_to_dm(
-    design = mxd_design,
+    design = data,
     id = id,
     cs = set,
     item = item,

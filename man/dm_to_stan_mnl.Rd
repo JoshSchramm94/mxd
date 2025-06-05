@@ -4,7 +4,7 @@
 \alias{dm_to_stan_mnl}
 \title{Prepare design matrix for Multinomial Logit Estimation in Stan}
 \usage{
-dm_to_stan_mnl(design, id, cs, items, ch, prior_b = NULL)
+dm_to_stan_mnl(design, id, cs, items, ch, type, prior_b = NULL)
 }
 \arguments{
 \item{design}{design matrix}
@@ -16,6 +16,8 @@ dm_to_stan_mnl(design, id, cs, items, ch, prior_b = NULL)
 \item{items}{column names of the predictor variables}
 
 \item{ch}{column name of the choice variable}
+
+\item{type}{character to specify coding method}
 
 \item{prior_b}{numeric input for the b prior}
 }
@@ -32,7 +34,8 @@ to run the hierarchical multinomial logit model using \code{mxd_logit_bayesian()
 Users have to define the design matrix (\code{design}), the variables for the
 participants identifier (\code{id}), the choice set (\code{cs}), the alternative
 within the choice set (\code{alt}), the items (i.e., predictors; \code{items}) and the
-actual choice variable (\code{ch}).
+actual choice variable (\code{ch}). For \code{type}, please specify the type
+of coding assumed (see also \code{\link[mxd]{csv_to_dm}}).
 Further, the use can specify the prior for the hyperparameter \code{b}, the
 prior for the population mean (mean of hyperparameter) of the utilities. The
 default value for \code{prior_b} is set to \code{5}.

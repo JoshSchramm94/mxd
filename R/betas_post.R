@@ -80,6 +80,9 @@ betas_post <- function(stan_output, bw_size, cores = 1L,
     "cores" = cores
   ))
 
+  # check input anchor
+  allowed_input(anchor, c("TRUE", "FALSE", "T", "F"))
+
   # preps ----------------------------------------------------------------------
 
   # setting multiple cores if wanted

@@ -4,16 +4,7 @@
 \alias{mxd_logit}
 \title{Multinomial logit estimation for MaxDiff}
 \usage{
-mxd_logit(
-  design,
-  ch,
-  cs,
-  items,
-  bw_size,
-  reference = NULL,
-  anchor = FALSE,
-  ...
-)
+mxd_logit(design, ch, cs, items, bw_size, reference, anchor = FALSE, ...)
 }
 \arguments{
 \item{design}{design matrix}
@@ -26,8 +17,8 @@ mxd_logit(
 
 \item{bw_size}{numeric input to specify size of MaxDiff tasks in survey}
 
-\item{reference}{column name of variable that should be used as reference
-level}
+\item{reference}{Optional column name of variable that should be used as
+reference level}
 
 \item{anchor}{logical vector to indicate whether it is an anchored MaxDiff}
 
@@ -51,4 +42,18 @@ reference level, otherwise the last item defined in \code{items} is used as
 reference level. Finally, if an anchored MaxDiff was used, set \code{anchor} to
 \code{TRUE} (default is set to \code{FALSE}). The output provides the MNL raw
 coefficients, the zero-centered scores, and the probability scores.
+}
+\examples{
+\dontrun{
+mxd_logit(
+ design = dm,
+ ch = choice,
+ cs = set,
+ items = c(item_1:item_17),
+ bw_size = 4,
+ reference = item_17,
+ anchor = TRUE
+)
+}
+
 }

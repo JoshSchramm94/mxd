@@ -7,8 +7,8 @@
 #' @param cs column name of choice set
 #' @param items column names of the predictor variables
 #' @param bw_size numeric input to specify size of MaxDiff tasks in survey
-#' @param reference column name of variable that should be used as reference
-#' level
+#' @param reference Optional column name of variable that should be used as
+#' reference level
 #' @param anchor logical vector to indicate whether it is an anchored MaxDiff
 #' @param ... additional argument to define is `algorithm`, for more
 #' information see \link[logitr]{logitr} documentation
@@ -26,6 +26,19 @@
 #' coefficients, the zero-centered scores, and the probability scores.
 #'
 #'
+#' @examples
+#' \dontrun{
+#' mxd_logit(
+#'  design = dm,
+#'  ch = choice,
+#'  cs = set,
+#'  items = c(item_1:item_17),
+#'  bw_size = 4,
+#'  reference = item_17,
+#'  anchor = TRUE
+#' )
+#' }
+#'
 #' @returns object of class data frame
 #' @export
 #'
@@ -34,7 +47,7 @@ mxd_logit <- function(design,
                       cs,
                       items,
                       bw_size,
-                      reference = NULL,
+                      reference,
                       anchor = FALSE,
                       ...) {
   # check whether all arguments are defined ------------------------------------
@@ -54,13 +67,15 @@ mxd_logit <- function(design,
   ncol_input(design, variable = {{ reference }}, argument = reference)
 
   # check input anchor
-  allowed_input(toupper(anchor), c("TRUE", "FALSE"))
+  allowed_input(anchor, c("TRUE", "FALSE", "T", "F"))
 
   # only one choice per choice set
   choice_per_cs_mnl(design, {{ cs }}, {{ ch }})
 
   # check whether reference is in items
-  ref_in_items(design, {{ reference }}, {{ items }})
+  if (!missing(reference)) {
+    ref_in_items(design, {{ reference }}, {{ items }})
+  }
 
   # (...) ----------------------------------------------------------------------
 
@@ -82,7 +97,11 @@ mxd_logit <- function(design,
   # define names of items
   item_var <- var_names(design, variables = {{ items }})
 
-  ref_level <- var_names(design, {{ reference }}) %||% item_var[length(item_var)]
+  if (missing(reference)) {
+    ref_level <- item_var[length(item_var)]
+  } else {
+    ref_level <- var_names(design, {{ reference }})
+  }
 
   item_est <- item_var[!(item_var %in% ref_level)]
 

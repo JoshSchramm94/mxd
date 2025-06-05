@@ -43,3 +43,5 @@ betas_prep <- betas_post(
 )
 
 saveRDS(betas_prep, "tests/testthat/data/betas_prep.rds")
+
+saveRDS(mxd_design, "tests/testthat/data/mxd_design.rds")

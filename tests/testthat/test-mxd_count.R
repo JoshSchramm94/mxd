@@ -1,7 +1,7 @@
 # read in test data ------------------------------------------------------------
-data("mxd_design")
+data <- readRDS(testthat::test_path("data", "mxd_design.rds"))
 
-mxd_unanchored <- dplyr::filter(mxd_design, set <= 16)
+mxd_unanchored <- dplyr::filter(data, set <= 16)
 
 # end --------------------------------------------------------------------------
 

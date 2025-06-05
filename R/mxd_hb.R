@@ -91,7 +91,7 @@ mxd_hb <- function(data_stan,
     "chains" = chains,
     "iter" = iter,
     "warmup" = warmup,
-    "cores" = cores,
+    "cores" = defa_args[["cores"]],
     "thin" = defa_args[["thin"]]
   ))
 

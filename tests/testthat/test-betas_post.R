@@ -40,6 +40,16 @@ test_that("Error if stan_input is not class stanfit ", {
   ))
 })
 
+test_that("Error if anchor is not logical ", {
+  expect_error(betas_post(
+    stan_output = output,
+    bw_size = 4,
+    cores = 4L,
+    labels = paste0("v", seq_len(16)),
+    anchor = "test"
+  ))
+})
+
 test_that("Error if labels has not right length ", {
   expect_error(betas_post(
     stan_output = model,

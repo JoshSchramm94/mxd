@@ -36,7 +36,7 @@ bw_mutate <- function(data, item, ch, group) {
 ## prepare best worst choices for direct and unanchored
 prepare_best_worst_ch <- function(data, id, cs, vars, bw_ind, stack_pos, type) {
   data <- data %>%
-    dplyr::rename("choice" = bw_ind) %>%
+    dplyr::rename("choice" = all_of(bw_ind)) %>%
     dplyr::mutate(
       bw = stack_pos,
       choice = ifelse(max.col(.[vars]) == choice, 1, 0)
@@ -76,7 +76,7 @@ prepare_best_worst_ch <- function(data, id, cs, vars, bw_ind, stack_pos, type) {
 prepare_best_worst_ch_ind <- function(data, id, cs, vars, bw_ind, stack_pos, type) {
   data <- data %>%
     tidyr::drop_na(tidyselect::any_of(bw_ind)) %>%
-    dplyr::rename("choice" = bw_ind) %>%
+    dplyr::rename("choice" = all_of(bw_ind)) %>%
     dplyr::mutate(
       bw = stack_pos,
       choice = ifelse(max.col(.[vars]) == choice, 1, 0)
@@ -571,8 +571,8 @@ ref_in_items <- function(data,
                          ref,
                          vars,
                          call = rlang::caller_env()) {
-  ref <- var_names(data, {{ ref }})
-  items <- var_names(data, {{ vars }})
+  ref <- dplyr::select(data, {{ ref }}) %>% colnames()
+  items <- dplyr::select(data, {{ vars }}) %>% colnames()
 
   if (!(ref %in% items)) {
     cli::cli_abort(
@@ -626,8 +626,8 @@ ncol_input <- function(
   if (length(var) > 1) {
     cli::cli_abort(
       c(
-        "{.arg {arg}} can only be {.num 1} variable.",
-        "{.num {ncol(data[var])}} variabes are provided."
+        "{.arg {arg}} can only have {.num 1} variable.",
+        "currently, {.num {ncol(data[var])}} variables are provided."
       ),
       call = call
     )
