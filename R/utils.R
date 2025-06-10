@@ -76,7 +76,7 @@ prepare_best_worst_ch <- function(data, id, cs, vars, bw_ind, stack_pos, type) {
 prepare_best_worst_ch_ind <- function(data, id, cs, vars, bw_ind, stack_pos, type) {
   data <- data %>%
     tidyr::drop_na(tidyselect::any_of(bw_ind)) %>%
-    dplyr::rename("choice" = all_of(bw_ind)) %>%
+    dplyr::rename("choice" = tidyselect::all_of(bw_ind)) %>%
     dplyr::mutate(
       bw = stack_pos,
       choice = ifelse(max.col(.[vars]) == choice, 1, 0)
