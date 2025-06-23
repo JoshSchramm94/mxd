@@ -10,6 +10,9 @@
 #' @param items column names of the predictor variables
 #' @param ch column name of the choice variable
 #' @param type character to specify coding method
+#' @param anchor_start numeric input to specify the starting cs for the anchor
+#' questions if `type = "maxdiff"`. If unanchored and `type = "maxdiff"` or
+#' different `type` specified, leave empty
 #' @param prior_b numeric input for the b prior
 #' @param prior_omega numeric input for the omega prior
 #' @param prior_sigma numeric input for the sigma prior
@@ -46,8 +49,8 @@
 #' @export
 #'
 dm_to_stan_hb <- function(
-    design, id, cs, alt, items, ch, type, prior_b = NULL, prior_omega = NULL,
-    prior_sigma = NULL, demos = NULL) {
+    design, id, cs, alt, items, ch, type, anchor_start = NULL,
+    prior_b = NULL, prior_omega = NULL, prior_sigma = NULL, demos = NULL) {
   # define missing arguments ---------------------------------------------------
   # specify optional values
   prior_b <- prior_b %||% 5L
@@ -76,7 +79,7 @@ dm_to_stan_hb <- function(
   # check whether all arguments are defined ------------------------------------
 
   check_input(
-    must = c("design", "id", "cs", "alt", "items", "ch"),
+    must = c("design", "id", "cs", "alt", "items", "ch", "type"),
     defined = names(match.call())
   )
 
@@ -89,6 +92,21 @@ dm_to_stan_hb <- function(
   allowed_class(prior_b, c("numeric", "integer"))
   allowed_class(prior_omega, c("numeric", "integer"))
   allowed_class(prior_sigma, c("numeric", "integer"))
+
+  if (!is.null(anchor_start)) {
+    allowed_class(anchor_start, c("numeric", "integer"))
+  }
+
+  # specify anchor_start
+  if (!is.null(anchor_start)) {
+    tasks <- anchor_start
+  } else {
+    tasks <- dplyr::reframe(
+      design, mx = max({{ cs }})
+    ) %>%
+      dplyr::pull(mx) + 1
+  }
+
 
   # check whether demos is a matrix
   allowed_class(demos, "matrix")
@@ -110,38 +128,73 @@ dm_to_stan_hb <- function(
   # fix ids
   orig_id <- unique(unlist(dplyr::select(design, {{ id }})))
 
+  if (type == "maxdiff" && !is.null(anchor_start)) {
+    design <- dplyr::filter(design,
+                            apply(design[preds[-length(preds)]],
+                                  1,
+                                  function(x) sum(abs(x))) != 0
+    )
+  }
+
 
   # fix the design matrix
-  design <- design %>%
-    dplyr::mutate(
-      row = dplyr::row_number(),
-      bw = apply(.[preds], 1, sum),
-      item = apply(.[preds], 1, function(x) which.max(abs(x))),
-      obs = cumsum(c(1, diff({{ alt }}) < 0))
-    ) %>%
-    dplyr::mutate(
-      dplyr::across(
-        {{ id }},
-        function(x) cumsum(c(1, diff(x) != 0))
-      )
-    ) %>%
-    dplyr::relocate(row, .before = tidyselect::everything())
+  if (type != "maxdiff") {
+    mxd_df <- design %>%
+      dplyr::mutate(
+        row = dplyr::row_number(),
+        bw = apply(.[preds], 1, sum),
+        item = apply(.[preds], 1, function(x) which.max(abs(x))),
+        obs = cumsum(c(1, diff({{ alt }}) < 0))
+      ) %>%
+      dplyr::mutate(
+        dplyr::across(
+          {{ id }},
+          function(x) cumsum(c(1, diff(x) != 0))
+        )
+      ) %>%
+      dplyr::relocate(row, .before = tidyselect::everything())
+  }
 
+  if (type == "maxdiff") {
+    mxd_df <- dplyr::filter(design, {{ cs }} < tasks) %>%
+      dplyr::mutate(
+        row = dplyr::row_number(),
+        itemb = apply(.[preds], 1, function(x) which(x == 1)),
+        itemw = apply(.[preds], 1, function(x) which(x == -1)),
+        obs = cumsum(c(1, diff({{ cs }}) != 0))
+      ) %>%
+      dplyr::mutate(
+        dplyr::across(
+          {{ id }},
+          function(x) cumsum(c(1, diff(x) != 0))
+        )
+      ) %>%
+      dplyr::relocate(row, .before = tidyselect::everything())
 
-  X <- stats::model.matrix(
-    stats::as.formula(
-      paste0(
-        var_names(design, {{ ch }}),
-        " ~ 0 + ",
-        paste0(preds[-length(preds)], collapse = " + ")
+    if (!is.null(anchor_start)) {
+      anc_df <- dplyr::filter(design, {{ cs }} >= tasks) %>%
+        dplyr::mutate(id = {{ id }},
+                      item = apply(.[preds[-length(preds)]],
+                                   1,
+                                   function(x) which(x == 1)),
+                      y = {{ ch }}) %>%
+        dplyr::select(id, item, y)
+
+      A_inc <- 1
+    } else {
+      anc_df <- data.frame(
+        id = rep(1, 10),
+        item = rep(1, 10),
+        y = rep(1, 10)
       )
-    ),
-    data = design
-  )
+
+      A_inc <- 0
+    }
+  }
 
 
   # build indices
-  index_n <- design %>%
+  index <- mxd_df %>%
     dplyr::reframe(
       id = dplyr::first({{ id }}),
       y = row[{{ ch }} == 1],
@@ -151,26 +204,54 @@ dm_to_stan_hb <- function(
     )
 
 
-
-  data_stan <- list(
-    N = as.integer(max(index_n$obs)),
+  if (type != "maxdiff") {
+    data_stan <- list(
+    N = nrow(index),
     I = length(orig_id),
-    M = nrow(X),
-    K = ncol(X),
+    M = nrow(mxd_df),
+    K = length(preds) - 1,
     D = ncol(demos),
-    item = design$item,
-    bw = design$bw,
+    item = mxd_df$item,
+    bw = mxd_df$bw,
     Z = demos,
-    y = index_n$y,
+    y = index$y,
     orig_id = orig_id,
-    start_n = index_n$start_n,
-    end_n = index_n$end_n,
-    id = index_n$id,
+    start_n = index$start_n,
+    end_n = index$end_n,
+    id = index$id,
     prior_omega = prior_omega,
     prior_b = prior_b,
     prior_sigma = prior_sigma,
     type = type
   )
+  }
+
+  if (type == "maxdiff") {
+    data_stan <- list(
+      N = nrow(index),
+      I = length(orig_id),
+      M = nrow(mxd_df),
+      K = length(preds) - 1,
+      A = nrow(anc_df),
+      A_inc = A_inc,
+      D = ncol(demos),
+      bi = mxd_df$itemb,
+      bw = mxd_df$itemw,
+      Z = demos,
+      y = index$y,
+      orig_id = orig_id,
+      a = anc_df$y,
+      a_id = anc_df$item,
+      id = index$id,
+      id_a = anc_df$id,
+      start_n = index$start_n,
+      end_n = index$end_n,
+      prior_omega = prior_omega,
+      prior_b = prior_b,
+      prior_sigma = prior_sigma,
+      type = type
+    )
+  }
 
 
   return(data_stan)

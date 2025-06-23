@@ -4,7 +4,16 @@
 \alias{dm_to_stan_mnl}
 \title{Prepare design matrix for Multinomial Logit Estimation in Stan}
 \usage{
-dm_to_stan_mnl(design, id, cs, items, ch, type, prior_b = NULL)
+dm_to_stan_mnl(
+  design,
+  id,
+  cs,
+  items,
+  ch,
+  type,
+  anchor_start = NULL,
+  prior_b = NULL
+)
 }
 \arguments{
 \item{design}{design matrix}
@@ -18,6 +27,10 @@ dm_to_stan_mnl(design, id, cs, items, ch, type, prior_b = NULL)
 \item{ch}{column name of the choice variable}
 
 \item{type}{character to specify coding method}
+
+\item{anchor_start}{numeric input to specify the starting cs for the anchor
+questions if \code{type = "maxdiff"}. If unanchored and \code{type = "maxdiff"} or
+different \code{type} specified, leave empty}
 
 \item{prior_b}{numeric input for the b prior}
 }

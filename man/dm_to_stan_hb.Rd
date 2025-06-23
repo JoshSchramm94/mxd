@@ -12,6 +12,7 @@ dm_to_stan_hb(
   items,
   ch,
   type,
+  anchor_start = NULL,
   prior_b = NULL,
   prior_omega = NULL,
   prior_sigma = NULL,
@@ -33,6 +34,10 @@ sets}
 \item{ch}{column name of the choice variable}
 
 \item{type}{character to specify coding method}
+
+\item{anchor_start}{numeric input to specify the starting cs for the anchor
+questions if \code{type = "maxdiff"}. If unanchored and \code{type = "maxdiff"} or
+different \code{type} specified, leave empty}
 
 \item{prior_b}{numeric input for the b prior}
 

@@ -44,6 +44,7 @@ utils::globalVariables(
   c(
     ".",
     "alt",
+    "anchor_tasks",
     "b",
     "b_perc",
     "bw",
@@ -66,6 +67,7 @@ utils::globalVariables(
     "mae",
     "medae",
     "mhp",
+    "mx",
     "n",
     "newcs",
     "obs",
@@ -78,6 +80,7 @@ utils::globalVariables(
     "rmse",
     "set",
     "std",
+    "tasks",
     "var",
     "w",
     "w_perc",

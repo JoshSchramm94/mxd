@@ -227,6 +227,10 @@ mnl <- function(.data, variables) {
     )
 }
 
+mnl2 <- function(x) {
+  exp(x) / sum(exp(x))
+}
+
 
 percentage <- function(x) {
   x / sum(x)
@@ -249,6 +253,23 @@ stanfit_input <- function(
     )
   }
 }
+
+check_empty <- function(
+    arg1,
+    arg2,
+    call = rlang::caller_env()) {
+
+  if (arg1 != "maxdiff" && !is.null(arg2))
+  {
+    cli::cli_abort(
+      c(
+        "{.arg anchor_start} only needs to be specified if {.arg type} set to {.arg maxdiff}",
+        "otherwise, leave {.arg anchor_start} empty."
+      ),
+      call = call
+    )
+  }
+  }
 
 labels_length <- function(
     labels,

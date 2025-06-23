@@ -32,6 +32,7 @@ mxd_logit_bayesian <- function(data_stan,
                                anchor = FALSE,
                                seed = NULL,
                                ...) {
+
   # define missing values
   seed <- seed %||% 1910L
 
@@ -59,6 +60,7 @@ mxd_logit_bayesian <- function(data_stan,
   # store bw_size as integer
   bw_size <- as.integer(bw_size)
 
+
   # (...) ----------------------------------------------------------------------
 
   # define additional arguments
@@ -73,9 +75,9 @@ mxd_logit_bayesian <- function(data_stan,
 
   args <- args_list(defi_args, defa_args)
 
-  allowed_input(defa_args[["algorithm"]], c("NUTS", "HMC", "Fixed_param"))
-  allowed_class(defa_args[["cores"]], c("numeric", "integer"))
-  allowed_class(defa_args[["thin"]], c("numeric", "integer"))
+  allowed_input(args[["algorithm"]], c("NUTS", "HMC", "Fixed_param"))
+  allowed_class(args[["cores"]], c("numeric", "integer"))
+  allowed_class(args[["thin"]], c("numeric", "integer"))
 
   # check right input
   check_integer(list(
@@ -83,24 +85,41 @@ mxd_logit_bayesian <- function(data_stan,
     "chains" = chains,
     "iter" = iter,
     "warmup" = warmup,
-    "cores" = cores,
-    "thin" = defa_args[["thin"]]
+    "cores" = args[["cores"]],
+    "thin" = args[["thin"]]
   ))
 
   # preps ----------------------------------------------------------------------
 
-  out <- rstan::sampling(
-    object = stanmodels$mnl,
-    data = data_stan,
-    init = args[["init"]],
-    seed = seed,
-    chains = chains,
-    cores = args[["cores"]],
-    algorithm = args[["algorithm"]],
-    iter = iter,
-    warmup = warmup,
-    thin = args[["thin"]]
-  )
+  if (data_stan[["type"]] != "maxdiff") {
+    out <- rstan::sampling(
+      object = stanmodels$mnl,
+      data = data_stan,
+      init = args[["init"]],
+      seed = seed,
+      chains = chains,
+      cores = args[["cores"]],
+      algorithm = args[["algorithm"]],
+      iter = iter,
+      warmup = warmup,
+      thin = args[["thin"]]
+    )
+  }
+
+  if (data_stan[["type"]] == "maxdiff") {
+    out <- rstan::sampling(
+      object = stanmodels$mnl_md,
+      data = data_stan,
+      init = args[["init"]],
+      seed = seed,
+      chains = chains,
+      cores = args[["cores"]],
+      algorithm = args[["algorithm"]],
+      iter = iter,
+      warmup = warmup,
+      thin = args[["thin"]]
+    )
+  }
 
   res <- rstan::extract(out)
 
