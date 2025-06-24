@@ -97,19 +97,40 @@ mxd_hb <- function(data_stan,
 
   # preps ----------------------------------------------------------------------
 
-  hbmnl_mcmc <- rstan::sampling(
-    object = stanmodels$hb,
-    data = data_stan,
-    pars = c("b", "sigma", "Omega", "beta", "log_lik", "beta_prep"),
-    algorithm = args[["algorithm"]],
-    init = args[["init"]],
-    seed = seed,
-    chains = chains,
-    cores = args[["cores"]],
-    warmup = warmup,
-    iter = iter,
-    thin = args[["thin"]]
-  )
+  if (data_stan[["type"]] != "maxdiff") {
+    hbmnl_mcmc <- rstan::sampling(
+      object = stanmodels$hb,
+      data = data_stan,
+      pars = c("b", "sigma", "Omega", "beta", "log_lik", "beta_prep"),
+      algorithm = args[["algorithm"]],
+      init = args[["init"]],
+      seed = seed,
+      chains = chains,
+      cores = args[["cores"]],
+      warmup = warmup,
+      iter = iter,
+      thin = args[["thin"]]
+    )
+  }
+
+  if (data_stan[["type"]] == "maxdiff") {
+    hbmnl_mcmc <- rstan::sampling(
+      object = stanmodels$hb_md,
+      data = data_stan,
+      pars = c("b", "sigma", "Omega", "beta", "log_lik", "beta_prep"),
+      algorithm = args[["algorithm"]],
+      init = args[["init"]],
+      seed = seed,
+      chains = chains,
+      cores = args[["cores"]],
+      warmup = warmup,
+      iter = iter,
+      thin = args[["thin"]]
+    )
+  }
+
+
+
 
   return(hbmnl_mcmc)
 }

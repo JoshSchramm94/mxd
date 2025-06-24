@@ -85,6 +85,7 @@ utils::globalVariables(
     "w",
     "w_perc",
     "ws",
+    "y",
     "zc"
   )
 )

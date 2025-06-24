@@ -237,6 +237,7 @@ percentage <- function(x) {
 }
 
 
+
 # test -------------------------------------------------------------------------
 
 stanfit_input <- function(
@@ -606,13 +607,13 @@ ref_in_items <- function(data,
 
 combi <- function(x, order = FALSE) {
   if (order == FALSE) {
-    combn(x, 2) %>%
+    utils::combn(x, 2) %>%
       t() %>%
       as.data.frame()
   }
 
   if (order == TRUE) {
-    cbind(combn(x, 2), combn(rev(x), 2)) %>%
+    cbind(utils::combn(x, 2), utils::combn(rev(x), 2)) %>%
       t() %>%
       as.data.frame()
   }

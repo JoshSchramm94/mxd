@@ -236,7 +236,7 @@ dm_to_stan_hb <- function(
       A_inc = A_inc,
       D = ncol(demos),
       bi = mxd_df$itemb,
-      bw = mxd_df$itemw,
+      wi = mxd_df$itemw,
       Z = demos,
       y = index$y,
       orig_id = orig_id,

@@ -8,6 +8,9 @@
 #' @param items column names of the predictor variables
 #' @param ch column name of the choice variable
 #' @param type character to specify coding method
+#' @param anchor_start numeric input to specify the starting cs for the anchor
+#' questions if `type = "maxdiff"`. If unanchored and `type = "maxdiff"` or
+#' different `type` specified, leave empty
 #' @param folds numeric input to define number of folds
 #' @param prior_b numeric input for the b prior
 #' @param prior_omega numeric input for the omega prior
@@ -19,8 +22,9 @@
 #' @export
 #'
 dm_to_stan_hb_cv <- function(
-    design, id, cs, alt, items, ch, type, folds, prior_b = NULL,
-    prior_omega = NULL, prior_sigma = NULL, demos = NULL, seed = NULL) {
+    design, id, cs, alt, items, ch, type, anchor_start = NULL, folds,
+    prior_b = NULL, prior_omega = NULL, prior_sigma = NULL, demos = NULL,
+    seed = NULL) {
   # define missing arguments ---------------------------------------------------
   # specify optional values
   prior_b <- prior_b %||% 5L
@@ -37,7 +41,7 @@ dm_to_stan_hb_cv <- function(
   # check whether all arguments are defined ------------------------------------
 
   check_input(
-    must = c("design", "id", "cs", "alt", "items", "folds", "ch"),
+    must = c("design", "id", "cs", "alt", "items", "folds", "ch", "type"),
     defined = names(match.call())
   )
 
@@ -56,6 +60,10 @@ dm_to_stan_hb_cv <- function(
   allowed_class(prior_sigma, c("numeric", "integer"))
   allowed_class(prior_sigma, c("numeric", "integer"))
   allowed_class(folds, c("numeric", "integer"))
+
+  if (!is.null(anchor_start)) {
+    allowed_class(anchor_start, c("numeric", "integer"))
+  }
 
   # check right input
   check_integer(list(
@@ -138,6 +146,7 @@ dm_to_stan_hb_cv <- function(
         alt = {{ alt }},
         items = {{ items }},
         ch = {{ ch }},
+        anchor_start = anchor_start,
         type = type,
         prior_b = prior_b,
         prior_omega = prior_omega,

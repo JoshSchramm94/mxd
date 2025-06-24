@@ -4,7 +4,7 @@ data {
   int<lower=1> M;                     // number of rows in X
   int<lower=1> K;                     // number of items
   int<lower=1> A;                     // number of anchor choices
-  int<lower=1> A_inc;                 // anchor included (0 = no, 1 = yes)
+  int<lower=0, upper=1> A_inc;        // anchor included (0 = no, 1 = yes)
   int<lower=1> D;                     // number of group parameters (number of cols in Z)
   int<lower=1> bi[M];                 // vector of best item
   int<lower=0> wi[M];                 // vector of worst item
