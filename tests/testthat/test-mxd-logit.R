@@ -179,7 +179,6 @@ test_that("Output is data.frame ", {
 })
 
 test_that("Dimension of output ", {
-
   dim_expect <- c()
   dim_expect[1] <- ncol(dplyr::select(design, c(item_1:item_17)))
   dim_expect[2] <- 6L
@@ -198,7 +197,6 @@ test_that("Dimension of output ", {
 })
 
 test_that("Reference always last item ", {
-
   ref_in <- "item_1"
 
   ref_out <- mxd_logit(
@@ -214,11 +212,9 @@ test_that("Reference always last item ", {
   ref_out <- unlist(ref_out$items[nrow(ref_out)])
 
   expect_equal(ref_in, ref_out)
-
 })
 
 test_that("If reference not specified, automatically last item in items  ", {
-
   ref_in <- dplyr::select(design, c(item_1:item_17)) %>%
     colnames(.) %>%
     .[length(.)]
@@ -236,7 +232,6 @@ test_that("If reference not specified, automatically last item in items  ", {
   ref_out <- unlist(ref_out$items[nrow(ref_out)])
 
   expect_equal(ref_in, ref_out)
-
 })
 
 # end --------------------------------------------------------------------------

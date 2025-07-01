@@ -183,7 +183,55 @@ csv_to_dm <- function(
     }
 
     # maxdiff coding
-    if (type == "maxdiff" || type == "exploded") {
+    if (type == "maxdiff") {
+      df_md <- design %>%
+        dplyr::filter({{ cs }} <= mxd_tasks) %>%
+        bw_mutate(., {{ item }}, {{ ch }}, c({{ id }}, {{ cs }})) %>%
+        dplyr::arrange({{ id }}, {{ cs }}) %>%
+        dplyr::group_by(dplyr::pick({{ id }}, {{ cs }}), b, w) %>%
+        tidyr::expand(item = {{ item }}, alt2 = {{ item }}) %>%
+        dplyr::ungroup() %>%
+        dplyr::filter(item != alt2) %>%
+        dplyr::mutate(item = factor(
+          x = item,
+          levels = seq.int(length(unique(item)))
+        )) %>%
+        fastDummies::dummy_cols(
+          select_columns = "item",
+          remove_selected_columns = FALSE
+        ) %>%
+        dplyr::mutate(
+          alt = cumsum(c(1, diff({{ cs }}) == 0)),
+          .by = c({{ id }}, {{ cs }})
+        ) %>%
+        dplyr::mutate(choice = ifelse(b == item & w == alt2, 1, 0))
+
+      add_index <- which(colnames(df_md) == "item_1") - 1
+
+      for (i in seq_len(nrow(df_md))) {
+        df_md[i, (df_md[i, ][["alt2"]] + add_index)] <- -1
+      }
+
+      df_md <- df_md %>%
+        dplyr::select(
+          tidyselect::all_of(var_names(design, {{ id }})),
+          tidyselect::all_of(var_names(design, {{ cs }})),
+          alt, choice,
+          tidyselect::all_of(tidyselect::starts_with("item_"))
+        )
+
+      colnames(df_md)[5:ncol(df_md)] <- paste0(
+        var_names(design, {{ item }}),
+        "_",
+        seq.int(ncol(df_md) - 4L)
+      )
+
+      df_md <- df_md %>%
+        dplyr::relocate(choice, .after = tidyselect::everything())
+    }
+
+    # type exploded
+    if (type == "exploded") {
       unanchored <- design %>%
         dplyr::filter({{ cs }} <= mxd_tasks) %>%
         bw_mutate(., {{ item }}, {{ ch }}, c({{ id }}, {{ cs }})) %>%
@@ -193,59 +241,7 @@ csv_to_dm <- function(
           values_from = {{ item }},
           names_from = var
         )
-    }
 
-    if (type == "maxdiff") {
-      df <- data.frame()
-      df_md <- purrr::map(seq_len(nrow(unanchored)), function(x) {
-        vars <- names(unanchored)[startsWith(names(unanchored), "var_")]
-
-        df <- rbind(
-          df,
-          unlist(unanchored[x, ][vars]) %>%
-            .[!is.na(.)] %>%
-            combi(., order = TRUE) %>%
-            stats::setNames(paste0("item", seq_len(2))) %>%
-            dplyr::mutate(
-              id = unanchored[x, ][[var_names(design, {{ id }})]],
-              b = unanchored[x, ][["b"]],
-              w = unanchored[x, ][["w"]],
-              choice = ifelse(item1 %in% b & item2 %in% w, 1, 0),
-              alt = seq_len(nrow(.))
-            )
-        )
-      }) %>%
-        purrr::list_rbind() %>%
-        dplyr::select(paste0("item", seq_len(2)), "id", choice, alt)
-
-      names(df_md)[1] <- var_names(design, {{ item }})
-
-      df_md <- df_md %>%
-        fastDummies::dummy_cols(
-          select_columns = var_names(design, {{ item }}),
-          remove_selected_columns = TRUE
-        ) %>%
-        dplyr::mutate(item2 = paste0(var_names(design, {{ item }}), "_", item2))
-
-      for (i in seq_len(nrow(df_md))) {
-        df_md[i, df_md[i, ][["item2"]]] <- -1
-      }
-
-      names(df_md)[names(df_md) == "id"] <- var_names(design, {{ id }})
-
-      df_md <- df_md %>%
-        dplyr::select(-item2) %>%
-        dplyr::mutate(
-          cs = cumsum(c(1, diff(alt) < 0)),
-          .by = {{ id }}
-        ) %>%
-        dplyr::relocate(cs, .before = alt) %>%
-        dplyr::relocate(choice, .after = tidyselect::everything())
-
-      names(df_md)[names(df_md) == "cs"] <- var_names(design, {{ cs }})
-    }
-
-    if (type == "exploded") {
       df <- data.frame()
       df_md <- purrr::map(seq_len(nrow(unanchored)), function(x) {
         vars <- names(unanchored)[startsWith(names(unanchored), "var_")]

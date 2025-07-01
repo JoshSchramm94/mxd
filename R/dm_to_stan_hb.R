@@ -51,6 +51,12 @@
 dm_to_stan_hb <- function(
     design, id, cs, alt, items, ch, type, anchor_start = NULL,
     prior_b = NULL, prior_omega = NULL, prior_sigma = NULL, demos = NULL) {
+  # check whether all arguments are defined ------------------------------------
+
+  check_input(
+    must = c("design", "id", "cs", "alt", "items", "ch", "type"),
+    defined = names(match.call())
+  )
   # define missing arguments ---------------------------------------------------
   # specify optional values
   prior_b <- prior_b %||% 5L
@@ -76,13 +82,6 @@ dm_to_stan_hb <- function(
     )
   }
 
-  # check whether all arguments are defined ------------------------------------
-
-  check_input(
-    must = c("design", "id", "cs", "alt", "items", "ch", "type"),
-    defined = names(match.call())
-  )
-
   # tests ----------------------------------------------------------------------
 
   # check length of input
@@ -102,7 +101,8 @@ dm_to_stan_hb <- function(
     tasks <- anchor_start
   } else {
     tasks <- dplyr::reframe(
-      design, mx = max({{ cs }})
+      design,
+      mx = max({{ cs }})
     ) %>%
       dplyr::pull(mx) + 1
   }
@@ -129,10 +129,13 @@ dm_to_stan_hb <- function(
   orig_id <- unique(unlist(dplyr::select(design, {{ id }})))
 
   if (type == "maxdiff" && !is.null(anchor_start)) {
-    design <- dplyr::filter(design,
-                            apply(design[preds[-length(preds)]],
-                                  1,
-                                  function(x) sum(abs(x))) != 0
+    design <- dplyr::filter(
+      design,
+      apply(
+        design[preds[-length(preds)]],
+        1,
+        function(x) sum(abs(x))
+      ) != 0
     )
   }
 
@@ -173,11 +176,15 @@ dm_to_stan_hb <- function(
 
     if (!is.null(anchor_start)) {
       anc_df <- dplyr::filter(design, {{ cs }} >= tasks) %>%
-        dplyr::mutate(id = {{ id }},
-                      item = apply(.[preds[-length(preds)]],
-                                   1,
-                                   function(x) which(x == 1)),
-                      y = {{ ch }}) %>%
+        dplyr::mutate(
+          id = {{ id }},
+          item = apply(
+            .[preds[-length(preds)]],
+            1,
+            function(x) which(x == 1)
+          ),
+          y = {{ ch }}
+        ) %>%
         dplyr::select(id, item, y)
 
       A_inc <- 1
@@ -206,24 +213,24 @@ dm_to_stan_hb <- function(
 
   if (type != "maxdiff") {
     data_stan <- list(
-    N = nrow(index),
-    I = length(orig_id),
-    M = nrow(mxd_df),
-    K = length(preds) - 1,
-    D = ncol(demos),
-    item = mxd_df$item,
-    bw = mxd_df$bw,
-    Z = demos,
-    y = index$y,
-    orig_id = orig_id,
-    start_n = index$start_n,
-    end_n = index$end_n,
-    id = index$id,
-    prior_omega = prior_omega,
-    prior_b = prior_b,
-    prior_sigma = prior_sigma,
-    type = type
-  )
+      N = nrow(index),
+      I = length(orig_id),
+      M = nrow(mxd_df),
+      K = length(preds) - 1,
+      D = ncol(demos),
+      item = mxd_df$item,
+      bw = mxd_df$bw,
+      Z = demos,
+      y = index$y,
+      orig_id = orig_id,
+      start_n = index$start_n,
+      end_n = index$end_n,
+      id = index$id,
+      prior_omega = prior_omega,
+      prior_b = prior_b,
+      prior_sigma = prior_sigma,
+      type = type
+    )
   }
 
   if (type == "maxdiff") {

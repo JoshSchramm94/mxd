@@ -135,7 +135,7 @@ To run the multinomial logit model, `mxd` provides the `mxd_logit()`. The functi
 
 ```{r}
 mxd_logit(
-  data = dm,
+  design = dm,
   ch = choice,
   cs = Set,
   items = c(Item_1:Item_17),
@@ -162,6 +162,7 @@ data_stan <- dm_to_stan_mnl(
   cs = Set, 
   items = c(Item_1:Item_17), 
   ch = choice, 
+  type = "best-worst",
   prior_b = 10)
 ```
 
@@ -256,7 +257,7 @@ Afterwards, we can run the `mxd_count()` function. Instead of defining the numbe
 
 ```{r}
 mxd_count(
-  data = unanc_design,
+  design = unanc_design,
   cs = Set,
   item = Item,
   ch = Response,
@@ -346,7 +347,8 @@ Once prepared, we can get the summary statistic of the results. Since `betas_pre
 ```{r}
 betas_summary(
   betas = betas_prep[["beta_raw"]],
-  vars = c(g1:ref)
+  vars = c(g1:ref),
+  id = id
 )
 ```
 
@@ -355,7 +357,8 @@ Alternatively, we could also show the choice probabilities.
 ```{r}
 betas_summary(
   betas = betas_prep[["beta_prob"]],
-  vars = c(g1:ref)
+  vars = c(g1:ref),
+  id = id
 )
 ```
 
@@ -475,6 +478,7 @@ cv_df <- dm_to_stan_hb_cv(
   alt = alt,
   items = c(Item_1:Item_17),
   ch = choice,
+  type = "best-worst",
   folds = 5L,
   seed = 1910,
   demos = NULL

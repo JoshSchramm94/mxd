@@ -32,6 +32,7 @@
 #' @importFrom rstantools rstan_config
 #' @importFrom RcppParallel RcppParallelLibs
 #' @importFrom utils combn
+#' @importFrom labelled val_labels
 
 
 #'
@@ -44,6 +45,7 @@ utils::globalVariables(
   c(
     ".",
     "alt",
+    "alt2",
     "anchor_tasks",
     "b",
     "b_perc",

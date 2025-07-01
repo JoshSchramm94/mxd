@@ -58,8 +58,8 @@ mxd_count <- function(design, cs, item, ch, no_items,
   allowed_class(labels, "character")
 
   # check for missings in groups
-  missing_allowed(design, var = {{ group }}, allowed = "yes")
-  missing_allowed(design, var = {{ ch }}, allowed = "no")
+  missing_allowed(design, var = {{ group }}, variable = "group", allowed = "yes")
+  missing_allowed(design, var = {{ ch }}, variable = "ch", allowed = "no")
 
   # check right input
   check_integer(list(

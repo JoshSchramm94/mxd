@@ -259,6 +259,60 @@ test_that("Not multiple choices per choice set ", {
 
 # end --------------------------------------------------------------------------
 
+# check for all types ----------------------------------------------------------
+test_that("Type maxdiff ", {
+  expect_no_error(csv_to_dm(
+    design = data,
+    id = id,
+    cs = set,
+    item = item,
+    ch = response,
+    anchor = "direct",
+    mxd_tasks = 16,
+    type = "maxdiff"
+  ))
+})
+
+test_that("Type best-worst ", {
+  expect_no_error(csv_to_dm(
+    design = data,
+    id = id,
+    cs = set,
+    item = item,
+    ch = response,
+    anchor = "direct",
+    mxd_tasks = 16,
+    type = "best-worst-seq"
+  ))
+})
+
+test_that("Type worst-best ", {
+  expect_no_error(csv_to_dm(
+    design = data,
+    id = id,
+    cs = set,
+    item = item,
+    ch = response,
+    anchor = "direct",
+    mxd_tasks = 16,
+    type = "worst-best-seq"
+  ))
+})
+
+test_that("Type exploded ", {
+  expect_no_error(csv_to_dm(
+    design = data,
+    id = id,
+    cs = set,
+    item = item,
+    ch = response,
+    anchor = "direct",
+    mxd_tasks = 16,
+    type = "exploded"
+  ))
+})
+# end --------------------------------------------------------------------------
+
 # check output -----------------------------------------------------------------
 test_that("Output is data frame ", {
   expect_true(is.data.frame(csv_to_dm(

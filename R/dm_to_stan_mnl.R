@@ -69,7 +69,8 @@ dm_to_stan_mnl <- function(design, id, cs, items, ch, type,
     tasks <- anchor_start
   } else {
     tasks <- dplyr::reframe(
-      design, mx = max({{ cs }})
+      design,
+      mx = max({{ cs }})
     ) %>%
       dplyr::pull(mx) + 1
   }
@@ -79,15 +80,17 @@ dm_to_stan_mnl <- function(design, id, cs, items, ch, type,
   preds <- var_names(design, {{ items }})
 
   if (type == "maxdiff" && !is.null(anchor_start)) {
-    design <- dplyr::filter(design,
-                            apply(design[preds[-length(preds)]],
-                                  1,
-                                  function(x) sum(abs(x))) != 0
-      )
+    design <- dplyr::filter(
+      design,
+      apply(
+        design[preds[-length(preds)]],
+        1,
+        function(x) sum(abs(x))
+      ) != 0
+    )
   }
 
   if (type != "maxdiff") {
-
     mxd_df <- design %>%
       dplyr::mutate(
         row = dplyr::row_number(),
@@ -96,11 +99,9 @@ dm_to_stan_mnl <- function(design, id, cs, items, ch, type,
         obs = cumsum(c(1, diff({{ cs }}) != 0))
       ) %>%
       dplyr::relocate(row, .before = tidyselect::everything())
-
   }
 
   if (type == "maxdiff") {
-
     mxd_df <- dplyr::filter(design, {{ cs }} < tasks) %>%
       dplyr::mutate(
         row = dplyr::row_number(),
@@ -112,10 +113,14 @@ dm_to_stan_mnl <- function(design, id, cs, items, ch, type,
 
     if (!is.null(anchor_start)) {
       anc_df <- dplyr::filter(design, {{ cs }} >= tasks) %>%
-        dplyr::mutate(item = apply(.[preds[-length(preds)]],
-                                   1,
-                                   function(x) which(x == 1)),
-                      y = {{ ch }}) %>%
+        dplyr::mutate(
+          item = apply(
+            .[preds[-length(preds)]],
+            1,
+            function(x) which(x == 1)
+          ),
+          y = {{ ch }}
+        ) %>%
         dplyr::select(item, y)
 
       A_inc <- 1
@@ -127,7 +132,6 @@ dm_to_stan_mnl <- function(design, id, cs, items, ch, type,
 
       A_inc <- 0
     }
-
   }
 
   # build indices
@@ -152,10 +156,9 @@ dm_to_stan_mnl <- function(design, id, cs, items, ch, type,
       prior_b = prior_b,
       type = type
     )
-
   }
 
-  if (type == "maxdiff"){
+  if (type == "maxdiff") {
     data_stan <- list(
       N = nrow(index),
       M = nrow(mxd_df),

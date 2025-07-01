@@ -17,8 +17,7 @@
 #' @examples
 #' \dontrun{
 #' sigma(
-#'   stan_output = mxd_model,
-#'   pars = "b"
+#'   stan_output = mxd_model
 #' )
 #' }
 #'
@@ -31,6 +30,9 @@ sigma_summary <- function(stan_output, labels = NULL) {
     must = c("stan_output"),
     defined = names(match.call())
   )
+
+  # check whether input is correct
+  stanfit_input(stan_output)
 
 
   # define missing arguments ---------------------------------------------------
@@ -46,9 +48,6 @@ sigma_summary <- function(stan_output, labels = NULL) {
   )
 
   # tests ----------------------------------------------------------------------
-  # check whether input is correct
-  stanfit_input(stan_output)
-
   # check length of labels
   labels_length(labels, ncol(as.data.frame(rstan::extract(stan_output)[["b"]])))
 

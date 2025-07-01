@@ -75,8 +75,8 @@ post_mhp <- function(betas_post, hot_data, id, opts, hot_choice,
   allowed_input(toupper(raw), c("TRUE", "FALSE"))
 
   # check for potential missings in group & missings in hot_choice
-  missing_allowed(hot_data, var = {{ group }}, allowed = "yes")
-  missing_allowed(hot_data, var = {{ hot_choice }}, allowed = "no")
+  missing_allowed(hot_data, var = {{ group }}, variable = "group", allowed = "yes")
+  missing_allowed(hot_data, var = {{ hot_choice }}, variable = "hot_choice", allowed = "no")
   # preps ----------------------------------------------------------------------
 
   opts_names <- var_names(betas_post[[1]], {{ opts }})

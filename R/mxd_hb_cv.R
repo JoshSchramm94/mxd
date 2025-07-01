@@ -29,7 +29,7 @@ mxd_hb_cv <- function(data_stan,
 
   # tests ----------------------------------------------------------------------
   # check whether input is correct
-  lapply(seq_len(length(data_stan)), function(x) list_inputs(data_stan[[x]][[2]]))
+  lapply(seq_len(length(data_stan)), function(x) list_inputs(data_stan[[x]][[1]]))
   allowed_class(chains, c("numeric", "integer"))
   allowed_class(iter, c("numeric", "integer"))
   allowed_class(warmup, c("numeric", "integer"))
@@ -59,7 +59,7 @@ mxd_hb_cv <- function(data_stan,
     "chains" = chains,
     "iter" = iter,
     "warmup" = warmup,
-    "cores" = cores,
+    "cores" = defa_args[["cores"]],
     "thin" = defa_args[["thin"]]
   ))
 

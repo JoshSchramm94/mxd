@@ -32,7 +32,6 @@ mxd_logit_bayesian <- function(data_stan,
                                anchor = FALSE,
                                seed = NULL,
                                ...) {
-
   # define missing values
   seed <- seed %||% 1910L
 

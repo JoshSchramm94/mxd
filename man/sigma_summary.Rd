@@ -27,8 +27,7 @@ Optionally, users can define labels for the items.
 \examples{
 \dontrun{
 sigma(
-  stan_output = mxd_model,
-  pars = "b"
+  stan_output = mxd_model
 )
 }
 

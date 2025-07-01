@@ -154,6 +154,6 @@ dm_to_stan_hb_cv <- function(
         demos = demos
       )
 
-    output <- append(output, list("val_sample" = val_sample))
+    output <- list("stan_input" = output, "val_sample" = val_sample)
   })
 }

@@ -259,9 +259,7 @@ check_empty <- function(
     arg1,
     arg2,
     call = rlang::caller_env()) {
-
-  if (arg1 != "maxdiff" && !is.null(arg2))
-  {
+  if (arg1 != "maxdiff" && !is.null(arg2)) {
     cli::cli_abort(
       c(
         "{.arg anchor_start} only needs to be specified if {.arg type} set to {.arg maxdiff}",
@@ -270,7 +268,7 @@ check_empty <- function(
       call = call
     )
   }
-  }
+}
 
 labels_length <- function(
     labels,
@@ -433,15 +431,15 @@ post_check <- function(
 
 missing_allowed <- function(data,
                             var,
+                            variable,
                             allowed = c("yes", "no"),
-                            arg = rlang::caller_arg(var),
                             call = rlang::caller_env()) {
   var <- dplyr::select(data, {{ var }})
 
   if (allowed == "yes" && anyNA(var)) {
     cli::cli_warn(
       c(
-        "{.arg {arg}} contain {.cls NA} values."
+        "{.arg {variable}} contain {.cls NA} values."
       )
     )
   }
@@ -449,7 +447,7 @@ missing_allowed <- function(data,
   if (allowed == "no" && anyNA(var)) {
     cli::cli_abort(
       c(
-        "{.arg {arg}} contain {.cls NA} values."
+        "{.arg {variable}} contain {.cls NA} values."
       )
     )
   }
@@ -607,15 +605,15 @@ ref_in_items <- function(data,
 
 combi <- function(x, order = FALSE) {
   if (order == FALSE) {
-    utils::combn(x, 2) %>%
+    return(utils::combn(x, 2) %>%
       t() %>%
-      as.data.frame()
+      as.data.frame())
   }
 
   if (order == TRUE) {
-    cbind(utils::combn(x, 2), utils::combn(rev(x), 2)) %>%
+    return(cbind(utils::combn(x, 2), utils::combn(rev(x), 2)) %>%
       t() %>%
-      as.data.frame()
+      as.data.frame())
   }
 }
 
