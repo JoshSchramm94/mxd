@@ -40,10 +40,6 @@ mxd_logit_bayesian <- function(data_stan,
     defined = names(match.call())
   )
 
-  # define labels
-  labels <- labels %||% paste0("item_", seq_len(data_stan[["K"]]))
-
-  # tests ----------------------------------------------------------------------
   # check whether input is correct
   allowed_class(data_stan, "list")
   allowed_class(chains, c("numeric", "integer"))
@@ -51,8 +47,12 @@ mxd_logit_bayesian <- function(data_stan,
   allowed_class(warmup, c("numeric", "integer"))
   allowed_class(seed, c("numeric", "integer"))
   allowed_class(bw_size, c("numeric", "integer"))
+
+  # define labels
+  labels <- labels %||% paste0("item_", seq_len(data_stan[["K"]]))
   allowed_class(labels, c("character"))
 
+  # tests ----------------------------------------------------------------------
   # check input anchor
   allowed_input(toupper(anchor), c("TRUE", "FALSE"))
 
@@ -69,7 +69,8 @@ mxd_logit_bayesian <- function(data_stan,
     cores = 5L,
     thin = 5L,
     init = "random",
-    algorithm = "NUTS"
+    algorithm = "NUTS",
+    refresh = iter / 10
   )
 
   args <- args_list(defi_args, defa_args)
@@ -77,6 +78,11 @@ mxd_logit_bayesian <- function(data_stan,
   allowed_input(args[["algorithm"]], c("NUTS", "HMC", "Fixed_param"))
   allowed_class(args[["cores"]], c("numeric", "integer"))
   allowed_class(args[["thin"]], c("numeric", "integer"))
+  allowed_class(args[["refresh"]], c("numeric", "integer"))
+  allowed_input(data_stan[["type"]], c(
+    "best-worst", "best-worst-seq", "worst-best-seq",
+    "best-only", "worst-only", "maxdiff", "exploded"
+  ))
 
   # check right input
   check_integer(list(
@@ -85,7 +91,8 @@ mxd_logit_bayesian <- function(data_stan,
     "iter" = iter,
     "warmup" = warmup,
     "cores" = args[["cores"]],
-    "thin" = args[["thin"]]
+    "thin" = args[["thin"]],
+    "refresh" = args[["refresh"]]
   ))
 
   # preps ----------------------------------------------------------------------
@@ -101,7 +108,8 @@ mxd_logit_bayesian <- function(data_stan,
       algorithm = args[["algorithm"]],
       iter = iter,
       warmup = warmup,
-      thin = args[["thin"]]
+      thin = args[["thin"]],
+      refresh = args[["refresh"]]
     )
   }
 

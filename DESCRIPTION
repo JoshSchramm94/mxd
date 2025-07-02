@@ -45,6 +45,7 @@ LinkingTo:
     StanHeaders (>= 2.18.0)
 SystemRequirements: GNU make
 Suggests: 
+    labelled (>= 2.14.1),
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 LazyData: true

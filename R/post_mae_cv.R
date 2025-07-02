@@ -28,13 +28,9 @@ post_mae_cv <- function(stan_cv, stan_input, hot_data, opts, hot_choice,
 
   # tests ----------------------------------------------------------------------
 
-  # check length of labels
-  if (!is.null(labels)) {
-    labels_length(labels, (dim(rstan::extract(stan_cv[[1]])[["beta"]])[3] + 1))
-  }
-
   # check whether input is correct
   lapply(stan_cv, stanfit_input)
+  list_inputs(stan_input)
   lapply(
     seq_len(length(stan_input)),
     function(x) {
@@ -68,6 +64,12 @@ post_mae_cv <- function(stan_cv, stan_input, hot_data, opts, hot_choice,
 
   # check for length of input
   ncol_input(hot_data, variable = {{ hot_choice }}, argument = hot_choice)
+
+  # check length of labels
+  if (!is.null(labels)) {
+    labels_length(labels, (dim(rstan::extract(stan_cv[[1]])[["beta"]])[3] + 1))
+  }
+
   # preps ----------------------------------------------------------------------
 
   val_sample_res <- purrr::map2(stan_cv, stan_input, function(x, y) {

@@ -63,7 +63,7 @@ post_medae_cv <- function(stan_cv, stan_input, hot_data, opts, hot_choice,
   # check input raw
   allowed_input(toupper(raw), c("TRUE", "FALSE"))
 
-  # check for potential missings in group & missings in hot_choice
+  # check for potential missings in hot_choice
   missing_allowed(hot_data, var = {{ hot_choice }}, variable = "hot_choice", allowed = "no")
 
   # check for length of input

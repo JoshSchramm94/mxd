@@ -46,13 +46,13 @@ coefficients, the zero-centered scores, and the probability scores.
 \examples{
 \dontrun{
 mxd_logit(
- design = dm,
- ch = choice,
- cs = set,
- items = c(item_1:item_17),
- bw_size = 4,
- reference = item_17,
- anchor = TRUE
+  design = dm,
+  ch = choice,
+  cs = set,
+  items = c(item_1:item_17),
+  bw_size = 4,
+  reference = item_17,
+  anchor = TRUE
 )
 }
 

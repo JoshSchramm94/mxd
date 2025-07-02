@@ -32,7 +32,6 @@
 #' @importFrom rstantools rstan_config
 #' @importFrom RcppParallel RcppParallelLibs
 #' @importFrom utils combn
-#' @importFrom labelled val_labels
 
 
 #'

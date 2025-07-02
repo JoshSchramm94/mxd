@@ -66,6 +66,11 @@ mxd_hb <- function(data_stan,
   allowed_class(iter, c("numeric", "integer"))
   allowed_class(warmup, c("numeric", "integer"))
   allowed_class(seed, c("numeric", "integer"))
+  # check input for type
+  allowed_input(data_stan[["type"]], c(
+    "best-worst", "best-worst-seq", "worst-best-seq",
+    "best-only", "worst-only", "maxdiff", "exploded"
+  ))
 
   # (...) ----------------------------------------------------------------------
 

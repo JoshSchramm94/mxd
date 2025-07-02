@@ -35,6 +35,11 @@ mxd_hb_cv <- function(data_stan,
   allowed_class(warmup, c("numeric", "integer"))
   allowed_class(seed, c("numeric", "integer"))
 
+  # allowed_input(data_stan[["type"]], c(
+  #   "best-worst", "best-worst-seq", "worst-best-seq",
+  #   "best-only", "worst-only", "maxdiff", "exploded"
+  # ))
+
   # (...) ----------------------------------------------------------------------
 
   # define additional arguments
