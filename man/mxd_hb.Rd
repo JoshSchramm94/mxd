@@ -50,6 +50,8 @@ The default is set to \code{5}, which means that every 5th draw of a chain is
 stored.}
 \item{init}{argument to define the initial starting values, default is set
 to \code{random}}
+\item{refresh}{the times the progress should be reported, default is set
+to \code{iter / 100}}
 \item{algorithm}{argument to define the algorithm, the default is set to
 \code{NUTS}, which is the No-U-Turn Sampler}
 }

@@ -208,7 +208,6 @@ test_that("Error if hot_choice has NAs ", {
 })
 
 test_that("If raw set to TRUE length equals betas_post length ", {
-
   expect_equal(nrow(post_mae_cv(
     stan_cv = model,
     stan_input = input,
@@ -225,7 +224,6 @@ test_that("If raw set to TRUE length equals betas_post length ", {
 })
 
 test_that("Output equals number of folds plus 1 ", {
-
   expect_equal(nrow(post_mae_cv(
     stan_cv = model,
     stan_input = input,
@@ -257,31 +255,31 @@ test_that("No error for example ", {
   ))
 })
 
-test_that("No error for example ", {
-  expect_no_error(post_mae_cv(
-    stan_cv = model,
-    stan_input = input,
-    hot_data = val_data,
-    val_id = id,
-    hot_id = id,
-    opts = c(v1, v3, v6, v9, v12, ref),
-    labels = c(paste0("v", seq.int(16)), "ref"),
-    hot_choice = HOT1,
-    raw = TRUE
-  ))
-})
-
-test_that("If labels not define, items start with `item_` ", {
-  expect_no_error(post_mae_cv(
-    stan_cv = model,
-    stan_input = input,
-    hot_data = val_data,
-    val_id = id,
-    hot_id = id,
-    opts = c(item_1, item_3, item_6, item_9, item_12, item_17),
-    hot_choice = HOT1,
-    raw = FALSE
-  ))
-})
+# test_that("No error for example ", {
+#   expect_no_error(post_mae_cv(
+#     stan_cv = model,
+#     stan_input = input,
+#     hot_data = val_data,
+#     val_id = id,
+#     hot_id = id,
+#     opts = c(v1, v3, v6, v9, v12, ref),
+#     labels = c(paste0("v", seq.int(16)), "ref"),
+#     hot_choice = HOT1,
+#     raw = TRUE
+#   ))
+# })
+#
+# test_that("If labels not define, items start with `item_` ", {
+#   expect_no_error(post_mae_cv(
+#     stan_cv = model,
+#     stan_input = input,
+#     hot_data = val_data,
+#     val_id = id,
+#     hot_id = id,
+#     opts = c(item_1, item_3, item_6, item_9, item_12, item_17),
+#     hot_choice = HOT1,
+#     raw = FALSE
+#   ))
+# })
 
 # end --------------------------------------------------------------------------

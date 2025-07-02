@@ -53,7 +53,6 @@ test_that("Error if chains is not numeric ", {
 })
 
 test_that("Error if type is not specified in input ", {
-
   input2 <- input
   input2[["type"]] <- "test"
 

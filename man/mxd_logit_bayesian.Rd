@@ -36,8 +36,9 @@ MaxDiff task}
 
 \item{seed}{numeric input to specify seed for reproducible results}
 
-\item{...}{additional arguments to define are \code{cores}, \code{thin}, \code{init}, and
-\code{algorithm}, more information see \code{\link[rstan]{stan}} documentation}
+\item{...}{additional arguments to define are \code{cores}, \code{thin}, \code{init},
+\code{refresh} and \code{algorithm}, more information see \code{\link[rstan]{stan}}
+documentation}
 }
 \value{
 S4

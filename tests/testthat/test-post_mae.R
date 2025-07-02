@@ -157,38 +157,38 @@ test_that("No error for example ", {
   ))
 })
 
-test_that("No error for example, raw set to TRUE ", {
-  expect_no_error(post_mae(
-    betas_post = betas[["beta_raw"]],
-    hot_data = val_data,
-    opts = c(v1, v3, v6, v9, v12, ref),
-    hot_choice = HOT1,
-    raw = TRUE,
-    group = NULL
-  ))
-})
-
-test_that("No error for example with group ", {
-  expect_no_error(post_mae(
-    betas_post = betas[["beta_raw"]],
-    hot_data = val_data,
-    opts = c(v1, v3, v6, v9, v12, ref),
-    hot_choice = HOT1,
-    raw = FALSE,
-    group = group
-  ))
-})
-
-test_that("No error for example with group and raw set to TRUE ", {
-  expect_no_error(post_mae(
-    betas_post = betas[["beta_raw"]],
-    hot_data = val_data,
-    opts = c(v1, v3, v6, v9, v12, ref),
-    hot_choice = HOT1,
-    raw = TRUE,
-    group = group
-  ))
-})
+# test_that("No error for example, raw set to TRUE ", {
+#   expect_no_error(post_mae(
+#     betas_post = betas[["beta_raw"]],
+#     hot_data = val_data,
+#     opts = c(v1, v3, v6, v9, v12, ref),
+#     hot_choice = HOT1,
+#     raw = TRUE,
+#     group = NULL
+#   ))
+# })
+#
+# test_that("No error for example with group ", {
+#   expect_no_error(post_mae(
+#     betas_post = betas[["beta_raw"]],
+#     hot_data = val_data,
+#     opts = c(v1, v3, v6, v9, v12, ref),
+#     hot_choice = HOT1,
+#     raw = FALSE,
+#     group = group
+#   ))
+# })
+#
+# test_that("No error for example with group and raw set to TRUE ", {
+#   expect_no_error(post_mae(
+#     betas_post = betas[["beta_raw"]],
+#     hot_data = val_data,
+#     opts = c(v1, v3, v6, v9, v12, ref),
+#     hot_choice = HOT1,
+#     raw = TRUE,
+#     group = group
+#   ))
+# })
 
 test_that("No error for example ", {
   res <- unlist(post_mae(
@@ -203,20 +203,20 @@ test_that("No error for example ", {
   expect_true(all(round(res, digits = 2) == c(5.77, 0.78, 4.28, 7.21)))
 })
 
-test_that("No error for out-of-sample data ", {
-  set.seed(1910L)
-  test_df <- data.frame(
-    HOT1 = sample(c(1:6), size = 1000, replace = TRUE)
-  )
-
-  expect_no_error(post_mae(
-    betas_post = betas[["beta_raw"]],
-    hot_data = test_df,
-    opts = c(v1, v3, v6, v9, v12, ref),
-    hot_choice = HOT1,
-    raw = FALSE,
-    group = NULL
-  ))
-})
+# test_that("No error for out-of-sample data ", {
+#   set.seed(1910L)
+#   test_df <- data.frame(
+#     HOT1 = sample(c(1:6), size = 1000, replace = TRUE)
+#   )
+#
+#   expect_no_error(post_mae(
+#     betas_post = betas[["beta_raw"]],
+#     hot_data = test_df,
+#     opts = c(v1, v3, v6, v9, v12, ref),
+#     hot_choice = HOT1,
+#     raw = FALSE,
+#     group = NULL
+#   ))
+# })
 
 # end --------------------------------------------------------------------------

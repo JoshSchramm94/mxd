@@ -61,7 +61,8 @@ In the first step, we load the `mxd` package. In addition, we take a glimpse at 
 
 ```{r}
 library(mxd)
-design <- readRDS("../data/design.rds")
+load("../data/anchored2.rda")
+design <- anchored2
 head(design)
 ```
 
@@ -90,10 +91,10 @@ Next, the user has to define the arguments `id` (participants' identifier), `cs`
 ```{r}
 dm <- csv_to_dm(
   design = design,
-  id = ID,
-  cs = Set,
-  item = Item,
-  ch = Response,
+  id = id,
+  cs = cs,
+  item = item,
+  ch = choice,
   anchor = "direct",
   mxd_tasks = 16L,
   type = "best-worst"
@@ -137,10 +138,10 @@ To run the multinomial logit model, `mxd` provides the `mxd_logit()`. The functi
 mxd_logit(
   design = dm,
   ch = choice,
-  cs = Set,
-  items = c(Item_1:Item_17),
+  cs = cs,
+  items = c(item_1:item_17),
   bw_size = 4,
-  reference = Item_17,
+  reference = item_17,
   anchor = TRUE
 )
 ```
@@ -158,9 +159,9 @@ To run the Bayesian MNL model, we first need to prepare the input for the model.
 ```{r}
 data_stan <- dm_to_stan_mnl(
   design = dm, 
-  id = ID, 
-  cs = Set, 
-  items = c(Item_1:Item_17), 
+  id = id, 
+  cs = cs, 
+  items = c(item_1:item_17), 
   ch = choice, 
   type = "best-worst",
   prior_b = 10)
@@ -210,10 +211,10 @@ Before we can estimate the model, we have to prepare the input accordingly. To d
 ```{r}
 stan_input <- dm_to_stan_hb(
     design = dm, 
-    id = ID, 
-    cs = Set,
+    id = id, 
+    cs = cs,
     alt = alt,
-    items = c(Item_1:Item_17), 
+    items = c(item_1:item_17), 
     ch = choice,
     prior_b = NULL,
     prior_omega = NULL,
@@ -250,7 +251,7 @@ output <- mxd_hb(
 For those users who are prefer to run classical count analysis, we implemented the `mxd_count()` function. The user has to provide an unanchored design to run the code. To do, we will adapt the `design` data frame briefly.
 
 ```{r}
-unanc_design <- dplyr::filter(design, Set <= 16)
+unanc_design <- dplyr::filter(design, cs <= 16)
 ```
 
 Afterwards, we can run the `mxd_count()` function. Instead of defining the number of MaxDiff tasks, we have to define the number of items included (`no_items`).
@@ -258,11 +259,11 @@ Afterwards, we can run the `mxd_count()` function. Instead of defining the numbe
 ```{r}
 mxd_count(
   design = unanc_design,
-  cs = Set,
-  item = Item,
-  ch = Response,
+  cs = cs,
+  item = item,
+  ch = choice,
   no_items = 16L,
-  labels = paste0("Label ", seq_len(16))
+  labels = paste0("Item ", seq_len(16))
 )
 ```
 
@@ -396,7 +397,8 @@ Similar to the `validateHOT` package by [@schramm2025a], `mxd` also provides too
 First, we load an additional data frame, in which we stored the actual choice in the holdout task.
 
 ```{r}
-hot_data <- read.csv("../data/data.csv")
+load("../data/choicedata.rda")
+hot_data <- choicedata
 ```
 
 For internal fit, `mxd` provides both the `post_hit()` function to calculate the hit rate across the posterior draws and `post_mhp()` to calculate the mean hit probability across posterior draws. The user has to define the betas (`betas_post`), the data frame with the actual choices (`hot_data`), the participants identifier (`id`; has to be the same column name in both `betas_post` and `hot_data`), the alternatives in the validation task (`opts`), and the column name of the actual choice in the validation task (`hot_choice`). The output can be either summarized (`raw` set to `FALSE`) or for each iteration (`raw` set to `TRUE`).
@@ -406,7 +408,7 @@ post_hit(
   betas_post = betas_prep[["beta_raw"]],
   hot_data = hot_data,
   id = id,
-  opts = c(g1, g8, g9, g13, g14, g15, g16, ref),
+  opts = c(g1, g8, g9, g13, g14, ref),
   hot_choice = HOT1,
   raw = FALSE,
   group = NULL
@@ -420,7 +422,7 @@ post_mhp(
   betas_post = betas_prep[["beta_raw"]],
   hot_data = hot_data,
   id = id,
-  opts = c(g1, g8, g9, g13, g14, g15, g16, ref),
+  opts = c(g1, g8, g9, g13, g14, ref),
   hot_choice = HOT1,
   raw = FALSE
 )
@@ -434,7 +436,7 @@ The functions `post_mae()`, `post_medae()`, and `post_rmse()` can be used for bo
 post_mae(
   betas_post = betas_prep[["beta_raw"]],
   hot_data = hot_data,
-  opts = c(g1, g8, g9, g13, g14, g15, g16, ref),
+  opts = c(g1, g8, g9, g13, g14, ref),
   hot_choice = HOT1,
   raw = FALSE
 )
@@ -446,7 +448,7 @@ post_mae(
 post_medae(
   betas_post = betas_prep[["beta_raw"]],
   hot_data = hot_data,
-  opts = c(g1, g8, g9, g13, g14, g15, g16, ref),
+  opts = c(g1, g8, g9, g13, g14, ref),
   hot_choice = HOT1,
   raw = FALSE
 )
@@ -458,7 +460,7 @@ and finally, `post_rmse()` calculates the root mean square error.
 post_rmse(
   betas_post = betas_prep[["beta_raw"]],
   hot_data = hot_data,
-  opts = c(g1, g8, g9, g13, g14, g15, g16, ref),
+  opts = c(g1, g8, g9, g13, g14, ref),
   hot_choice = HOT1,
   raw = FALSE
 )
@@ -473,10 +475,10 @@ However, often including a validation sample is not feasible for researchers. In
 ```{r}
 cv_df <- dm_to_stan_hb_cv(
   design = dm,
-  id = ID,
-  cs = Set,
+  id = id,
+  cs = cs,
   alt = alt,
-  items = c(Item_1:Item_17),
+  items = c(item_1:item_17),
   ch = choice,
   type = "best-worst",
   folds = 5L,
@@ -492,7 +494,8 @@ mxd_cv <- mxd_hb_cv(
   data_stan = cv_df, 
   iter = 800, 
   warmup = 400, 
-  seed = 1910
+  seed = 1910,
+  refresh = 0
 )
 ```
 

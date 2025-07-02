@@ -34,6 +34,8 @@
 #'   stored.}
 #'   \item{init}{argument to define the initial starting values, default is set
 #'   to `random`}
+#'   \item{refresh}{the times the progress should be reported, default is set
+#'   to `iter / 100`}
 #'   \item{algorithm}{argument to define the algorithm, the default is set to
 #'   `NUTS`, which is the No-U-Turn Sampler}
 #' }
@@ -81,14 +83,16 @@ mxd_hb <- function(data_stan,
     cores = 5L,
     thin = 5L,
     init = "random",
-    algorithm = "NUTS"
+    algorithm = "NUTS",
+    refresh = iter / 10
   )
 
   args <- args_list(defi_args, defa_args)
 
-  allowed_input(defa_args[["algorithm"]], c("NUTS", "HMC", "Fixed_param"))
-  allowed_class(defa_args[["cores"]], c("numeric", "integer"))
-  allowed_class(defa_args[["thin"]], c("numeric", "integer"))
+  allowed_input(args[["algorithm"]], c("NUTS", "HMC", "Fixed_param"))
+  allowed_class(args[["cores"]], c("numeric", "integer"))
+  allowed_class(args[["thin"]], c("numeric", "integer"))
+  allowed_class(args[["refresh"]], c("numeric", "integer"))
 
   # check right input
   check_integer(list(
@@ -96,8 +100,9 @@ mxd_hb <- function(data_stan,
     "chains" = chains,
     "iter" = iter,
     "warmup" = warmup,
-    "cores" = defa_args[["cores"]],
-    "thin" = defa_args[["thin"]]
+    "cores" = args[["cores"]],
+    "thin" = args[["thin"]],
+    "refresh" = args[["refresh"]]
   ))
 
   # preps ----------------------------------------------------------------------
@@ -114,7 +119,8 @@ mxd_hb <- function(data_stan,
       cores = args[["cores"]],
       warmup = warmup,
       iter = iter,
-      thin = args[["thin"]]
+      thin = args[["thin"]],
+      refresh = args[["refresh"]]
     )
   }
 
@@ -130,12 +136,10 @@ mxd_hb <- function(data_stan,
       cores = args[["cores"]],
       warmup = warmup,
       iter = iter,
-      thin = args[["thin"]]
+      thin = args[["thin"]],
+      refresh = args[["refresh"]]
     )
   }
-
-
-
 
   return(hbmnl_mcmc)
 }

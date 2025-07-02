@@ -13,8 +13,9 @@
 #' @param labels optional character to define labels of items
 #' @param anchor logical vector to indicate whether it is an anchored MaxDiff
 #' @param seed numeric input to specify seed for reproducible results
-#' @param ... additional arguments to define are `cores`, `thin`, `init`, and
-#' `algorithm`, more information see \code{\link[rstan]{stan}} documentation
+#' @param ... additional arguments to define are `cores`, `thin`, `init`,
+#' `refresh` and `algorithm`, more information see \code{\link[rstan]{stan}}
+#' documentation
 #'
 #' @details
 #' Additional details...
@@ -124,7 +125,8 @@ mxd_logit_bayesian <- function(data_stan,
       algorithm = args[["algorithm"]],
       iter = iter,
       warmup = warmup,
-      thin = args[["thin"]]
+      thin = args[["thin"]],
+      refresh = args[["refresh"]]
     )
   }
 

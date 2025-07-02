@@ -7,8 +7,9 @@
 #' @param warmup numeric input to define the number of iterations to be used
 #' for warm-up purposes
 #' @param seed numeric input to specify seed for reproducible results
-#' @param ... additional arguments to define are `cores`, `thin`, `init`, and
-#' `algorithm`, for more information see \code{\link[rstan]{stan}} documentation
+#' @param ... additional arguments to define are `cores`, `thin`, `init`,
+#' `refresh` and `algorithm`, more information see \code{\link[rstan]{stan}}
+#' documentation
 #'
 #' @returns S4
 #' @export
@@ -34,6 +35,12 @@ mxd_hb_cv <- function(data_stan,
   allowed_class(iter, c("numeric", "integer"))
   allowed_class(warmup, c("numeric", "integer"))
   allowed_class(seed, c("numeric", "integer"))
+  lapply(seq_len(length(data_stan)), function(x) {
+    allowed_input(data_stan[[x]][["stan_input"]][["type"]], c(
+      "best-worst", "best-worst-seq", "worst-best-seq",
+      "best-only", "worst-only", "maxdiff", "exploded"
+    ))
+  })
 
   # allowed_input(data_stan[["type"]], c(
   #   "best-worst", "best-worst-seq", "worst-best-seq",
@@ -49,14 +56,16 @@ mxd_hb_cv <- function(data_stan,
     cores = 5L,
     thin = 5L,
     init = "random",
-    algorithm = "NUTS"
+    algorithm = "NUTS",
+    refresh = iter / 10
   )
 
   args <- args_list(defi_args, defa_args)
 
-  allowed_input(defa_args[["algorithm"]], c("NUTS", "HMC", "Fixed_param"))
-  allowed_class(defa_args[["cores"]], c("numeric", "integer"))
-  allowed_class(defa_args[["thin"]], c("numeric", "integer"))
+  allowed_input(args[["algorithm"]], c("NUTS", "HMC", "Fixed_param"))
+  allowed_class(args[["cores"]], c("numeric", "integer"))
+  allowed_class(args[["thin"]], c("numeric", "integer"))
+  allowed_class(args[["refresh"]], c("numeric", "integer"))
 
   # check right input
   check_integer(list(
@@ -64,8 +73,9 @@ mxd_hb_cv <- function(data_stan,
     "chains" = chains,
     "iter" = iter,
     "warmup" = warmup,
-    "cores" = defa_args[["cores"]],
-    "thin" = defa_args[["thin"]]
+    "cores" = args[["cores"]],
+    "thin" = args[["thin"]],
+    "refresh" = args[["refresh"]]
   ))
 
   # preps ----------------------------------------------------------------------
@@ -73,19 +83,41 @@ mxd_hb_cv <- function(data_stan,
   hbmnl_mcmc <- purrr::map(seq_len(length(data_stan)), function(x) {
     cat("Fold", x, "estimating ...", "\r")
 
-    rstan::sampling(
-      object = stanmodels$hb,
-      data = data_stan[[x]][["stan_input"]],
-      pars = c("b", "sigma", "Omega", "beta", "log_lik"),
-      algorithm = args[["algorithm"]],
-      init = args[["init"]],
-      seed = seed,
-      chains = chains,
-      cores = args[["cores"]],
-      warmup = warmup,
-      iter = iter,
-      thin = args[["thin"]]
-    )
+    if (data_stan[[x]][["stan_input"]][["type"]] != "maxdiff") {
+      out <- rstan::sampling(
+        object = stanmodels$hb,
+        data = data_stan[[x]][["stan_input"]],
+        pars = c("b", "sigma", "Omega", "beta", "log_lik"),
+        algorithm = args[["algorithm"]],
+        init = args[["init"]],
+        seed = seed,
+        chains = chains,
+        cores = args[["cores"]],
+        warmup = warmup,
+        iter = iter,
+        thin = args[["thin"]],
+        refresh = args[["refresh"]]
+      )
+    }
+
+    if (data_stan[[x]][["stan_input"]][["type"]] == "maxdiff") {
+      out <- rstan::sampling(
+        object = stanmodels$hb_md,
+        data = data_stan[[x]][["stan_input"]],
+        pars = c("b", "sigma", "Omega", "beta", "log_lik"),
+        algorithm = args[["algorithm"]],
+        init = args[["init"]],
+        seed = seed,
+        chains = chains,
+        cores = args[["cores"]],
+        warmup = warmup,
+        iter = iter,
+        thin = args[["thin"]],
+        refresh = args[["refresh"]]
+      )
+    }
+
+    return(out)
   })
 
   return(hbmnl_mcmc)

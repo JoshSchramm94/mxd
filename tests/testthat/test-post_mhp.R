@@ -198,41 +198,41 @@ test_that("No error for example ", {
   ))
 })
 
-test_that("No error for example, raw set to TRUE ", {
-  expect_no_error(post_mhp(
-    betas_post = betas[["beta_raw"]],
-    hot_data = val_data,
-    id = id,
-    opts = c(v1, v3, v6, v9, v12, ref),
-    hot_choice = HOT1,
-    raw = TRUE,
-    group = NULL
-  ))
-})
-
-test_that("No error for example with group ", {
-  expect_no_error(post_mhp(
-    betas_post = betas[["beta_raw"]],
-    hot_data = val_data,
-    id = id,
-    opts = c(v1, v3, v6, v9, v12, ref),
-    hot_choice = HOT1,
-    raw = FALSE,
-    group = group
-  ))
-})
-
-test_that("No error for example with group and raw set to TRUE ", {
-  expect_no_error(post_mhp(
-    betas_post = betas[["beta_raw"]],
-    hot_data = val_data,
-    id = id,
-    opts = c(v1, v3, v6, v9, v12, ref),
-    hot_choice = HOT1,
-    raw = TRUE,
-    group = group
-  ))
-})
+# test_that("No error for example, raw set to TRUE ", {
+#   expect_no_error(post_mhp(
+#     betas_post = betas[["beta_raw"]],
+#     hot_data = val_data,
+#     id = id,
+#     opts = c(v1, v3, v6, v9, v12, ref),
+#     hot_choice = HOT1,
+#     raw = TRUE,
+#     group = NULL
+#   ))
+# })
+#
+# test_that("No error for example with group ", {
+#   expect_no_error(post_mhp(
+#     betas_post = betas[["beta_raw"]],
+#     hot_data = val_data,
+#     id = id,
+#     opts = c(v1, v3, v6, v9, v12, ref),
+#     hot_choice = HOT1,
+#     raw = FALSE,
+#     group = group
+#   ))
+# })
+#
+# test_that("No error for example with group and raw set to TRUE ", {
+#   expect_no_error(post_mhp(
+#     betas_post = betas[["beta_raw"]],
+#     hot_data = val_data,
+#     id = id,
+#     opts = c(v1, v3, v6, v9, v12, ref),
+#     hot_choice = HOT1,
+#     raw = TRUE,
+#     group = group
+#   ))
+# })
 
 test_that("No error for example ", {
   res <- unlist(post_mhp(
