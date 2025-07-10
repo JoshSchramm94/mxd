@@ -1,0 +1,34 @@
+---
+title: "01 - mxd Choice Processes"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{01 - mxd Choice Processes}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+---
+
+This tutorial discusses the different choice processes and the corresponding coding processes.
+
+# Setup
+
+First, let us load the mxd package.
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(mxd)
+```
+
+# Coding processes
+
+Currently, mxd provides a total o 7 different coding processes, namely:
+
+-   `best-worst`: best-worst coding (also known as marginal coding, see [@aizaki2023]). This is the coding process implemented in Lighthouse Studio [@lighthouse2020]. Participants make the best and the worst choices from the same set.
+
+-   `best-worst-seq`: The best-worst sequential coding, which assumes that respondents

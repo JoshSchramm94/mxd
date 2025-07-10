@@ -45,7 +45,10 @@ LinkingTo:
     StanHeaders (>= 2.18.0)
 SystemRequirements: GNU make
 Suggests: 
+    knitr,
     labelled (>= 2.14.1),
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 LazyData: true
+VignetteBuilder: knitr
