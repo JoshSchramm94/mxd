@@ -24,7 +24,7 @@
 #' @returns S4
 #' @export
 #'
-mxd_logit_bayesian <- function(data_stan,
+mxd_logit <- function(data_stan,
                                chains = 5L,
                                iter = 2000L,
                                warmup = 1000L,

@@ -24,7 +24,7 @@ input <- dm_to_stan_mnl(
 # check if input is missing ----------------------------------------------------
 test_that("Error if data_stan is missing ", {
   expect_error(
-    mxd_logit_bayesian(
+    mxd_logit(
       # data_stan = input,
       bw_size = 4L
     )
@@ -33,7 +33,7 @@ test_that("Error if data_stan is missing ", {
 
 test_that("Error if bw_size is missing ", {
   expect_error(
-    mxd_logit_bayesian(
+    mxd_logit(
       data_stan = input,
       # bw_size = 4L
     )
@@ -44,7 +44,7 @@ test_that("Error if bw_size is missing ", {
 # check for wrong input --------------------------------------------------------
 test_that("Error if data_stan is not a list ", {
   expect_error(
-    mxd_logit_bayesian(
+    mxd_logit(
       data_stan = dm,
       bw_size = 4L
     )
@@ -53,7 +53,7 @@ test_that("Error if data_stan is not a list ", {
 
 test_that("Error if bw_size is not numeric ", {
   expect_error(
-    mxd_logit_bayesian(
+    mxd_logit(
       data_stan = input,
       bw_size = "4"
     )
@@ -65,7 +65,7 @@ test_that("Error if type is not specified in input ", {
   input2[["type"]] <- "test"
 
   expect_error(
-    mxd_logit_bayesian(
+    mxd_logit(
       data_stan = input2,
       bw_size = 4L
     )
@@ -77,7 +77,7 @@ test_that("Error if type is not specified in input ", {
 # check output -----------------------------------------------------------------
 
 test_that("No error for example ", {
-  res <- mxd_logit_bayesian(
+  res <- mxd_logit(
     data_stan = input,
     chains = 1L,
     cores = 1L,
@@ -96,7 +96,7 @@ test_that("No error for example ", {
 
 # check whether example works --------------------------------------------------
 test_that("No error for example ", {
-  expect_no_error(mxd_logit_bayesian(
+  expect_no_error(mxd_logit(
     data_stan = input,
     chains = 1L,
     cores = 1L,

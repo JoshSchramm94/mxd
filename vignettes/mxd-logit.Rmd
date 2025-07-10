@@ -1,0 +1,81 @@
+---
+title: "mxd - Bayesian logit analysis"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{02 - mxd Bayesian logit}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+---
+
+This tutorial discusses the Bayesian multinomial logit analysis.
+
+# Setup
+
+First, we again load the relevant packages.
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, message=FALSE}
+library(mxd)
+library(magrittr)
+library(dplyr)
+```
+
+# Create design matrix and input for stan
+
+First, we again create the design matrix. We use the data frame `unanchored1` that comes with the mxd package. In this data set, 100 participants were simulated, each evaluating 16 MaxDiff tasks with 4 alternatives each.
+
+```{r}
+data("unanchored1")
+```
+
+Next, we create the design matrix using the `csv_to_dm()` function.
+
+```{r}
+design <- csv_to_dm(
+    design = unanchored1,
+    id = id,
+    cs = cs,
+    item = item,
+    ch = choice,
+    mxd_tasks = 16L,
+    type = "best-worst"
+  )
+```
+
+Next, we create the relevant input that we need for running the `mxd_logit()` function. The mxd package relies on rstan [@rstan] for the estimation for the Bayesian multinomial logit analysis. rstan needs the input in a specific form, which can be created using the `dm_to_stan_mnl()` function. Here, we first define the `design`, which is the design matrix we created in the code chunk above, the participants' identifier (`id`), the choice task indicator (`cs`), the predictors (`items`), the choice variable (`ch`), the coding used in the design matrix (`type`), and finally we need a prior for the beta coefficients derived from a normal distribution. For more information, please check the [stan recommendations](https://github.com/stan-dev/stan/wiki/prior-choice-recommendations). Here, we choose a weakly informative prior.
+
+```{r}
+dm_stan <- dm_to_stan_mnl(
+  design = design,
+  id = id,
+  cs = cs,
+  items = c(item_1:item_16),
+  ch = choice,
+  type = "best-worst",
+  prior_b = 10
+)
+```
+
+# Estimation
+
+Next, we can run the model.
+
+```{r}
+out <- mxd_logit(
+  data_stan = dm_stan,
+  chains = 5L,
+  iter = 2000,
+  warmup = 1000,
+  bw_size = 4,
+  labels = c(paste0("item", seq.int(15))),
+  seed = 12345
+)
+```
+

@@ -1,5 +1,5 @@
 ---
-title: "01 - mxd Choice Processes"
+title: "mxd - Choice Processes"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{01 - mxd Choice Processes}
@@ -21,14 +21,180 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup, message=FALSE}
 library(mxd)
+library(magrittr)
+library(dplyr)
 ```
 
 # Coding processes
 
 Currently, mxd provides a total o 7 different coding processes, namely:
 
--   `best-worst`: best-worst coding (also known as marginal coding, see [@aizaki2023]). This is the coding process implemented in Lighthouse Studio [@lighthouse2020]. Participants make the best and the worst choices from the same set.
+-   `best-worst`: best-worst coding (also known as marginal coding, see formula 8 in [@aizaki2023]). This is the coding process implemented in Lighthouse Studio [@lighthouse2020]. Participants make the best and the worst choices from the same set.
 
--   `best-worst-seq`: The best-worst sequential coding, which assumes that respondents
+-   `best-worst-seq`: The best-worst sequential coding, which assumes that participants first choose the best option and then the worst option from a set excluding the best option (see formula 9 in [@aizaki2023]).
+
+-   `worst-best-seq`: The worst-best sequential coding, which assumes that participants first choose the worst option and then the best option from a set excluding the worst option.
+
+-   `maxdiff`: The maximum difference model, which assumes that the best choice and worst choice have the biggest difference across all pairs of two (see formula 7 in [@aizaki2023]).
+
+-   `exploded`: The exploded paired-comparison (see @chrzan2019), which creates every possible paired comparison for which one can assume the result.
+
+-   `best-only`: Alternatively, one can also just use the best choices from the MaxDiff study...
+
+-   `worst-only`: ... or the worst choices.
+
+# Design Matrix
+
+For this example, we will simulate 5 MaxDiff tasks for one participant showing 3 items. We assume that this study showed a total of 5 items.
+
+```{r}
+K = 5 # no of items
+J = 3 # size of tasks
+I = 1 # simulating one participant
+T = 4 # simulating one task
+
+set.seed(1910)
+mxd_task = data.frame(
+  id = rep(I, times = T * J),
+  cs = rep(seq.int(T), each = J)) %>% 
+  dplyr::mutate(item = sample(K, J),
+                choice = sample(c(-1, 0, 1), J), .by = cs)
+```
+
+In the following, we will focus on the first choice set only.
+
+```{r}
+head(mxd_task, n = J)
+```
+
+
+In this example, participant `r I` chose item `r mxd_task[mxd_task$cs == 1 & mxd_task$choice == 1, "item"]` as best item and item `r mxd_task[mxd_task$cs == 1 & mxd_task$choice == -1, "item"]` as worst item.
+
+## Best-worst coding
+
+In the *best-worst* coding, two choice sets (`cs`) are created, one for the best choice (shown items display a `1`; see `cs` equals `1`) and one for the worst choice (shown items display a `-1`; see `cs` equals `2`).
+
+```{r}
+head(
+  csv_to_dm(
+    design = mxd_task,
+    id = id,
+    cs = cs,
+    item = item,
+    ch = choice,
+    mxd_tasks = T,
+    type = "best-worst"
+  ), n = 6
+)
+```
+
+## Best-worst-sequential coding
+
+In the *best-worst-sequential* coding, the best choice (`r mxd_task[mxd_task$cs == 1 & mxd_task$choice == 1, "item"]`) is removed from the choice set for the worst item.
+
+```{r}
+head(
+  csv_to_dm(
+    design = mxd_task,
+    id = id,
+    cs = cs,
+    item = item,
+    ch = choice,
+    mxd_tasks = T,
+    type = "best-worst-seq"
+  ), n = 5
+)
+```
+
+## Worst-best-sequential coding
+
+In the *worst-best-sequential* coding, the best choice (`r mxd_task[mxd_task$cs == 1 & mxd_task$choice == -1, "item"]`) is removed from the choice set for the best item.
+
+```{r}
+head(
+  csv_to_dm(
+    design = mxd_task,
+    id = id,
+    cs = cs,
+    item = item,
+    ch = choice,
+    mxd_tasks = T,
+    type = "worst-best-seq"
+  ), n = 5
+)
+```
+
+## Maximum difference coding
+
+In the *maxdiff* coding, each possible pair of two is coded and the one that has the maximum difference is chosen.
+
+```{r}
+head(
+  csv_to_dm(
+    design = mxd_task,
+    id = id,
+    cs = cs,
+    item = item,
+    ch = choice,
+    mxd_tasks = T,
+    type = "maxdiff"
+  ), n = 6
+)
+```
+
+## Exploded paired-comparison
+
+In the *exploded paired comparison* coding, each possible paired comparison is coded. Here we know that the best choice wins against both the worst choice and the not chosen item and the not chosen item wins against the worst choice.
+
+```{r}
+head(
+  csv_to_dm(
+    design = mxd_task,
+    id = id,
+    cs = cs,
+    item = item,
+    ch = choice,
+    mxd_tasks = T,
+    type = "exploded"
+  ), n = 6
+)
+```
+
+## Best-choice
+
+Finally, when type is set to `best-only`, only the best choice is considered ...
+
+```{r}
+head(
+  csv_to_dm(
+    design = mxd_task,
+    id = id,
+    cs = cs,
+    item = item,
+    ch = choice,
+    mxd_tasks = T,
+    type = "best-only"
+  ), n = 3
+)
+```
+## Worst-choice
+
+... and the same goes for `worst-only`.
+
+```{r}
+head(
+  csv_to_dm(
+    design = mxd_task,
+    id = id,
+    cs = cs,
+    item = item,
+    ch = choice,
+    mxd_tasks = T,
+    type = "worst-only"
+  ), n = 3
+)
+```
+
+# References

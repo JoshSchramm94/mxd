@@ -1,7 +1,7 @@
 #' Prepare design matrix for Multinomial Logit Estimation in Stan
 #'
 #' Function to convert the design matrix into input required for
-#' `mxd_logit_bayesian()`.
+#' `mxd_logit()`.
 #'
 #' @param design design matrix
 #' @param id column name of the id variable
@@ -16,7 +16,7 @@
 #'
 #' @details
 #' `dm_to_stan_mnl()` converts the design matrix into a list that is required
-#' to run the hierarchical multinomial logit model using `mxd_logit_bayesian()`.
+#' to run the hierarchical multinomial logit model using `mxd_logit()`.
 #' Users have to define the design matrix (`design`), the variables for the
 #' participants identifier (`id`), the choice set (`cs`), the alternative
 #' within the choice set (`alt`), the items (i.e., predictors; `items`) and the

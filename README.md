@@ -4,6 +4,7 @@
 # mxd
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 The goal of mxd is to provide an *R* package for MaxDiff (i.e., Maximum
@@ -35,9 +36,7 @@ Currently, mxd provides the following function:
 
 - `mxd_hb_cv()`: Function to estimate k-folded MaxDiff data
 
-- `mxd_logit()`: Function to run frequentist MNL
-
-- `mxd_logit_bayesian()`: Function to run Bayesian version of MNL
+- `mxd_logit()`: Function to run Bayesian version of MNL
 
 **Checking convergence**
 
