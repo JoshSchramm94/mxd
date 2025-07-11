@@ -1,0 +1,77 @@
+---
+title: "mxd - Hierarchical Bayesian MNL"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{03 - mxd Hierarchical Bayesian MNL}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+---
+
+This tutorial discusses the Hierarchical Bayesian (HB) multinomial logit analysis.
+
+# Setup
+
+First, we again load the relevant packages.
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, message=FALSE}
+library(mxd)
+```
+
+# Preparation
+
+The first preparation steps are similar to the one shown in the tutorial of the [Bayesian MNL analysis](mxd-logit.html), thus, we do not discuss this in more depth. 
+
+```{r}
+data("unanchored1")
+
+design <- csv_to_dm(
+    design = unanchored1,
+    id = id,
+    cs = cs,
+    item = item,
+    ch = choice,
+    mxd_tasks = 16L,
+    type = "best-worst"
+  )
+```
+
+Next, we prepare the input for the `mxd_hb()` function to estimate the utilities. To do so, we use the `dm_to_stan_hb()` function, which is quite similar to the `dm_to_stan_mnl()` function. For this function, we additionally have to define the `alt` argument, which is the variable that indicates the alternatives within a MaxDiff task and we now have to define additional priors. Again, we define weakly informative priors (i.e., the default values of the function). Lastly, we also state that there are no *Z* variables (i.e., no demographics included).
+
+```{r}
+dm_stan <- dm_to_stan_hb(
+  design = design,
+  id = id,
+  cs = cs,
+  alt = alt,
+  items = c(item_1:item_16),
+  ch = choice,
+  type = "best-worst",
+  prior_b = 5,
+  prior_omega = 2,
+  prior_sigma = 2,
+  demos = NULL
+)
+```
+
+
+# Estimation 
+
+Finally, we can run the HB estimation by using the `mxd_hb()` function. We define the object (`dm_stan`) created in the chunk above in the `data_stan` argument, and again define the number of chains to be run (`chains`), the number of iterations to be run (`iter`) and how many of those should be used for warm-up purposes (`warmup`).
+
+```{r}
+out <- mxd_hb(
+  data_stan = dm_stan,
+  chains = 5,
+  iter = 2000,
+  warmup = 1000
+)
+```
+

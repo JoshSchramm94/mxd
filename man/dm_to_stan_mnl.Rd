@@ -39,11 +39,11 @@ a list
 }
 \description{
 Function to convert the design matrix into input required for
-\code{mxd_logit_bayesian()}.
+\code{mxd_logit()}.
 }
 \details{
 \code{dm_to_stan_mnl()} converts the design matrix into a list that is required
-to run the hierarchical multinomial logit model using \code{mxd_logit_bayesian()}.
+to run the hierarchical multinomial logit model using \code{mxd_logit()}.
 Users have to define the design matrix (\code{design}), the variables for the
 participants identifier (\code{id}), the choice set (\code{cs}), the alternative
 within the choice set (\code{alt}), the items (i.e., predictors; \code{items}) and the

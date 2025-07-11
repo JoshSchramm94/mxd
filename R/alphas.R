@@ -78,7 +78,6 @@ alphas <- function(stan_output, bw_size, labels = NULL, anchor = FALSE) {
     stats::setNames(labels) %>%
     dplyr::mutate(ref = 0)
 
-
   if (isTRUE(anchor)) {
     alphas_zc <- apply(alphas_raw, 1, range_100) %>%
       apply(., 2, function(x) x - x[nrow(.)]) %>%
@@ -99,13 +98,13 @@ alphas <- function(stan_output, bw_size, labels = NULL, anchor = FALSE) {
   }
 
   if (isFALSE(anchor)) {
-    alpha_zc <- apply(alphas_raw, 1, range_100) %>%
+    alphas_zc <- apply(alphas_raw, 1, range_100) %>%
       apply(., 2, mean_center) %>%
       t() %>%
       as.data.frame() %>%
       stats::setNames(c(labels, "ref"))
 
-    alpha_prob <- apply(alphas_raw, 1, mean_center) %>%
+    alphas_prob <- apply(alphas_raw, 1, mean_center) %>%
       apply(., 2, function(x) prob_scores(x, bw_size)) %>%
       apply(., 2, function(x) x / sum(x) * 100) %>%
       t() %>%

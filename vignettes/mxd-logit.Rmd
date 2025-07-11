@@ -1,8 +1,8 @@
 ---
-title: "mxd - Bayesian logit analysis"
+title: "mxd - Bayesian MNL analysis"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{02 - mxd Bayesian logit}
+  %\VignetteIndexEntry{02 - mxd Bayesian MNL}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 bibliography: references.bib
@@ -23,8 +23,6 @@ knitr::opts_chunk$set(
 
 ```{r setup, message=FALSE}
 library(mxd)
-library(magrittr)
-library(dplyr)
 ```
 
 # Create design matrix and input for stan
@@ -65,7 +63,7 @@ dm_stan <- dm_to_stan_mnl(
 
 # Estimation
 
-Next, we can run the model.
+Next, we can run the model. Here, we provide the `dm_stan` object created above to the `data_stan` argument. Next, we define the number of independent **M**onte **C**arlo **M**arkov **C**hains that should be run in the `chains` argument. `iter` displays the number of iterations that should be run per chain and how many of those should be used for warm-up (`warmup`). In the `bw_size` argument, define the number of alternatives each MaxDiff task displayed. The `labels` argument is optional to give the output labels. The length of labels has to be the number of labels - 1 (the last item is used as reference level). Finally, we define a `seed` for reproducibility.
 
 ```{r}
 out <- mxd_logit(
@@ -79,3 +77,56 @@ out <- mxd_logit(
 )
 ```
 
+The output is a list of length 5 including the raw beta utilities, the zero-centered betas (range of 100), the choice probabilities, a summary statistic, and finally the stan object. 
+
+# MaxDiff Coding
+
+Alternatively, we display the coding for a direct anchored MaxDiff using the *maximum difference coding*. We use the `anchored1` data frame from the mxd package. 
+
+```{r}
+data("anchored1")
+```
+
+First, we create the design matrix again again using the `csv_to_dm()` function.
+
+```{r}
+design <- csv_to_dm(
+    design = anchored1,
+    id = id,
+    cs = cs,
+    item = item,
+    ch = choice,
+    mxd_tasks = 16L,
+    type = "maxdiff",
+    anchor = "direct"
+  )
+```
+
+And create the object that is needed for `mxd_logit()`. Here we now change the `items` argument and also include the *anchor* (`item_17`). In addition, which is unique to the type `maxdiff`, we also have to define the choice task of the anchor (i.e., in our case 17).
+
+```{r}
+dm_stan <- dm_to_stan_mnl(
+  design = design,
+  id = id,
+  cs = cs,
+  items = c(item_1:item_17),
+  ch = choice,
+  type = "maxdiff",
+  prior_b = 10,
+  anchor_start = 17
+)
+```
+
+Finally, we can run our MNL model again.
+
+```{r}
+out <- mxd_logit(
+  data_stan = dm_stan,
+  chains = 5L,
+  iter = 2000,
+  warmup = 1000,
+  bw_size = 4,
+  labels = c(paste0("item", seq.int(16))),
+  seed = 12345
+)
+```

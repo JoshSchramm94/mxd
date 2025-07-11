@@ -1,0 +1,116 @@
+---
+title: "mxd - Analysis of posterior draws"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{04 - mxd Posterior Analysis}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+---
+
+This tutorial should teach how to analyse the posterior draws of the hierarchical Bayesian estimation.
+
+First, we rerun the HB estimation.
+
+# Setup
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(mxd)
+
+data("unanchored1")
+
+design <- csv_to_dm(
+    design = unanchored1,
+    id = id,
+    cs = cs,
+    item = item,
+    ch = choice,
+    mxd_tasks = 16L,
+    type = "best-worst"
+  )
+
+dm_stan <- dm_to_stan_hb(
+  design = design,
+  id = id,
+  cs = cs,
+  alt = alt,
+  items = c(item_1:item_16),
+  ch = choice,
+  type = "best-worst",
+  prior_b = 5,
+  prior_omega = 2,
+  prior_sigma = 2,
+  demos = NULL,
+  seed = 1910
+)
+
+out <- mxd_hb(
+  data_stan = dm_stan,
+  chains = 5,
+  iter = 2000,
+  warmup = 1000
+)
+```
+
+# Analysis
+
+## Hyperpriors b and sigma
+
+First, we will focus on the hyperpriors of the model, specifically on the mean of the population-level parameters (`b`; see, e.g., @sablotny-wackershauser2024) and sigma. In the initial step, we check the convergence statistics using the `convergence_stats()` function, which provides the effective tail and bulk sample size as well as the Rhat values. We define the `stan_output` and also the parameters that we want to look at it. Here, we focus on the population-mean but instead we could also use sigma instead.
+
+```{r}
+convergence_stats(
+  stan_output = out,
+  pars = "b"
+)
+```
+
+Next, we could plot the autocorrelation between the stored draws, using the `acf_plot()` function. Instead of defining `b` in the `pars` argument, we could also use `sigma`. 
+
+```{r}
+acf_plot(
+  stan_output = out,
+  pars = "b"
+)
+```
+
+Next, we run the `alphas()` function. Besides defining the object from `mxd_hb()` in `stan_output`, the number of alternatives shown per MaxDiff task (`bw_size`). In addition, we can optionally provide `labels` for the output and we have to define whether we estimated an anchored MaxDiff (`anchor`). The output of the `alphas()` function is a list of the length 4. It provides the stored alpha draws (`raw`) as well as the prepared one (zero-centered and probability) and finally a summary of all these statistics. 
+
+```{r, eval=FALSE}
+alphas(
+  stan_output = out,
+  bw_size = 4,
+  labels = paste0("item", seq.int(15)),
+  anchor = FALSE
+)
+```
+
+To get the summary statistics of sigma, we can run the `sigma_summary()` function.
+
+```{r}
+sigma_summary(
+  stan_output = out
+)
+```
+
+## Individual draws
+
+Next, we focus on the individual coefficients (`beta`). In the initial step, we have to prepare them using the `betas_post()` function. Here we first define the `stan_output` argument. Afterwards, we define the number of alternatives shown per MaxDiff task (i.e., `bw_size`). To speed things up, we allow users to run the code using multiple cores. The default for `cores` is 1, however, this can be increased depending on the number of cores available. Finally, we again have to state whether we are using anchored MaxDiff (`anchor`) and optionally we can define labels. 
+
+```{r}
+betas <- betas_post(
+  stan_output = out,
+  bw_size = 4,
+  cores = 3,
+  anchor = FALSE,
+  labels = paste0("it", seq.int(15))
+)
+```
+

@@ -86,7 +86,7 @@ betas_post <- function(stan_output, bw_size, cores = 1L,
   # preps ----------------------------------------------------------------------
 
   # setting multiple cores if wanted
-  future::plan(strategy = future::multisession, workers = cores)
+  with(future::plan(strategy = future::multisession, workers = cores), local = TRUE)
 
   beta_raw <- furrr::future_map(
     seq(dim(rstan::extract(stan_output)[["beta_prep"]])[1]),

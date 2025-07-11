@@ -4,7 +4,7 @@
 \name{mxd}
 \alias{mxd-package}
 \alias{mxd}
-\title{mxd: What the Package Does (One Line, Title Case)}
+\title{mxd: A Package For Estimating MaxDiff (i.e., BWS) tasks in R}
 \description{
 mxd package
 }
@@ -17,6 +17,16 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: First Last \email{first.last@example.com}
+\strong{Maintainer}: Joshua Schramm \email{josh.schramm@gmx.de} (\href{https://orcid.org/0000-0001-5602-4632}{ORCID})
+
+Authors:
+\itemize{
+  \item Daniel Guhl (\href{https://orcid.org/0000-0003-2114-9405}{ORCID})
+}
+
+Other contributors:
+\itemize{
+  \item Marcel Lichers (\href{https://orcid.org/0000-0002-3710-2292}{ORCID}) [contributor]
+}
 
 }
