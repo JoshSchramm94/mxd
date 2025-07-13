@@ -57,17 +57,15 @@ alphas <- function(stan_output, bw_size, labels = NULL, anchor = FALSE) {
   labels <- labels %||% paste0(
     "item_",
     seq_len(
-      ncol(
-        as.data.frame(
-          rstan::extract(stan_output)[["b"]]
-        )
-      )
+      ncol(as.data.frame(
+        rstan::extract(stan_output)[["b"]]
+      )) + 1
     )
   )
 
   # tests ----------------------------------------------------------------------
   # check length of labels
-  labels_length(labels, ncol(as.data.frame(rstan::extract(stan_output)[["b"]])))
+  labels_length(labels, ncol(as.data.frame(rstan::extract(stan_output)[["b"]])) + 1)
 
   # check whether labels are class character
   allowed_class(labels, "character")
@@ -75,15 +73,16 @@ alphas <- function(stan_output, bw_size, labels = NULL, anchor = FALSE) {
   # preps ----------------------------------------------------------------------
   alphas_raw <- rstan::extract(stan_output)[["b"]] %>%
     as.data.frame() %>%
-    stats::setNames(labels) %>%
-    dplyr::mutate(ref = 0)
+    dplyr::mutate(ref = 0) %>%
+    stats::setNames(labels)
+
 
   if (isTRUE(anchor)) {
     alphas_zc <- apply(alphas_raw, 1, range_100) %>%
       apply(., 2, function(x) x - x[nrow(.)]) %>%
       t() %>%
       as.data.frame() %>%
-      stats::setNames(c(labels, "ref"))
+      stats::setNames(labels)
 
     alphas_prob <- apply(
       alphas_raw,
@@ -94,7 +93,7 @@ alphas <- function(stan_output, bw_size, labels = NULL, anchor = FALSE) {
     ) %>%
       t() %>%
       as.data.frame() %>%
-      stats::setNames(c(labels, "ref"))
+      stats::setNames(labels)
   }
 
   if (isFALSE(anchor)) {
@@ -102,18 +101,18 @@ alphas <- function(stan_output, bw_size, labels = NULL, anchor = FALSE) {
       apply(., 2, mean_center) %>%
       t() %>%
       as.data.frame() %>%
-      stats::setNames(c(labels, "ref"))
+      stats::setNames(labels)
 
     alphas_prob <- apply(alphas_raw, 1, mean_center) %>%
       apply(., 2, function(x) prob_scores(x, bw_size)) %>%
       apply(., 2, function(x) x / sum(x) * 100) %>%
       t() %>%
       as.data.frame() %>%
-      stats::setNames(c(labels, "ref"))
+      stats::setNames(labels)
   }
 
   alphas_summary <- data.frame(
-    items = c(labels, "ref"),
+    items = labels,
     cbind(
       alphas_raw %>%
         res_summary(tidyselect::everything(.)) %>%

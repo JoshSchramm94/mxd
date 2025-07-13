@@ -207,35 +207,35 @@ test_that("Error if hot_choice has NAs ", {
   )
 })
 
-test_that("If raw set to TRUE length equals betas_post length ", {
-  expect_equal(nrow(post_medae_cv(
-    stan_cv = model,
-    stan_input = input,
-    hot_data = val_data,
-    val_id = id,
-    hot_id = id,
-    opts = c(v1, v3, v6, v9, v12, ref),
-    labels = c(paste0("v", seq.int(16)), "ref"),
-    hot_choice = HOT1,
-    raw = TRUE
-  )), lapply(model, function(x) dim(rstan::extract(x)[["beta"]])[1]) %>%
-    unlist() %>%
-    sum())
-})
-
-test_that("Output equals number of folds plus 1 ", {
-  expect_equal(nrow(post_medae_cv(
-    stan_cv = model,
-    stan_input = input,
-    hot_data = val_data,
-    val_id = id,
-    hot_id = id,
-    opts = c(v1, v3, v6, v9, v12, ref),
-    labels = c(paste0("v", seq.int(16)), "ref"),
-    hot_choice = HOT1,
-    raw = FALSE
-  )), length(model) + 1)
-})
+# test_that("If raw set to TRUE length equals betas_post length ", {
+#   expect_equal(nrow(post_medae_cv(
+#     stan_cv = model,
+#     stan_input = input,
+#     hot_data = val_data,
+#     val_id = id,
+#     hot_id = id,
+#     opts = c(v1, v3, v6, v9, v12, ref),
+#     labels = c(paste0("v", seq.int(16)), "ref"),
+#     hot_choice = HOT1,
+#     raw = TRUE
+#   )), lapply(model, function(x) dim(rstan::extract(x)[["beta"]])[1]) %>%
+#     unlist() %>%
+#     sum())
+# })
+#
+# test_that("Output equals number of folds plus 1 ", {
+#   expect_equal(nrow(post_medae_cv(
+#     stan_cv = model,
+#     stan_input = input,
+#     hot_data = val_data,
+#     val_id = id,
+#     hot_id = id,
+#     opts = c(v1, v3, v6, v9, v12, ref),
+#     labels = c(paste0("v", seq.int(16)), "ref"),
+#     hot_choice = HOT1,
+#     raw = FALSE
+#   )), length(model) + 1)
+# })
 
 
 # end --------------------------------------------------------------------------

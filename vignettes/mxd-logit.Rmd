@@ -1,5 +1,5 @@
 ---
-title: "mxd - Bayesian MNL analysis"
+title: "02 - mxd Bayesian MNL"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{02 - mxd Bayesian MNL}
@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup, message=FALSE}
+```{r, eval = FALSE}
 library(mxd)
 ```
 
@@ -29,27 +29,23 @@ library(mxd)
 
 First, we again create the design matrix. We use the data frame `unanchored1` that comes with the mxd package. In this data set, 100 participants were simulated, each evaluating 16 MaxDiff tasks with 4 alternatives each.
 
-```{r}
-data("unanchored1")
-```
-
 Next, we create the design matrix using the `csv_to_dm()` function.
 
-```{r}
+```{r, eval = FALSE}
 design <- csv_to_dm(
-    design = unanchored1,
-    id = id,
-    cs = cs,
-    item = item,
-    ch = choice,
-    mxd_tasks = 16L,
-    type = "best-worst"
-  )
+  design = mxd::unanchored1,
+  id = id,
+  cs = cs,
+  item = item,
+  ch = choice,
+  mxd_tasks = 16L,
+  type = "best-worst"
+)
 ```
 
 Next, we create the relevant input that we need for running the `mxd_logit()` function. The mxd package relies on rstan [@rstan] for the estimation for the Bayesian multinomial logit analysis. rstan needs the input in a specific form, which can be created using the `dm_to_stan_mnl()` function. Here, we first define the `design`, which is the design matrix we created in the code chunk above, the participants' identifier (`id`), the choice task indicator (`cs`), the predictors (`items`), the choice variable (`ch`), the coding used in the design matrix (`type`), and finally we need a prior for the beta coefficients derived from a normal distribution. For more information, please check the [stan recommendations](https://github.com/stan-dev/stan/wiki/prior-choice-recommendations). Here, we choose a weakly informative prior.
 
-```{r}
+```{r, eval = FALSE}
 dm_stan <- dm_to_stan_mnl(
   design = design,
   id = id,
@@ -65,14 +61,14 @@ dm_stan <- dm_to_stan_mnl(
 
 Next, we can run the model. Here, we provide the `dm_stan` object created above to the `data_stan` argument. Next, we define the number of independent **M**onte **C**arlo **M**arkov **C**hains that should be run in the `chains` argument. `iter` displays the number of iterations that should be run per chain and how many of those should be used for warm-up (`warmup`). In the `bw_size` argument, define the number of alternatives each MaxDiff task displayed. The `labels` argument is optional to give the output labels. The length of labels has to be the number of labels - 1 (the last item is used as reference level). Finally, we define a `seed` for reproducibility.
 
-```{r}
+```{r, eval = FALSE}
 out <- mxd_logit(
   data_stan = dm_stan,
   chains = 5L,
   iter = 2000,
   warmup = 1000,
   bw_size = 4,
-  labels = c(paste0("item", seq.int(15))),
+  labels = c(paste0("item", seq.int(16))),
   seed = 12345
 )
 ```
@@ -83,28 +79,24 @@ The output is a list of length 5 including the raw beta utilities, the zero-cent
 
 Alternatively, we display the coding for a direct anchored MaxDiff using the *maximum difference coding*. We use the `anchored1` data frame from the mxd package. 
 
-```{r}
-data("anchored1")
-```
-
 First, we create the design matrix again again using the `csv_to_dm()` function.
 
-```{r}
+```{r, eval = FALSE}
 design <- csv_to_dm(
-    design = anchored1,
-    id = id,
-    cs = cs,
-    item = item,
-    ch = choice,
-    mxd_tasks = 16L,
-    type = "maxdiff",
-    anchor = "direct"
-  )
+  design = mxd::anchored1,
+  id = id,
+  cs = cs,
+  item = item,
+  ch = choice,
+  mxd_tasks = 16L,
+  type = "maxdiff",
+  anchor = "direct"
+)
 ```
 
 And create the object that is needed for `mxd_logit()`. Here we now change the `items` argument and also include the *anchor* (`item_17`). In addition, which is unique to the type `maxdiff`, we also have to define the choice task of the anchor (i.e., in our case 17).
 
-```{r}
+```{r, eval = FALSE}
 dm_stan <- dm_to_stan_mnl(
   design = design,
   id = id,
@@ -119,14 +111,16 @@ dm_stan <- dm_to_stan_mnl(
 
 Finally, we can run our MNL model again.
 
-```{r}
+```{r, eval = FALSE}
 out <- mxd_logit(
   data_stan = dm_stan,
   chains = 5L,
   iter = 2000,
   warmup = 1000,
   bw_size = 4,
-  labels = c(paste0("item", seq.int(16))),
+  labels = c(paste0("item", seq.int(17))),
   seed = 12345
 )
 ```
+
+# References

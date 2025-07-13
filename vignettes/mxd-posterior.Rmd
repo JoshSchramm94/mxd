@@ -1,5 +1,5 @@
 ---
-title: "mxd - Analysis of posterior draws"
+title: "04 - mxd Posterior Analysis"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{04 - mxd Posterior Analysis}
@@ -21,20 +21,21 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r, eval = FALSE}
 library(mxd)
+```
 
-data("unanchored1")
 
+```{r, eval = FALSE}
 design <- csv_to_dm(
-    design = unanchored1,
-    id = id,
-    cs = cs,
-    item = item,
-    ch = choice,
-    mxd_tasks = 16L,
-    type = "best-worst"
-  )
+  design = mxd::unanchored1,
+  id = id,
+  cs = cs,
+  item = item,
+  ch = choice,
+  mxd_tasks = 16L,
+  type = "best-worst"
+)
 
 dm_stan <- dm_to_stan_hb(
   design = design,
@@ -47,15 +48,15 @@ dm_stan <- dm_to_stan_hb(
   prior_b = 5,
   prior_omega = 2,
   prior_sigma = 2,
-  demos = NULL,
-  seed = 1910
+  demos = NULL
 )
 
 out <- mxd_hb(
   data_stan = dm_stan,
   chains = 5,
   iter = 2000,
-  warmup = 1000
+  warmup = 1000,
+  seed = 1910
 )
 ```
 
@@ -65,36 +66,36 @@ out <- mxd_hb(
 
 First, we will focus on the hyperpriors of the model, specifically on the mean of the population-level parameters (`b`; see, e.g., @sablotny-wackershauser2024) and sigma. In the initial step, we check the convergence statistics using the `convergence_stats()` function, which provides the effective tail and bulk sample size as well as the Rhat values. We define the `stan_output` and also the parameters that we want to look at it. Here, we focus on the population-mean but instead we could also use sigma instead.
 
-```{r}
+```{r, eval = FALSE}
 convergence_stats(
   stan_output = out,
   pars = "b"
 )
 ```
 
-Next, we could plot the autocorrelation between the stored draws, using the `acf_plot()` function. Instead of defining `b` in the `pars` argument, we could also use `sigma`. 
+Next, we could plot the autocorrelation between the stored draws, using the `acf_plot()` function. Instead of defining `b` in the `pars` argument, we could also use `sigma`.
 
-```{r}
+```{r, eval = FALSE}
 acf_plot(
   stan_output = out,
   pars = "b"
 )
 ```
 
-Next, we run the `alphas()` function. Besides defining the object from `mxd_hb()` in `stan_output`, the number of alternatives shown per MaxDiff task (`bw_size`). In addition, we can optionally provide `labels` for the output and we have to define whether we estimated an anchored MaxDiff (`anchor`). The output of the `alphas()` function is a list of the length 4. It provides the stored alpha draws (`raw`) as well as the prepared one (zero-centered and probability) and finally a summary of all these statistics. 
+Next, we run the `alphas()` function. Besides defining the object from `mxd_hb()` in `stan_output`, the number of alternatives shown per MaxDiff task (`bw_size`). In addition, we can optionally provide `labels` for the output and we have to define whether we estimated an anchored MaxDiff (`anchor`). The output of the `alphas()` function is a list of the length 4. It provides the stored alpha draws (`raw`) as well as the prepared one (zero-centered and probability) and finally a summary of all these statistics.
 
 ```{r, eval=FALSE}
 alphas(
   stan_output = out,
   bw_size = 4,
-  labels = paste0("item", seq.int(15)),
+  labels = paste0("item", seq.int(16)),
   anchor = FALSE
 )
 ```
 
 To get the summary statistics of sigma, we can run the `sigma_summary()` function.
 
-```{r}
+```{r, eval = FALSE}
 sigma_summary(
   stan_output = out
 )
@@ -102,15 +103,95 @@ sigma_summary(
 
 ## Individual draws
 
-Next, we focus on the individual coefficients (`beta`). In the initial step, we have to prepare them using the `betas_post()` function. Here we first define the `stan_output` argument. Afterwards, we define the number of alternatives shown per MaxDiff task (i.e., `bw_size`). To speed things up, we allow users to run the code using multiple cores. The default for `cores` is 1, however, this can be increased depending on the number of cores available. Finally, we again have to state whether we are using anchored MaxDiff (`anchor`) and optionally we can define labels. 
+Next, we focus on the individual coefficients (`beta`). In the initial step, we have to prepare them using the `betas_post()` function. Here we first define the `stan_output` argument. Afterwards, we define the number of alternatives shown per MaxDiff task (i.e., `bw_size`). To speed things up, we allow users to run the code using multiple cores. The default for `cores` is 1, however, this can be increased depending on the number of cores available. Finally, we again have to state whether we are using anchored MaxDiff (`anchor`) and optionally we can define labels.
 
-```{r}
+```{r, eval = FALSE}
 betas <- betas_post(
   stan_output = out,
   bw_size = 4,
   cores = 3,
   anchor = FALSE,
-  labels = paste0("it", seq.int(15))
+  labels = paste0("it", seq.int(16))
 )
 ```
 
+Once we prepared them, we can now access the betas. For example, if we want to summarize the raw beta draws, we can do so by using the `betas_summary()` function. In the `betas` argument, we need to define which betas we want to summarize. We can choose between the raw ones (`beta_raw`), the zero-centered interval scores (`betas_zc`), or the probability scores (`betas_prob`). For a better understanding of these scores, we refer to the documentation of Lighthouse Studio. Next, we need to define the variables (`vars`), and finally the participant's id (`id`). 
+
+```{r, eval = FALSE}
+betas_summary(
+  betas = betas[["beta_raw"]],
+  vars = c(it1:it16),
+  id = id
+)
+```
+
+To get the aggregated results for each individual (i.e., beta point estimates), you can use the `beta_point_estimates()` function.
+
+```{r, eval = FALSE}
+beta_point_estimates(
+  betas = betas[["beta_raw"]],
+  vars = c(it1:it16),
+  id = id
+)
+```
+
+To get a feeling of how the individual draws are distributed, you can use the `betas_violin()` function. The output of this function is a `ggplot` object (this is the same for the `acf_plot()` function) and can be further adjusted.
+
+```{r, eval = FALSE}
+betas_violin(
+  betas = betas[["beta_raw"]],
+  vars = c(it1:it15)
+)
+```
+
+# Validation
+
+Finally, we can use the posterior draws for validation by checking how well our model predicts validation tasks (see, e.g., @schramm2024). To predict choices from a validation, we need data for actual choices. For demonstration purposes, we provide the data frame `choicedata` in the mxd package.
+
+```{r, eval = FALSE}
+data("choicedata")
+```
+
+`HOT2` in `choicedata` is a validation task where the participants could choose from 8 alternatives, namely, items 4, 5, 7, 10, 11, 13, 14, and 16 (item 16 is `ref` in our case).
+
+First, we will test the in-sample fit by examining the hit rate (i.e., the number of correct predicted choices). Here we define the posterior draws again (`betas_post`; these **have** to be raw draws), the data frame with the actual choices (`hot_data`), the `id` (which needs to have the same name in both data frames)[^1], the alternatives in the validation task (`opts`), the actual choice in the validation task (`hot_choice`). Finally, one can decide to get the raw posterior hit rates (i.e., the hit rates for each stored draw; set `raw` to `TRUE`) or the aggregated ones. The `post_mhp()`, which calculates the posterior mean hit probabilities.
+
+[^1]: `betas_post()` automatically names the ids `id` . Thus, you might have to rename the variable in `hot_data` first.
+
+```{r, eval = FALSE}
+post_hit(
+  betas_post = betas[["beta_raw"]],
+  hot_data = choicedata,
+  id = id,
+  opts = c(it4, it5, it7, it10, it11, it13, it14, it16),
+  hot_choice = HOT2,
+  raw = FALSE
+)
+```
+
+Alternatively, mxd also calculates he posterior mean absolute error (`post_mae()`), the posterior median absolute error (`post_medae()`) or the posterior root mean square error (`post_rmse()`). These 3 functions also work for out-of-sample validation. We generate some fake data for the same validation task shown in `post_hit()`.
+
+```{r, eval = FALSE}
+set.seed(1)
+fake_hot2_data <- data.frame(
+  hot2 = sample(
+    x = seq.int(8),
+    size = 1000,
+    replace = TRUE
+  )
+)
+```
+
+Next, we can use, for example, the `post_mae()` function to calculate the mean absolute error for the posterior draws. The arguments are the same as for the `post_hit()` function except that we do not need to provide an `id` argument.
+
+```{r, eval = FALSE}
+post_mae(
+  betas_post = betas[["beta_raw"]],
+  hot_data = fake_hot2_data,
+  opts = c(it4, it5, it7, it10, it11, it13, it14, it16),
+  hot_choice = hot2,
+  raw = FALSE
+)
+```
+
+# References

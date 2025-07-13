@@ -61,7 +61,7 @@ test_that("Can provide labels ", {
     stan_output = model,
     bw_size = 4,
     anchor = TRUE,
-    labels = paste0("test", c(1:16))
+    labels = paste0("test", c(1:17))
   ))
 })
 # end --------------------------------------------------------------------------
@@ -72,7 +72,7 @@ test_that("Check length of output ", {
     stan_output = model,
     bw_size = 4,
     anchor = TRUE,
-    labels = paste0("test", c(1:16))
+    labels = paste0("test", c(1:17))
   )), 4L)
 })
 
@@ -81,7 +81,7 @@ test_that("Check length of output ", {
     stan_output = model,
     bw_size = 4,
     anchor = TRUE,
-    labels = paste0("test", c(1:16))
+    labels = paste0("test", c(1:17))
   )), c("alphas_raw", "alphas_zc", "alphas_prob", "summary"))
 })
 

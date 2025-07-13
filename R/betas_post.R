@@ -56,16 +56,14 @@ betas_post <- function(stan_output, bw_size, cores = 1L,
   labels <- labels %||% paste0(
     "item_",
     seq_len(
-      dim(
-        rstan::extract(stan_output)[["beta"]]
-      )[3]
+      dim(rstan::extract(stan_output)[["beta"]])[3] + 1
     )
   )
 
 
   # tests ----------------------------------------------------------------------
   # check length of labels
-  labels_length(labels, dim(rstan::extract(stan_output)[["beta"]])[3])
+  labels_length(labels, dim(rstan::extract(stan_output)[["beta"]])[3] + 1)
 
   # check whether labels are class character
   allowed_class(labels, "character")
@@ -92,7 +90,7 @@ betas_post <- function(stan_output, bw_size, cores = 1L,
     seq(dim(rstan::extract(stan_output)[["beta_prep"]])[1]),
     function(x) {
       as.data.frame(rstan::extract(stan_output)[["beta_prep"]][x, , ]) %>%
-        stats::setNames(c("id", labels, "ref"))
+        stats::setNames(c("id", labels))
     }
   )
 
@@ -106,7 +104,7 @@ betas_post <- function(stan_output, bw_size, cores = 1L,
         apply(., 2, function(x) x - x[nrow(.)]) %>%
         t() %>%
         as.data.frame() %>%
-        stats::setNames(c(labels, "ref")) %>%
+        stats::setNames(labels) %>%
         dplyr::mutate(
           id = ids
         ) %>%
@@ -122,7 +120,7 @@ betas_post <- function(stan_output, bw_size, cores = 1L,
         ) %>%
         t() %>%
         as.data.frame() %>%
-        stats::setNames(c(labels, "ref")) %>%
+        stats::setNames(labels) %>%
         dplyr::mutate(
           id = ids
         ) %>%
@@ -138,7 +136,7 @@ betas_post <- function(stan_output, bw_size, cores = 1L,
         apply(., 2, mean_center) %>%
         t() %>%
         as.data.frame() %>%
-        stats::setNames(c(labels, "ref")) %>%
+        stats::setNames(labels) %>%
         dplyr::mutate(
           id = ids
         ) %>%
@@ -153,7 +151,7 @@ betas_post <- function(stan_output, bw_size, cores = 1L,
         apply(., 2, function(x) x / sum(x) * 100) %>%
         t() %>%
         as.data.frame() %>%
-        stats::setNames(c(labels, "ref")) %>%
+        stats::setNames(labels) %>%
         dplyr::mutate(
           id = ids
         ) %>%

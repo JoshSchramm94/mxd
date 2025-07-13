@@ -1,0 +1,93 @@
+---
+title: "05 - mxd Cross-validation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{05 - mxd Cross-validation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: references.bib
+---
+
+This tutorial discusses how to run cross-validation with the mxd package.
+
+# Setup
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r, eval = FALSE}
+library(mxd)
+```
+
+First, we create the design matrix again. 
+
+```{r, eval = FALSE}
+dm <- csv_to_dm(
+  design = mxd::unanchored1,
+  id = id,
+  cs = cs,
+  item = item,
+  ch = choice,
+  mxd_tasks = 16,
+  type = "best-worst"
+)
+```
+
+Similar to the HB estimation when using no cross-validation, we first have to bring the data in the right format. To do so, we use the `dm_to_stan_hb_cv()` function. Most of the arguments are similar to the `dm_to_stan_hb()` function introduced in the [Hierarchical Bayesian MNL vignette](mxd-hb.html). What is new is the number of `folds` we want to create. In the example below, we are running a 5-fold cross-validation. We take the default prior values for b, sigma, and omega; and also do not include any demographics (`demos`). This time, we set a seed (`seed`) for reproducibility of the folds. To assign the participants to different folds, `dm_to_stan_hb_cv()` uses a simple sample command. 
+
+```{r, eval = FALSE}
+stan_input <- dm_to_stan_hb_cv(
+  design = dm,
+  id = id,
+  cs = cs,
+  alt = alt,
+  items = c(item_1:item_16),
+  ch = choice,
+  type = "best-worst",
+  folds = 5,
+  seed = 1910
+)
+```
+
+The output are nested lists with the length of the number of folds. Each list consists of the input that is needed for stan (`stan_input`) and the validation sample (`val_sample`).
+
+# Estimation
+
+Once we prepared the data in the right format, we can run the estimation. The call for the estimation is the same for the `mxd_hb()` (see [Hierarchical Bayesian MNL vignette](mxd-hb.html))
+
+```{r, eval = FALSE}
+out <- mxd_hb_cv(
+  data_stan = stan_input,
+  seed = 1910,
+  iter = 2000,
+  warmup = 1000
+)
+```
+
+# Validation
+
+Finally, we can validate the model. mxd currently provides 3 functions for cross-validation, namely, `post_mae_cv()` (mean absolute error), `post_medae_cv()`(median absolute error), and `post_rmse_cv()` (root mean square error). The setup of all these functions is the same. Below we exemplary display the median absolute error. Since we need the validation sample's actual choices in the validation task, we first load the `choicedata` dataframe.
+
+```{r, eval = FALSE}
+data("choicedata")
+```
+
+Finally, we can run the `post_mae_cv()` function. Again, the setup is quite simiar to the `post_mae()` function. We have to define our output from the `mxd_hb_cv()` function in `stan_cv`, next we define the actual input we already provided to `mxd_hb_cv()` in `stan_input`. `hot_data` is the data frame with the participants actual choices in the validation tasks. `opts` defines the alternatives shown in the validation task, `hot_choice` is the name of the variable where the actual choice in the validation task is stored. Finally, we again can decide whether we want to have the results for each estimate (set `raw` to `TRUE`) or if we want the aggregated results.
+
+```{r, eval = FALSE}
+post_mae_cv(
+  stan_cv = out,
+  stan_input = stan_input,
+  hot_data = choicedata,
+  opts = c(item_4, item_5, item_7, item_10, item_11, item_13, item_14, item_16),
+  hot_choice = HOT2,
+  val_id = id,
+  hot_id = id,
+  raw = FALSE
+)
+```
+

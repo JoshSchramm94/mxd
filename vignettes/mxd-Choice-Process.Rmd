@@ -1,5 +1,5 @@
 ---
-title: "mxd - Choice Processes"
+title: "01 - mxd Choice Processes"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{01 - mxd Choice Processes}
@@ -50,17 +50,20 @@ Currently, mxd provides a total o 7 different coding processes, namely:
 For this example, we will simulate 5 MaxDiff tasks for one participant showing 3 items. We assume that this study showed a total of 5 items.
 
 ```{r}
-K = 5 # no of items
-J = 3 # size of tasks
-I = 1 # simulating one participant
-T = 4 # simulating one task
+K <- 5 # no of items
+J <- 3 # size of tasks
+I <- 1 # simulating one participant
+T <- 4 # simulating one task
 
 set.seed(1910)
-mxd_task = data.frame(
+mxd_task <- data.frame(
   id = rep(I, times = T * J),
-  cs = rep(seq.int(T), each = J)) %>% 
-  dplyr::mutate(item = sample(K, J),
-                choice = sample(c(-1, 0, 1), J), .by = cs)
+  cs = rep(seq.int(T), each = J)
+) %>%
+  dplyr::mutate(
+    item = sample(K, J),
+    choice = sample(c(-1, 0, 1), J), .by = cs
+  )
 ```
 
 In the following, we will focus on the first choice set only.
@@ -86,7 +89,8 @@ head(
     ch = choice,
     mxd_tasks = T,
     type = "best-worst"
-  ), n = 6
+  ),
+  n = 6
 )
 ```
 
@@ -104,7 +108,8 @@ head(
     ch = choice,
     mxd_tasks = T,
     type = "best-worst-seq"
-  ), n = 5
+  ),
+  n = 5
 )
 ```
 
@@ -122,7 +127,8 @@ head(
     ch = choice,
     mxd_tasks = T,
     type = "worst-best-seq"
-  ), n = 5
+  ),
+  n = 5
 )
 ```
 
@@ -140,7 +146,8 @@ head(
     ch = choice,
     mxd_tasks = T,
     type = "maxdiff"
-  ), n = 6
+  ),
+  n = 6
 )
 ```
 
@@ -158,7 +165,8 @@ head(
     ch = choice,
     mxd_tasks = T,
     type = "exploded"
-  ), n = 6
+  ),
+  n = 6
 )
 ```
 
@@ -176,7 +184,8 @@ head(
     ch = choice,
     mxd_tasks = T,
     type = "best-only"
-  ), n = 3
+  ),
+  n = 3
 )
 ```
 ## Worst-choice
@@ -193,7 +202,8 @@ head(
     ch = choice,
     mxd_tasks = T,
     type = "worst-only"
-  ), n = 3
+  ),
+  n = 3
 )
 ```
 

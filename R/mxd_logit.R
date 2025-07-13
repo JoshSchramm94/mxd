@@ -25,14 +25,14 @@
 #' @export
 #'
 mxd_logit <- function(data_stan,
-                               chains = 5L,
-                               iter = 2000L,
-                               warmup = 1000L,
-                               bw_size,
-                               labels = NULL,
-                               anchor = FALSE,
-                               seed = NULL,
-                               ...) {
+                      chains = 5L,
+                      iter = 2000L,
+                      warmup = 1000L,
+                      bw_size,
+                      labels = NULL,
+                      anchor = FALSE,
+                      seed = NULL,
+                      ...) {
   # define missing values
   seed <- seed %||% 1910L
 
@@ -50,7 +50,7 @@ mxd_logit <- function(data_stan,
   allowed_class(bw_size, c("numeric", "integer"))
 
   # define labels
-  labels <- labels %||% paste0("item_", seq_len(data_stan[["K"]]))
+  labels <- labels %||% paste0("item_", seq_len(data_stan[["K"]] + 1))
   allowed_class(labels, c("character"))
 
   # tests ----------------------------------------------------------------------
@@ -60,7 +60,8 @@ mxd_logit <- function(data_stan,
   # store bw_size as integer
   bw_size <- as.integer(bw_size)
 
-
+  # check length of labels
+  labels_length(labels, data_stan[["K"]] + 1)
   # (...) ----------------------------------------------------------------------
 
   # define additional arguments
@@ -133,20 +134,21 @@ mxd_logit <- function(data_stan,
   res <- rstan::extract(out)
 
   beta_raw <- as.data.frame(res$b) %>%
-    stats::setNames(labels) %>%
-    dplyr::mutate(ref = 0)
+    dplyr::mutate(ref = 0) %>%
+    stats::setNames(labels)
+
 
   if (isTRUE(anchor)) {
     beta_zc <- apply(beta_raw, 1, range_100) %>%
       apply(., 2, function(x) x - x[nrow(.)]) %>%
       t() %>%
       as.data.frame() %>%
-      stats::setNames(c(labels, "ref"))
+      stats::setNames(labels)
 
     beta_prob <- apply(beta_raw, 1, function(x) prob_scores(x, bw_size) * 100 / (1 / bw_size)) %>%
       t() %>%
       as.data.frame() %>%
-      stats::setNames(c(labels, "ref"))
+      stats::setNames(labels)
   }
 
   if (isFALSE(anchor)) {
@@ -154,18 +156,18 @@ mxd_logit <- function(data_stan,
       apply(., 2, mean_center) %>%
       t() %>%
       as.data.frame() %>%
-      stats::setNames(c(labels, "ref"))
+      stats::setNames(labels)
 
     beta_prob <- apply(beta_raw, 1, mean_center) %>%
       apply(., 2, function(x) prob_scores(x, bw_size)) %>%
       apply(., 2, function(x) x / sum(x) * 100) %>%
       t() %>%
       as.data.frame() %>%
-      stats::setNames(c(labels, "ref"))
+      stats::setNames(labels)
   }
 
   beta_summary <- data.frame(
-    items = c(labels, "ref"),
+    items = labels,
     cbind(
       beta_raw %>%
         res_summary(tidyselect::everything(.)),
