@@ -18,9 +18,9 @@ be set to \code{b} or to \code{sigma}}
 a tibble
 }
 \description{
-\code{convergence_stats()} gives you the convergence diagnostics from the
+\code{convergence_stats()} gives the convergence diagnostics from the
 estimation. Users can decide between getting convergence diagnostics for
-either \code{b} or \code{sigma}.
+either \code{b} or \code{sigma} parameters.
 }
 \details{
 Input for \code{convergence_stats()} needs to be a stanfit object, e.g., from
@@ -30,7 +30,7 @@ effective sample size (for more information see
 \code{\link[rstan]{ess_tail}}), and the \code{Rhat} values (for more information
 see \code{\link[rstan]{Rhat}}). Users can decide to get convergence
 diagnostics for either \code{b} (population mean) or \code{sigma} (population
-heterogeneity).
+standard deviation).
 }
 \examples{
 \dontrun{

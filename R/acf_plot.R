@@ -1,15 +1,15 @@
 #' Autocorrelation plot
 #'
-#' This function visualizes the autocorrelation of the hyperparameters.
+#' This function visualizes the autocorrelation of the hyperpriors `b` and `sigma`.
 #'
 #' @param stan_output stanfit object
-#' @param pars character to define the parameter that should be plotted. Can
+#' @param pars character to define the parameter that should be plotted, can
 #' be set to `b` or to `sigma`
-#' @param labels optional character vector to define labels of items
+#' @param labels optional character vector to define labels for the items
 #'
 #' @details
 #' `acf_plot()` is a function to visualize the autocorrelation of the
-#' hyperparameters. Users can choose to either plot the population mean of the
+#' hyperpriors Users can choose to either plot the population means
 #' (`b` parameter) or the populations standard deviation (`sigma` parameter).
 #' `acf_plot()` helps to check the autocorrelation between the posterior draws.
 #' It uses the \code{\link[stats]{acf}} function from the stats package. The

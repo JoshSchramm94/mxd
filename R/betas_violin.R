@@ -13,8 +13,8 @@
 #' `betas_violin()` displays the posterior distribution of the individual draws
 #' via a violin plot. Users have to provide the output of the stan
 #' model (e.g., estimated using the `mxd_hb()`) function. In addition, users
-#' have to define the items in the `vars argument`.
-#' `betas_violin()` exports a `ggplot` object that can be further adjusted by
+#' have to define the items in the `vars` argument.
+#' `betas_violin()` exports a `ggplot` object that can be further modified by
 #' the user.
 #'
 #'

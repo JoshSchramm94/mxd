@@ -11,17 +11,17 @@
 #' @param anchor logical vector to indicate whether it is an anchored MaxDiff
 #'
 #' @details
-#' `betas_post()` prepares the posterior distribution for the individual (i.e.,
-#' `betas`). Users have to provide the output of the stan model (e.g.,
+#' `betas_post()` prepares the posterior distribution for the individual coefficients
+#' (i.e., `beta`). Users have to provide the output of the stan model (e.g.,
 #' estimated using the `mxd_hb()`) function. Since the utilities from the
 #' posterior distribution are also transformed into choice probabilities, users
 #' have to specify the number of items shown per MaxDiff task (i.e., `bw_size`).
-#' Similiarily, if an anchored MaxDiff was applied (default set to `FALSE`),
-#' this has to be specified in the `anchor` argument. To speed up the
+#' Similarly, if an anchored MaxDiff was applied (default set to `FALSE`),
+#' this has to be specified in the `anchor` argument via logical. To speed up the
 #' calculation, multiple cores can be used (`cores`). To determine how many
 #' cores are available users can use, for example, the
-#' \code{\link[parallelly]{availableCores}} function. To match the utilities
-#' with the original ids, specify a vector with actual ids in `ids`.
+#' \code{\link[parallelly]{availableCores}} function. The default is set to
+#' single core.
 #'
 #'
 #' @returns
@@ -37,8 +37,8 @@
 #' betas_prep <- betas_post(
 #'   stan_output = mxd_model,
 #'   bw_size = 4,
-#'   cores = 4L,
-#'   labels = paste0("v", seq_len(16)),
+#'   cores = 2L,
+#'   labels = paste0("v", seq_len(17)),
 #'   anchor = TRUE
 #' )
 #' }

@@ -37,7 +37,7 @@ dm <- csv_to_dm(
 )
 ```
 
-Similar to the HB estimation when using no cross-validation, we first have to bring the data in the right format. To do so, we use the `dm_to_stan_hb_cv()` function. Most of the arguments are similar to the `dm_to_stan_hb()` function introduced in the [Hierarchical Bayesian MNL vignette](mxd-hb.html). What is new is the number of `folds` we want to create. In the example below, we are running a 5-fold cross-validation. We take the default prior values for b, sigma, and omega; and also do not include any demographics (`demos`). This time, we set a seed (`seed`) for reproducibility of the folds. To assign the participants to different folds, `dm_to_stan_hb_cv()` uses a simple sample command. 
+Similar to the HB estimation when using no cross-validation, we first have to bring the data into the right format. To do so, we use the `dm_to_stan_hb_cv()` function. Most of the arguments are similar to the `dm_to_stan_hb()` function introduced in the [Hierarchical Bayesian MNL vignette](mxd-hb.html). What is new, is the number of `folds` we want to create. In the example below, we are running a 5-fold cross-validation. We take the default prior values for `b`, `sigma`, and `omega`; and also do not include any demographics (i.e., set `demos` to `NULL`). This time, we set a seed (`seed`) for reproducibility of the folds. To assign the participants to different folds, `dm_to_stan_hb_cv()` calls a simple `sample()` command; however, ensuring equal group sizes. 
 
 ```{r, eval = FALSE}
 stan_input <- dm_to_stan_hb_cv(
@@ -49,7 +49,8 @@ stan_input <- dm_to_stan_hb_cv(
   ch = choice,
   type = "best-worst",
   folds = 5,
-  seed = 1910
+  seed = 1910,
+  demos = NULL
 )
 ```
 
@@ -57,7 +58,7 @@ The output are nested lists with the length of the number of folds. Each list co
 
 # Estimation
 
-Once we prepared the data in the right format, we can run the estimation. The call for the estimation is the same for the `mxd_hb()` (see [Hierarchical Bayesian MNL vignette](mxd-hb.html))
+Once we have the data in the format required, we can run the estimation. The call for the estimation is the same for the `mxd_hb()` (see [Hierarchical Bayesian MNL vignette](mxd-hb.html)).
 
 ```{r, eval = FALSE}
 out <- mxd_hb_cv(
@@ -70,13 +71,13 @@ out <- mxd_hb_cv(
 
 # Validation
 
-Finally, we can validate the model. mxd currently provides 3 functions for cross-validation, namely, `post_mae_cv()` (mean absolute error), `post_medae_cv()`(median absolute error), and `post_rmse_cv()` (root mean square error). The setup of all these functions is the same. Below we exemplary display the median absolute error. Since we need the validation sample's actual choices in the validation task, we first load the `choicedata` dataframe.
+Finally, we can validate the model. mxd currently provides 3 functions for cross-validation, namely, `post_mae_cv()` (mean absolute error), `post_medae_cv()`(median absolute error), and `post_rmse_cv()` (root mean square error). The setup of all these functions is the same. Below we exemplary display the median absolute error. Since we need the validation sample's actual choices in the validation task, we first load the `choicedata` data frame.
 
 ```{r, eval = FALSE}
 data("choicedata")
 ```
 
-Finally, we can run the `post_mae_cv()` function. Again, the setup is quite simiar to the `post_mae()` function. We have to define our output from the `mxd_hb_cv()` function in `stan_cv`, next we define the actual input we already provided to `mxd_hb_cv()` in `stan_input`. `hot_data` is the data frame with the participants actual choices in the validation tasks. `opts` defines the alternatives shown in the validation task, `hot_choice` is the name of the variable where the actual choice in the validation task is stored. Finally, we again can decide whether we want to have the results for each estimate (set `raw` to `TRUE`) or if we want the aggregated results.
+Finally, we can run the `post_mae_cv()` function. Again, the setup is quite similar to the `post_mae()` function introduced in the [posterior analysis vignette](mxd-posterior.html). We have to define our output from the `mxd_hb_cv()` function in `stan_cv`, next we define the actual input we already provided to `mxd_hb_cv()` in `stan_input`. `hot_data` is the data frame with the participants' actual choices in the validation tasks. `opts` defines the alternatives shown in the validation task, `hot_choice` is the name of the variable in which the actual choices in the validation task are stored. Afterwards, we define the names of the id variable in the validation data set of the stan input (`val_id`) and the name of the id variable in the validation set (`hot_id`). Finally, we again can decide whether we want to have the results for each estimate (set `raw` to `TRUE`) or if we want the aggregated results.
 
 ```{r, eval = FALSE}
 post_mae_cv(

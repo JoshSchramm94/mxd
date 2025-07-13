@@ -1,8 +1,8 @@
 #' Convergence diagnostics from estimation
 #'
-#' `convergence_stats()` gives you the convergence diagnostics from the
+#' `convergence_stats()` gives the convergence diagnostics from the
 #' estimation. Users can decide between getting convergence diagnostics for
-#' either `b` or `sigma`.
+#' either `b` or `sigma` parameters.
 #'
 #' @param stan_output stanfit object
 #' @param pars character to define the parameter that should be plotted. Can
@@ -17,7 +17,7 @@
 #' \code{\link[rstan]{ess_tail}}), and the `Rhat` values (for more information
 #' see \code{\link[rstan]{Rhat}}). Users can decide to get convergence
 #' diagnostics for either `b` (population mean) or `sigma` (population
-#' heterogeneity).
+#' standard deviation).
 #'
 #' @examples
 #' \dontrun{

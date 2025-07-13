@@ -2,7 +2,7 @@
 % Please edit documentation in R/beta_point_estimates.R
 \name{beta_point_estimates}
 \alias{beta_point_estimates}
-\title{Individual's point estimates}
+\title{Individuals' beta points estimates}
 \usage{
 beta_point_estimates(betas, vars, id)
 }
@@ -17,17 +17,15 @@ beta_point_estimates(betas, vars, id)
 a tibble
 }
 \description{
-\code{beta_point_estimates()} converts the individual point estimates from the
-provided list of \code{betas}. Thus, the list is reduced to a \code{id} x \code{vars}
-output.
+\code{beta_point_estimates()} converts the individual posterior draws to the beta
+point estimates. Thus, the list is reduced to a \code{id} x \code{vars} output.
 }
 \details{
-While the output of a stan object usually contains the estimations from the
+While the output of a stan object contains the estimations from the
 posterior distribution, \code{beta_point_estimates()} creates the individuals'
-posterior means. The posterior mean is created across all stored posterior
+posterior means. The beta draws are aggregated across all stored posterior
 draws. The number of stored posterior draws depends on your settings for the
-estimation. The \code{id} argument ensures that posterior beta point estimates
-have the same original \code{id} as provided to \code{dm_to_stan_hb()}.
+estimation.
 }
 \examples{
 \dontrun{

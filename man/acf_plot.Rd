@@ -9,20 +9,20 @@ acf_plot(stan_output, pars = c("b", "sigma"), labels = NULL)
 \arguments{
 \item{stan_output}{stanfit object}
 
-\item{pars}{character to define the parameter that should be plotted. Can
+\item{pars}{character to define the parameter that should be plotted, can
 be set to \code{b} or to \code{sigma}}
 
-\item{labels}{optional character vector to define labels of items}
+\item{labels}{optional character vector to define labels for the items}
 }
 \value{
 a ggplot object
 }
 \description{
-This function visualizes the autocorrelation of the hyperparameters.
+This function visualizes the autocorrelation of the hyperpriors \code{b} and \code{sigma}.
 }
 \details{
 \code{acf_plot()} is a function to visualize the autocorrelation of the
-hyperparameters. Users can choose to either plot the population mean of the
+hyperpriors Users can choose to either plot the population means
 (\code{b} parameter) or the populations standard deviation (\code{sigma} parameter).
 \code{acf_plot()} helps to check the autocorrelation between the posterior draws.
 It uses the \code{\link[stats]{acf}} function from the stats package. The

@@ -29,15 +29,15 @@ library(dplyr)
 
 # Coding processes
 
-Currently, mxd provides a total o 7 different coding processes, namely:
+Currently, mxd provides a total of 7 different coding processes, namely:
 
--   `best-worst`: best-worst coding (also known as marginal coding, see formula 8 in [@aizaki2023]). This is the coding process implemented in Lighthouse Studio [@lighthouse2020]. Participants make the best and the worst choices from the same set.
+-   `best-worst`: best-worst coding (also known as marginal coding, see formula 8 in @aizaki2023). This is the coding process implemented in Lighthouse Studio [@lighthouse2020]. Participants make the best and the worst choices from the same set.
 
--   `best-worst-seq`: The best-worst sequential coding, which assumes that participants first choose the best option and then the worst option from a set excluding the best option (see formula 9 in [@aizaki2023]).
+-   `best-worst-seq`: The best-worst sequential coding, which assumes that participants first choose the best option and then the worst option from a set excluding the best option (see formula 9 in @aizaki2023).
 
 -   `worst-best-seq`: The worst-best sequential coding, which assumes that participants first choose the worst option and then the best option from a set excluding the worst option.
 
--   `maxdiff`: The maximum difference model, which assumes that the best choice and worst choice have the biggest difference across all pairs of two (see formula 7 in [@aizaki2023]).
+-   `maxdiff`: The maximum difference model, which assumes that the best choice and worst choice have the biggest difference across all pairs of two (see formula 7 in @aizaki2023).
 
 -   `exploded`: The exploded paired-comparison (see @chrzan2019), which creates every possible paired comparison for which one can assume the result.
 
@@ -47,7 +47,7 @@ Currently, mxd provides a total o 7 different coding processes, namely:
 
 # Design Matrix
 
-For this example, we will simulate 5 MaxDiff tasks for one participant showing 3 items. We assume that this study showed a total of 5 items.
+For this example, we will simulate 5 MaxDiff tasks for one participant showing 3 items per task. Further, we assume that a total of 5 items were included in this study.
 
 ```{r}
 K <- 5 # no of items
@@ -66,7 +66,7 @@ mxd_task <- data.frame(
   )
 ```
 
-In the following, we will focus on the first choice set only.
+In the following, we will focus on the first MaxDiff task only.
 
 ```{r}
 head(mxd_task, n = J)
@@ -190,7 +190,7 @@ head(
 ```
 ## Worst-choice
 
-... and the same goes for `worst-only`.
+... and the same goes for `worst-only`, but only the worst choice is considered.
 
 ```{r}
 head(

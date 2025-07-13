@@ -9,9 +9,10 @@ alphas(stan_output, bw_size, labels = NULL, anchor = FALSE)
 \arguments{
 \item{stan_output}{stanfit object}
 
-\item{bw_size}{size of MaxDiff tasks in study}
+\item{bw_size}{size of MaxDiff tasks in study (i.e., number of alternatives
+displayed in the MaxDiff tasks)}
 
-\item{labels}{optional character vector to define labels of items}
+\item{labels}{optional character vector to define labels for the items}
 
 \item{anchor}{logical vector to indicate whether it is an anchored MaxDiff}
 }
@@ -26,12 +27,12 @@ interval}
 }
 }
 \description{
-\code{alphas()} prepares the output of the means of the population-level (i.e.,
-alphas) of the estimated model.
+\code{alphas()} prepares the output for the means of the population-level (i.e.,
+alphas or upper-level draws) of the estimated model.
 }
 \details{
 \code{alphas()} is a function to extract the posterior distribution from the
-hyperparameter \code{b}, i.e., the population's mean. Users have to provide the
+hyperprior \code{b}, i.e., the population's mean. Users have to provide the
 output of the stan model (e.g., estimated using the \code{mxd_hb()}) function. In
 addition, \code{bw_size} needs to be defined. Optionally, users can define labels
 for the items. Finally, in case an anchored MaxDiff was used, this has to be

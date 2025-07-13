@@ -17,11 +17,11 @@
 #' (BIBD) with collected best and worst data from the support.BWS package to a
 #' design matrix that is required for the mxd package. To create the BIBD in the
 #' first place users often use the \code{\link[crossdes]{find.BIB}} function.
-#' To run the `bibd_to_dm()` function users have to define the BIBD (`design`),
+#' To run the `bibd_to_dm()` function, users have to define the BIBD (`design`),
 #' the data frame that includes the best and worst choices from the
 #' respondents (`data`), the variable name of the participants' identifier
 #' (`id`), the variables names of the best (`best_ch`) and the worst
-#' (`worst_ch`) choices, and finally the type of coding that should be used
+#' (`worst_ch`) choices, and finally, the type of coding that should be used
 #' (`type`; see also \code{\link[mxd]{csv_to_dm}}).
 #'
 #'

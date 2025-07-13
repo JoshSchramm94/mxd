@@ -2,7 +2,7 @@
 % Please edit documentation in R/betas_summary.R
 \name{betas_summary}
 \alias{betas_summary}
-\title{Summary of posterior individuals draws}
+\title{Summary of posterior individuals' draws}
 \usage{
 betas_summary(betas, vars, id)
 }
@@ -18,14 +18,14 @@ a tibble
 }
 \description{
 This function calculates the aggregated results from the posterior
-distribution of the individuals.
+distribution of the individuals' draws (i.e., \code{beta} draws).
 }
 \details{
 \code{betas_summary()} provides the aggregated results of the posterior
 distribution of the individuals (i.e., \code{beta}). The output of
 \code{betas_summary()} provides the posterior mean for all items across all
 posterior draws, their standard deviation as well as th 2.5\% and 97.5\%
-credible intervals of the item's posterior means.
+credible intervals of the individuals' posterior draws.
 }
 \examples{
 \dontrun{

@@ -1,7 +1,7 @@
-#' Summary of posterior individuals draws
+#' Summary of posterior individuals' draws
 #'
 #' This function calculates the aggregated results from the posterior
-#' distribution of the individuals.
+#' distribution of the individuals' draws (i.e., `beta` draws).
 #'
 #' @param betas posterior beta draws in an object of class list
 #' @param vars column names of items
@@ -12,7 +12,7 @@
 #' distribution of the individuals (i.e., `beta`). The output of
 #' `betas_summary()` provides the posterior mean for all items across all
 #' posterior draws, their standard deviation as well as th 2.5% and 97.5%
-#' credible intervals of the item's posterior means.
+#' credible intervals of the individuals' posterior draws.
 #'
 #' @returns a tibble
 #'
