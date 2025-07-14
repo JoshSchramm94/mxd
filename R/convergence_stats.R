@@ -19,15 +19,6 @@
 #' diagnostics for either `b` (population mean) or `sigma` (population
 #' standard deviation).
 #'
-#' @examples
-#' \dontrun{
-#' convergence_stats(
-#'   stan_output = mxd_model,
-#'   pars = "b",
-#'   labels = paste0("v", seq_len(16))
-#' )
-#' }
-#'
 #' @returns a tibble
 #' @export
 #'

@@ -29,8 +29,3 @@ It uses the \code{\link[stats]{acf}} function from the stats package. The
 output of \code{acf_plot()} will be a ggplot object that can be further modified
 by the user.
 }
-\examples{
-\dontrun{
-acf_plot(stan_output = mxd_model, pars = "b")
-}
-}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/post_rmse_cv.R
 \name{post_rmse_cv}
 \alias{post_rmse_cv}
-\title{Cross-fold root mean square error absolute error}
+\title{Cross-fold root mean square error}
 \usage{
 post_rmse_cv(
   stan_cv,
@@ -40,5 +40,22 @@ should be reported}
 a tibble
 }
 \description{
-Cross-fold root mean square error absolute error
+Function to calculate posterior root mean square error for each k-fold.
+}
+\details{
+\code{post_rmse_cv()} calculates the posterior root mean square error (RMSE) of a
+validation task for a k-fold validation sample. \code{stan_cv} should be the
+output of a hierarchical Bayesian k-fold cross-validation estimation
+(see \code{\link[mxd]{mxd_hb_cv}}). \code{stan_input} needs to be the input that
+was required for \code{mxd_hb_cv()}.
+\code{hot_data} must be a data frame with the participants' actual choice in the
+validation task (\code{hot_choice}). The respondents in \code{hot_data} do not have to
+be the same as in \code{betas_post} that means it could also be a validation sample.
+The options in the validation task are specified in the \code{opts} argument
+(make sure that they have the same order as the variables shown in the
+validation task). \code{hot_choice} must be the column name of the actual choice
+in the validation task in \code{hot_data}. Finally, users can
+decide whether they want the \code{raw} results (set \code{raw} to \code{TRUE}) to get the
+RMSE for each posterior draw for each k-fold or if the output should be
+aggregated across folds (i.e., set \code{raw} to \code{FALSE}).
 }

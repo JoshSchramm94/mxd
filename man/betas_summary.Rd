@@ -27,13 +27,3 @@ distribution of the individuals (i.e., \code{beta}). The output of
 posterior draws, their standard deviation as well as th 2.5\% and 97.5\%
 credible intervals of the individuals' posterior draws.
 }
-\examples{
-\dontrun{
-betas_summary(
-  betas = betas_prep[["beta_raw"]],
-  vars = c(v1:v16),
-  id = id
-)
-}
-
-}

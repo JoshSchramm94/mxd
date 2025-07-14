@@ -12,7 +12,7 @@ This tutorial discusses the different choice processes and the corresponding cod
 
 # Setup
 
-First, let us load the mxd package.
+First, let us load the packages required for this vignette.
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -25,6 +25,7 @@ knitr::opts_chunk$set(
 library(mxd)
 library(magrittr)
 library(dplyr)
+library(tidyr)
 ```
 
 # Coding processes
@@ -71,7 +72,6 @@ In the following, we will focus on the first MaxDiff task only.
 ```{r}
 head(mxd_task, n = J)
 ```
-
 
 In this example, participant `r I` chose item `r mxd_task[mxd_task$cs == 1 & mxd_task$choice == 1, "item"]` as best item and item `r mxd_task[mxd_task$cs == 1 & mxd_task$choice == -1, "item"]` as worst item.
 
@@ -188,6 +188,7 @@ head(
   n = 3
 )
 ```
+
 ## Worst-choice
 
 ... and the same goes for `worst-only`, but only the worst choice is considered.
@@ -204,6 +205,62 @@ head(
     type = "worst-only"
   ),
   n = 3
+)
+```
+
+# mxd with BWS from support.BWS
+
+Researchers that conduct a MaxDiff (i.e., BWS case 1) often rely on the great package support.BWS [@support.BWS]. mxd has the function `bibd_to_dm()` to convert a BWS study from support.BWS to the relevant design required for mxd.
+
+First, we create a design. This is a highly simplified example, for design creation, please refer to the @support.BWS package. We simulate a data set with 100 participants (`I`), each participant evaluates a total of 7 tasks (`T`), each displaying 4 alternatives (`J`). We include a total of 7 items (`K`).
+
+```{r}
+I <- 100
+T <- 7
+J <- 4
+K <- 7
+```
+
+Now, we can simulate the design, for reproducibility, we set a seed.
+
+```{r}
+set.seed(1910)
+design <- tidyr::crossing(
+  cs = seq.int(K), alt = seq.int(J)
+) %>% 
+  dplyr::mutate(item = sample(seq.int(K), J), .by = cs) %>% 
+  tidyr::pivot_wider(
+    names_from = alt,
+    names_prefix = "item",
+    values_from = item
+)
+```
+
+Next, we can simulate choices for the 7 tasks. In support.BWS the alternative chosen is stored in choices (i.e., maximum `J`).
+
+```{r}
+dataset <- tidyr::crossing(
+  id = seq.int(I), cs = seq.int(K), ch = c("b", "w")
+) %>% 
+  dplyr::mutate(
+    cs = paste0(ch, cs),
+    ch = sample(J, 2), .by = c(id, cs)) %>% 
+  tidyr::pivot_wider(
+    names_from = cs,
+    values_from = ch
+  )
+```
+
+Now, we can create the design. We define the `design`, the `data`, the name of the participants' identifier (`id`), the columns for the best choices (`best_ch`) and worst choices (`worst_ch`), respectively. Finally, we determine the `type` for coding (see above)
+
+```{r}
+output <- bibd_to_dm(
+  design = design,
+  data = dataset,
+  id = id,
+  best_ch = c(b1, b2, b3, b4, b5, b6, b7),
+  worst_ch = c(w1, w2, w3, w4, w5, w6, w7),
+  type = "best-worst"
 )
 ```
 

@@ -27,16 +27,6 @@ posterior means. The beta draws are aggregated across all stored posterior
 draws. The number of stored posterior draws depends on your settings for the
 estimation.
 }
-\examples{
-\dontrun{
-beta_point_estimates(
-  betas = betas_prep[["beta_raw"]],
-  vars = c(v1:v16),
-  id = id
-)
-}
-
-}
 \seealso{
 {
 \code{\link[=betas_post]{betas_post()}} for extracting individuals' posterior

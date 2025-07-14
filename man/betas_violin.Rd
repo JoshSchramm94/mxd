@@ -28,14 +28,3 @@ have to define the items in the \code{vars} argument.
 \code{betas_violin()} exports a \code{ggplot} object that can be further modified by
 the user.
 }
-\examples{
-\dontrun{
-
-betas_violin(
-  betas = betas_prep[["beta_raw"]],
-  vars = c(v1:v16),
-  labels = paste0("example_", seq_len(16))
-)
-}
-
-}

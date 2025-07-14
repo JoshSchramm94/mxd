@@ -1,7 +1,7 @@
 #' MaxDiff Count Analysis
 #'
-#' Function to run the count analysis to get best and worst counts as well as
-#' difference between best and worst.
+#' Function to run count analysis to get best and worst counts as well as
+#' difference between best and worst (bw scores).
 #'
 #' @param design unanchored csv design
 #' @param cs column name of the choice set variable
@@ -12,7 +12,7 @@
 #' @param labels optional character vector to define labels of items
 #'
 #' @details
-#' Input has to be the **unanchored** csv export from Sawtooth Software that
+#' Input has to be the **unanchored** csv export from Lighthouse Studio that
 #' also includes the participants' choices. Users have to specify the
 #' (`design`), the variable indicating the choice set (`cs`), the column that
 #' indicates which item was shown (`item`), the choice column (`ch`), the total
@@ -23,18 +23,6 @@
 #'
 #' @returns
 #' a tibble
-#'
-#' @examples
-#' \dontrun{
-#' mxd_count(
-#'   design = design,
-#'   cs = Set,
-#'   item = Item,
-#'   ch = Response,
-#'   no_items = 16L,
-#'   labels = paste("Item", seq_len(16))
-#' )
-#' }
 #'
 #' @export
 #'

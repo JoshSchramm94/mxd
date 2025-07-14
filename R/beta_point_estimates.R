@@ -23,15 +23,6 @@
 #'
 #' @returns a tibble
 #'
-#' @examples
-#' \dontrun{
-#' beta_point_estimates(
-#'   betas = betas_prep[["beta_raw"]],
-#'   vars = c(v1:v16),
-#'   id = id
-#' )
-#' }
-#'
 #' @export
 #'
 beta_point_estimates <- function(betas, vars, id) {

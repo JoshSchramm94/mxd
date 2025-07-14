@@ -32,13 +32,3 @@ see \code{\link[rstan]{Rhat}}). Users can decide to get convergence
 diagnostics for either \code{b} (population mean) or \code{sigma} (population
 standard deviation).
 }
-\examples{
-\dontrun{
-convergence_stats(
-  stan_output = mxd_model,
-  pars = "b",
-  labels = paste0("v", seq_len(16))
-)
-}
-
-}

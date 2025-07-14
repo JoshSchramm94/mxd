@@ -30,7 +30,7 @@ dm_to_stan_mnl(
 
 \item{anchor_start}{numeric input to specify the starting cs for the anchor
 questions if \code{type = "maxdiff"}. If unanchored and \code{type = "maxdiff"} or
-different \code{type} specified, leave empty}
+different \code{type} specified, leave \code{anchor_start} empty}
 
 \item{prior_b}{numeric input for the b prior}
 }
@@ -48,8 +48,8 @@ Users have to define the design matrix (\code{design}), the variables for the
 participants identifier (\code{id}), the choice set (\code{cs}), the alternative
 within the choice set (\code{alt}), the items (i.e., predictors; \code{items}) and the
 actual choice variable (\code{ch}). For \code{type}, please specify the type
-of coding assumed (see also \code{\link[mxd]{csv_to_dm}}).
-Further, the use can specify the prior for the hyperparameter \code{b}, the
-prior for the population mean (mean of hyperparameter) of the utilities. The
+of coding set for creating the design (see \code{\link[mxd]{csv_to_dm}}).
+Further, the use can specify the prior for the hyperprior \code{b}, the
+prior for the population mean (mean of hyperprior) of the utilities. The
 default value for \code{prior_b} is set to \code{5}.
 }

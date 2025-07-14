@@ -13,7 +13,7 @@
 #' `algorithm`, for more information see \code{\link[rstan]{stan}} documentation
 #'
 #' @details
-#' `mxd_hb()` runs the hierarchical Bayes estimation for the MaxDiff data.
+#' `mxd_hb()` runs the hierarchical Bayes estimation for MaxDiff data.
 #' `data_stan` needs to be a list with named parameters. This is provided using
 #' the `dm_to_stan_hb()` in the `stan_input` list. `chains` defines the number
 #' of Markov chains to be run and has to be a positive integer. The default is
@@ -28,14 +28,15 @@
 #' \describe{
 #'   \item{cores}{how many cores should be used for running the models. To
 #'   determine how many cores are available users can use, for example, the
-#' \code{\link[parallelly]{availableCores}} function.}
+#' \code{\link[parallelly]{availableCores}} function. The default value is set
+#'    to `5`.}
 #'   \item{thin}{thinning parameter that defines how many draws should be saved.
 #'   The default is set to `5`, which means that every 5th draw of a chain is
 #'   stored.}
 #'   \item{init}{argument to define the initial starting values, default is set
 #'   to `random`}
 #'   \item{refresh}{the times the progress should be reported, default is set
-#'   to `iter / 100`}
+#'   to `iter / 10`}
 #'   \item{algorithm}{argument to define the algorithm, the default is set to
 #'   `NUTS`, which is the No-U-Turn Sampler}
 #' }

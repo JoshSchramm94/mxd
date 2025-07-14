@@ -43,15 +43,3 @@ cores are available users can use, for example, the
 \code{\link[parallelly]{availableCores}} function. The default is set to
 single core.
 }
-\examples{
-\dontrun{
-betas_prep <- betas_post(
-  stan_output = mxd_model,
-  bw_size = 4,
-  cores = 2L,
-  labels = paste0("v", seq_len(17)),
-  anchor = TRUE
-)
-}
-
-}

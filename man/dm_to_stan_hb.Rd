@@ -2,7 +2,7 @@
 % Please edit documentation in R/dm_to_stan_hb.R
 \name{dm_to_stan_hb}
 \alias{dm_to_stan_hb}
-\title{Prepare design matrix for Hierarchical Bayes estimation in Stan}
+\title{Prepare design matrix for Hierarchical Bayes estimation}
 \usage{
 dm_to_stan_hb(
   design,
@@ -37,7 +37,7 @@ sets}
 
 \item{anchor_start}{numeric input to specify the starting cs for the anchor
 questions if \code{type = "maxdiff"}. If unanchored and \code{type = "maxdiff"} or
-different \code{type} specified, leave empty}
+different \code{type} specified, leave \code{anchor_start} empty}
 
 \item{prior_b}{numeric input for the b prior}
 
@@ -61,11 +61,11 @@ participants identifier (\code{id}), the choice set (\code{cs}), the alternative
 within the choice set (\code{alt}), the items (i.e., predictors; \code{items}) and the
 actual choice variable (\code{ch}). For \code{type}, please specify the type
 of coding assumed (see also \code{\link[mxd]{csv_to_dm}}).
-Further, the use can specify the priors for the hyperparameters \code{b},
+Further, the user can specify the priors for the hyperpriors \code{b},
 \code{omega}, and \code{sigma}.
 
 \describe{
-\item{prior_b}{prior for the population mean (mean of hyperparameter) of
+\item{prior_b}{prior for the population mean (mean of hyperprior) of
 the utilities; default is set to \code{5}}
 \item{prior_omega}{prior for the LKJ cholesky of the correlation matrix;
 default is set to \code{2}}

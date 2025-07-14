@@ -2,7 +2,7 @@
 % Please edit documentation in R/dm_to_stan_hb_cv.R
 \name{dm_to_stan_hb_cv}
 \alias{dm_to_stan_hb_cv}
-\title{Convert design matrix to Stan input (cross-fold)}
+\title{Prepare design matrix for k-fold cross-validation Hierarchical Bayes estimation}
 \usage{
 dm_to_stan_hb_cv(
   design,
@@ -39,7 +39,7 @@ sets}
 
 \item{anchor_start}{numeric input to specify the starting cs for the anchor
 questions if \code{type = "maxdiff"}. If unanchored and \code{type = "maxdiff"} or
-different \code{type} specified, leave empty}
+different \code{type} specified, leave \code{anchor_start} empty}
 
 \item{folds}{numeric input to define number of folds}
 
@@ -57,5 +57,30 @@ different \code{type} specified, leave empty}
 list
 }
 \description{
-Convert design matrix to Stan input (cross-fold)
+Function to convert the design matrix to input required for \code{mxd_hb_cv()}.
+}
+\details{
+\code{dm_to_stan_hb_cv()} converts the design matrix into a nested list. The input
+is required to run the k-fold hierarchical Bayes cross-validation
+using \code{mxd_hb_cv()}. Users have to define the design matrix (\code{design}), the
+variables for the participants identifier (\code{id}), the choice set (\code{cs}), the
+alternative within the choice set (\code{alt}), the items (i.e., predictors;
+\code{items}) and the actual choice variable (\code{ch}). For \code{type}, please specify
+the type of coding assumed (see also \code{\link[mxd]{csv_to_dm}}). The
+\code{folds} argument defines the number of folds used for cross-validation.
+Further, the user can specify the priors for the hyperpriors \code{b},
+\code{omega}, and \code{sigma}.
+
+\describe{
+\item{prior_b}{prior for the population mean (mean of hyperprior) of
+the utilities; default is set to \code{5}}
+\item{prior_omega}{prior for the LKJ cholesky of the correlation matrix;
+default is set to \code{2}}
+\item{prior_sigma}{prior for the scale parameter of the utilities;
+default is set to \code{5}}
+}
+
+In addition, \emph{Z} variables can be defined, i.e., demographic variables. The
+intercept for \code{demos} will be added in the function. To reproduce the folds
+assignment, specify a seed in the \code{seed} argument.
 }

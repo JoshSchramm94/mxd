@@ -18,10 +18,6 @@
 #'
 #' @returns a ggplot object
 #'
-#' @examples
-#' \dontrun{
-#' acf_plot(stan_output = mxd_model, pars = "b")
-#' }
 #' @export
 #'
 acf_plot <- function(stan_output, pars = c("b", "sigma"), labels = NULL) {

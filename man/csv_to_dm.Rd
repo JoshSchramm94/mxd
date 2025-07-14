@@ -28,7 +28,7 @@ leave empty}
 a data frame object
 }
 \description{
-Converts a Lighthouse Studio .csv export to a design matrix including
+Converts a Lighthouse Studio csv export to a design matrix including
 assumed choice process. Allows for both direct or indirect anchoring.
 }
 \details{

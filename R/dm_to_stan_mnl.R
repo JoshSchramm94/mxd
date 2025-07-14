@@ -11,7 +11,7 @@
 #' @param type character to specify coding method
 #' @param anchor_start numeric input to specify the starting cs for the anchor
 #' questions if `type = "maxdiff"`. If unanchored and `type = "maxdiff"` or
-#' different `type` specified, leave empty
+#' different `type` specified, leave `anchor_start` empty
 #' @param prior_b numeric input for the b prior
 #'
 #' @details
@@ -21,9 +21,9 @@
 #' participants identifier (`id`), the choice set (`cs`), the alternative
 #' within the choice set (`alt`), the items (i.e., predictors; `items`) and the
 #' actual choice variable (`ch`). For `type`, please specify the type
-#' of coding assumed (see also \code{\link[mxd]{csv_to_dm}}).
-#' Further, the use can specify the prior for the hyperparameter `b`, the
-#' prior for the population mean (mean of hyperparameter) of the utilities. The
+#' of coding set for creating the design (see \code{\link[mxd]{csv_to_dm}}).
+#' Further, the use can specify the prior for the hyperprior `b`, the
+#' prior for the population mean (mean of hyperprior) of the utilities. The
 #' default value for `prior_b` is set to `5`.
 #'
 #' @returns

@@ -25,28 +25,15 @@ mxd_count(design, cs, item, ch, no_items, group = NULL, labels = NULL)
 a tibble
 }
 \description{
-Function to run the count analysis to get best and worst counts as well as
-difference between best and worst.
+Function to run count analysis to get best and worst counts as well as
+difference between best and worst (bw scores).
 }
 \details{
-Input has to be the \strong{unanchored} csv export from Sawtooth Software that
+Input has to be the \strong{unanchored} csv export from Lighthouse Studio that
 also includes the participants' choices. Users have to specify the
 (\code{design}), the variable indicating the choice set (\code{cs}), the column that
 indicates which item was shown (\code{item}), the choice column (\code{ch}), the total
 number of items included (\code{no_items}). Further, the user can define an
 optional grouping variable (\code{group}) as well as labels for the items
 (\code{labels}).
-}
-\examples{
-\dontrun{
-mxd_count(
-  design = design,
-  cs = Set,
-  item = Item,
-  ch = Response,
-  no_items = 16L,
-  labels = paste("Item", seq_len(16))
-)
-}
-
 }

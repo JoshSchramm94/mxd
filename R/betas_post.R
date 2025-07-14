@@ -32,17 +32,6 @@
 #'   \item{beta_prob}{probability scores of the individuals}
 #' }
 #'
-#' @examples
-#' \dontrun{
-#' betas_prep <- betas_post(
-#'   stan_output = mxd_model,
-#'   bw_size = 4,
-#'   cores = 2L,
-#'   labels = paste0("v", seq_len(17)),
-#'   anchor = TRUE
-#' )
-#' }
-#'
 #' @export
 betas_post <- function(stan_output, bw_size, cores = 1L,
                        labels = NULL, anchor = FALSE) {

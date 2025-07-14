@@ -9,13 +9,13 @@ post_hit(betas_post, hot_data, id, opts, hot_choice, group = NULL, raw = FALSE)
 \arguments{
 \item{betas_post}{posterior draws}
 
-\item{hot_data}{data frame with actual hot choice}
+\item{hot_data}{data frame with actual choice in validation task}
 
 \item{id}{column name of id}
 
-\item{opts}{column names of choice options in holdout task}
+\item{opts}{column names of choice options in validation task}
 
-\item{hot_choice}{column name of actual choice in the holdout task}
+\item{hot_choice}{column name of actual choice in the validation task}
 
 \item{group}{optional column name to get results by \code{group}}
 
@@ -26,38 +26,24 @@ should be reported}
 a tibble
 }
 \description{
-Function to calculate posterior hit rate that means hit rate for each
+Function to calculate posterior hit rate, i.e., hit rate for each
 saved posterior draw.
 }
 \details{
-\code{post_hit()} calculates the posterior hit rate of a validation task (i.e., holdout
-task). \code{betas_post} should be the raw beta posterior draws which can be
+\code{post_hit()} calculates the posterior hit rate of a validation task.
+\code{betas_post} should be the raw beta posterior draws which can be
 prepared from the \code{mxd_hb()} output using the \code{betas_post()} function.
 \code{hot_data} must be a data frame with the respondents unique identifier (\code{id})
 and the actual choice in the validation task (\code{hot_choice}). For merging
-purposes, \code{id} (respondents unique identifier) must have the same name and
+purposes, \code{id} (participants' unique identifier) must have the same name and
 data type in both \code{betas_post} and \code{hot_data}. Thus, the name of the \code{id}
 variable just needs to be specified once. The options in the validation task
 are specified in the \code{opts} argument (make sure that they have the same
-order as the variables shown in the validation task). \code{hot_choice} must be
+order as the options shown in the validation task). \code{hot_choice} must be
 the column name of the actual choice in the validation task in \code{hot_data}.
 Optionally, a grouping variable can be specified (\code{group}) to get results
 split by \code{group}. Finally, users can decide whether they want the \code{raw}
 results (set \code{raw} to \code{TRUE}) to get the hit rates for each posterior draw
 or if the output should be aggregated across all posterior draws
 (i.e., set \code{raw} to \code{FALSE}).
-}
-\examples{
-\dontrun{
-post_hit(
-  betas_post = betas_prep[["beta_raw"]],
-  hot_data = hot_data,
-  id = id,
-  opts = c(g1, g8, g9, g13, g14, g15, g16, ref),
-  hot_choice = HOT1,
-  raw = FALSE,
-  group = NULL
-)
-}
-
 }

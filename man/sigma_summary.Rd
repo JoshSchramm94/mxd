@@ -15,20 +15,12 @@ sigma_summary(stan_output, labels = NULL)
 a tibble
 }
 \description{
-\code{sigma()} prepares the output of the means of the population-level (i.e.,
-sigma) of the estimated model.
+\code{sigma()} prepares the output of the means of the population-level
+heterogeneity (i.e., sigma) of the estimated model.
 }
 \details{
 \code{sigma()} is a function to extract the posterior distribution from the
-hyperparameter \code{sigma}, i.e., the standard deviation. Users have to provide the
+hyperprior \code{sigma}, i.e., the standard deviation. Users have to provide the
 output of the stan model (e.g., estimated using the \code{mxd_hb()}) function.
 Optionally, users can define labels for the items.
-}
-\examples{
-\dontrun{
-sigma(
-  stan_output = mxd_model
-)
-}
-
 }

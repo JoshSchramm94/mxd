@@ -1,6 +1,6 @@
 #' Posterior in-sample mean hit probability
 #'
-#' Function to calculate posterior hit rate that means hit rate for each
+#' Function to calculate posterior mean hit probability for each
 #' saved posterior draw.
 #'
 #' @param betas_post posterior draws
@@ -13,36 +13,22 @@
 #' should be reported
 #'
 #' @details
-#' `post_mhp()` calculates the posterior mean hit probability of a validation task (i.e., holdout
-#' task). `betas_post` should be the raw beta posterior draws which can be
+#' `post_mhp()` calculates the posterior mean hit probability of a validation task.
+#' `betas_post` should be the raw beta posterior draws which can be
 #' prepared from the `mxd_hb()` output using the `betas_post()` function.
 #' `hot_data` must be a data frame with the respondents unique identifier (`id`)
 #' and the actual choice in the validation task (`hot_choice`). For merging
-#' purposes, `id` (respondents unique identifier) must have the same name and
+#' purposes, `id` (participants' unique identifier) must have the same name and
 #' data type in both `betas_post` and `hot_data`. Thus, the name of the `id`
 #' variable just needs to be specified once. The options in the validation task
 #' are specified in the `opts` argument (make sure that they have the same
-#' order as the variables shown in the validation task). `hot_choice` must be
+#' order as the options shown in the validation task). `hot_choice` must be
 #' the column name of the actual choice in the validation task in `hot_data`.
 #' Optionally, a grouping variable can be specified (`group`) to get results
 #' split by `group`. Finally, users can decide whether they want the `raw`
-#' results (set `raw` to `TRUE`) to get the mean hit probability for each posterior draw
-#' or if the output should be aggregated across all posterior draws
-#' (i.e., set `raw` to `FALSE`).
-#'
-#'
-#' @examples
-#' \dontrun{
-#' post_mhp(
-#'   betas_post = betas_prep[["beta_raw"]],
-#'   hot_data = hot_data,
-#'   id = id,
-#'   opts = c(g1, g8, g9, g13, g14, g15, g16, ref),
-#'   hot_choice = HOT1,
-#'   raw = FALSE,
-#'   group = NULL
-#' )
-#' }
+#' results (set `raw` to `TRUE`) to get the mean hit probabilities for each
+#' posterior draw or if the output should be aggregated across all posterior
+#' draws (i.e., set `raw` to `FALSE`).
 #'
 post_mhp <- function(betas_post, hot_data, id, opts, hot_choice,
                      group = NULL, raw = FALSE) {

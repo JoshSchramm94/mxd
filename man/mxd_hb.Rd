@@ -29,7 +29,7 @@ S4 stanfit object
 Function to run hierarchical Bayes estimation.
 }
 \details{
-\code{mxd_hb()} runs the hierarchical Bayes estimation for the MaxDiff data.
+\code{mxd_hb()} runs the hierarchical Bayes estimation for MaxDiff data.
 \code{data_stan} needs to be a list with named parameters. This is provided using
 the \code{dm_to_stan_hb()} in the \code{stan_input} list. \code{chains} defines the number
 of Markov chains to be run and has to be a positive integer. The default is
@@ -44,14 +44,15 @@ other optional arguments can be defined, namely
 \describe{
 \item{cores}{how many cores should be used for running the models. To
 determine how many cores are available users can use, for example, the
-\code{\link[parallelly]{availableCores}} function.}
+\code{\link[parallelly]{availableCores}} function. The default value is set
+to \code{5}.}
 \item{thin}{thinning parameter that defines how many draws should be saved.
 The default is set to \code{5}, which means that every 5th draw of a chain is
 stored.}
 \item{init}{argument to define the initial starting values, default is set
 to \code{random}}
 \item{refresh}{the times the progress should be reported, default is set
-to \code{iter / 100}}
+to \code{iter / 10}}
 \item{algorithm}{argument to define the algorithm, the default is set to
 \code{NUTS}, which is the No-U-Turn Sampler}
 }

@@ -1,4 +1,6 @@
-#' Convert design matrix to Stan input (cross-fold)
+#' Prepare design matrix for k-fold cross-validation Hierarchical Bayes estimation
+#'
+#' Function to convert the design matrix to input required for `mxd_hb_cv()`.
 #'
 #' @param design design matrix
 #' @param id column name of participants' identifier
@@ -10,13 +12,38 @@
 #' @param type character to specify coding method
 #' @param anchor_start numeric input to specify the starting cs for the anchor
 #' questions if `type = "maxdiff"`. If unanchored and `type = "maxdiff"` or
-#' different `type` specified, leave empty
+#' different `type` specified, leave `anchor_start` empty
 #' @param folds numeric input to define number of folds
 #' @param prior_b numeric input for the b prior
 #' @param prior_omega numeric input for the omega prior
 #' @param prior_sigma numeric input for the sigma prior
 #' @param demos matrix of demographic variables (i.e., Z variables)
 #' @param seed seed numeric input to specify seed for reproducible results
+#'
+#' @details
+#' `dm_to_stan_hb_cv()` converts the design matrix into a nested list. The input
+#' is required to run the k-fold hierarchical Bayes cross-validation
+#' using `mxd_hb_cv()`. Users have to define the design matrix (`design`), the
+#' variables for the participants identifier (`id`), the choice set (`cs`), the
+#' alternative within the choice set (`alt`), the items (i.e., predictors;
+#' `items`) and the actual choice variable (`ch`). For `type`, please specify
+#' the type of coding assumed (see also \code{\link[mxd]{csv_to_dm}}). The
+#' `folds` argument defines the number of folds used for cross-validation.
+#' Further, the user can specify the priors for the hyperpriors `b`,
+#' `omega`, and `sigma`.
+#'
+#' \describe{
+#'   \item{prior_b}{prior for the population mean (mean of hyperprior) of
+#'    the utilities; default is set to `5`}
+#'   \item{prior_omega}{prior for the LKJ cholesky of the correlation matrix;
+#'   default is set to `2`}
+#'   \item{prior_sigma}{prior for the scale parameter of the utilities;
+#'   default is set to `5`}
+#' }
+#'
+#' In addition, *Z* variables can be defined, i.e., demographic variables. The
+#' intercept for `demos` will be added in the function. To reproduce the folds
+#' assignment, specify a seed in the `seed` argument.
 #'
 #' @returns list
 #' @export

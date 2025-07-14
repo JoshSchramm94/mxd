@@ -1,6 +1,6 @@
 #' Converting csv design into design matrix
 #'
-#' Converts a Lighthouse Studio .csv export to a design matrix including
+#' Converts a Lighthouse Studio csv export to a design matrix including
 #' assumed choice process. Allows for both direct or indirect anchoring.
 #'
 #' @param design csv design provided by Lighthouse Studio

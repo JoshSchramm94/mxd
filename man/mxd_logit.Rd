@@ -44,8 +44,38 @@ documentation}
 S4
 }
 \description{
-Function to run bayesian multinomial logit regression.
+Function to run Bayesian multinomial logit regression.
 }
 \details{
-Additional details...
+\code{mxd_logit()} runs the Bayes multinomial logit analysis for MaxDiff data.
+\code{data_stan} needs to be a list with named parameters. This is provided using
+the \code{dm_to_stan_mnl()} in the \code{stan_input} list. \code{chains} defines the number
+of Markov chains to be run and has to be a positive integer. The default is
+set to \code{5}. \code{iter} defines the number of iterations that should be run, which
+also includes the number of \code{warmup} iteration. Both have to be a positive
+integer. For more information on how to define them, see
+\code{\link[rstan]{stan}} documentation. The defaults for \code{iter} and \code{warmup}
+are \code{4000L} and \code{1000L}, respectively. The \code{seed}
+must be a numeric input and is needed for reproduce results. Finally,
+other optional arguments can be defined, namely
+
+\describe{
+\item{cores}{how many cores should be used for running the models. To
+determine how many cores are available users can use, for example, the
+\code{\link[parallelly]{availableCores}} function. The default value is set
+to \code{5}.}
+\item{thin}{thinning parameter that defines how many draws should be saved.
+The default is set to \code{5}, which means that every 5th draw of a chain is
+stored.}
+\item{init}{argument to define the initial starting values, default is set
+to \code{random}}
+\item{refresh}{the times the progress should be reported, default is set
+to \code{iter / 10}}
+\item{algorithm}{argument to define the algorithm, the default is set to
+\code{NUTS}, which is the No-U-Turn Sampler}
+}
+
+\code{mxd_logit()} uses the \code{\link[rstan]{stan}} for sampling, thus, a more
+detailed description for the parameters can be obtained from their
+documentation.
 }

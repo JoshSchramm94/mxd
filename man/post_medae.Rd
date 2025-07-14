@@ -24,36 +24,22 @@ should be reported}
 a tibble
 }
 \description{
-Function to calculate posterior mean absolute error that means mean absolute
-error for each saved posterior draw.
+Function to calculate posterior median absolute error for each stored
+posterior draw.
 }
 \details{
 \code{post_medae()} calculates the posterior median absolute error (MedAE) of a
-validation task (i.e., holdout task). \code{betas_post} should be the raw beta
-posterior draws which can be prepared from the \code{mxd_hb()} output using the
-\code{betas_post()} function. \code{hot_data} must be a data frame with the respondents
-actual choice in the validation task (\code{hot_choice}). The respondents in
-\code{hot_data} do not have to be the same as in \code{betas_post} that means it could
-also be a validation sample.
+validation task. \code{betas_post} should be the raw beta posterior draws which
+can be prepared from the \code{mxd_hb()} output using the \code{betas_post()} function.
+\code{hot_data} must be a data frame with the participants' actual choice in the
+validation task (\code{hot_choice}). The respondents in \code{hot_data} do not have to
+be the same as in \code{betas_post} that means it could also be a validation sample.
 The options in the validation task are specified in the \code{opts} argument
 (make sure that they have the same order as the variables shown in the
 validation task). \code{hot_choice} must be the column name of the actual choice
 in the validation task in \code{hot_data}. Optionally, a grouping variable can be
 specified (\code{group}) to get results split by \code{group}. Finally, users can
 decide whether they want the \code{raw} results (set \code{raw} to \code{TRUE}) to get the
-MedAE for each posterior draw or if the output should be aggregated across
-all posterior draws (i.e., set \code{raw} to \code{FALSE}).
-}
-\examples{
-\dontrun{
-post_medae(
-  betas_post = betas_prep[["beta_raw"]],
-  hot_data = hot_data,
-  opts = c(g1, g8, g9, g13, g14, g15, g16, ref),
-  hot_choice = HOT1,
-  raw = FALSE,
-  group = NULL
-)
-}
-
+MedAE for each posterior draw or if the output should be aggregated across all
+posterior draws (i.e., set \code{raw} to \code{FALSE}).
 }

@@ -38,12 +38,3 @@ addition, \code{bw_size} needs to be defined. Optionally, users can define label
 for the items. Finally, in case an anchored MaxDiff was used, this has to be
 defined via a logical vector in the \code{anchor} argument.
 }
-\examples{
-\dontrun{
-alphas(
-  stan_output = mxd_model,
-  bw_size = 4
-)
-}
-
-}
