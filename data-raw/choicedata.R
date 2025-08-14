@@ -28,7 +28,7 @@ sigma <- abs(stats::rnorm(K))
 
 # generate variance covariance matrix
 cor_mat <- rlkj_corr_rng(K, LKJ)
-cov_mat <- MBESS::cor2cov(cor_mat, sigma)
+cov_mat <- diag(sigma) %*% cor_mat %*% diag(sigma)
 
 betas <- mvtnorm::rmvnorm(I, b, cov_mat) %>%
   as.data.frame() %>%

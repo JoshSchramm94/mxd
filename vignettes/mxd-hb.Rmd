@@ -12,7 +12,7 @@ This tutorial discusses the Hierarchical Bayesian (HB) multinomial logit analysi
 
 # Setup
 
-First, we again load the relevant packages.
+First, we load the relevant packages.
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -41,7 +41,7 @@ design <- csv_to_dm(
 )
 ```
 
-Next, we prepare the input for the `mxd_hb()` function to estimate the utilities. To do so, we use the `dm_to_stan_hb()` function, which is quite similar to the `dm_to_stan_mnl()` function. For this function, we additionally have to define the `alt` argument, which is the variable that indicates the alternatives within a MaxDiff task. In addtion, we have to define additional priors, namely, for omega (`prior_omega`) and sigma (`prior_sigma`). Again, we define weakly informative priors (i.e., the default values of the function). Lastly, we also state that there are no *Z* variables (i.e., no demographics included; `demos` is set to `NULL`).
+Next, we prepare the input for the `mxd_hb()` function to estimate the utilities. To do so, we use the `dm_to_stan_hb()` function, which is similar to the `dm_to_stan_mnl()` function. For this function, we additionally define the `alt` argument, which indicates the alternatives within a MaxDiff task. In addition, we have to define additional priors, namely, for omega (`prior_omega`) and sigma (`prior_sigma`). Again, we define weakly informative priors (i.e., the default values of the function). Lastly, we also state that there are no *Z* variables (i.e., no demographics included; `demos` is set to `NULL`).
 
 ```{r, eval = FALSE}
 dm_stan <- dm_to_stan_hb(

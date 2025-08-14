@@ -8,7 +8,7 @@ vignette: >
 bibliography: references.bib
 ---
 
-This tutorial discusses the different choice processes and the corresponding coding processes.
+This tutorial discusses different choice processes along with their corresponding coding.
 
 # Setup
 
@@ -30,15 +30,15 @@ library(tidyr)
 
 # Coding processes
 
-Currently, mxd provides a total of 7 different coding processes, namely:
+Currently, mxd supports 7 coding processes, namely:
 
--   `best-worst`: best-worst coding (also known as marginal coding, see formula 8 in @aizaki2023). This is the coding process implemented in Lighthouse Studio [@lighthouse2020]. Participants make the best and the worst choices from the same set.
+-   `best-worst`: best-worst coding (also known as marginal coding, see Formula 8 in @aizaki2023). This is the coding process implemented in Lighthouse Studio [@lighthouse2020]. Participants pick both the best and the worst item from the same set.
 
--   `best-worst-seq`: The best-worst sequential coding, which assumes that participants first choose the best option and then the worst option from a set excluding the best option (see formula 9 in @aizaki2023).
+-   `best-worst-seq`: The best-worst sequential coding, which assumes that participants pick the best item which is then removed from the choice set for the worst item (see Formula 9 in @aizaki2023).
 
--   `worst-best-seq`: The worst-best sequential coding, which assumes that participants first choose the worst option and then the best option from a set excluding the worst option.
+-   `worst-best-seq`: The worst-best sequential coding, which assumes that participants pick the worst item which is then removed from the choice set for the best item.
 
--   `maxdiff`: The maximum difference model, which assumes that the best choice and worst choice have the biggest difference across all pairs of two (see formula 7 in @aizaki2023).
+-   `maxdiff`: The maximum difference model, which assumes that the best choice and worst choice have the biggest difference across all pairs of two (see Formula 7 in @aizaki2023).
 
 -   `exploded`: The exploded paired-comparison (see @chrzan2019), which creates every possible paired comparison for which one can assume the result.
 
@@ -48,10 +48,10 @@ Currently, mxd provides a total of 7 different coding processes, namely:
 
 # Design Matrix
 
-For this example, we will simulate 5 MaxDiff tasks for one participant showing 3 items per task. Further, we assume that a total of 5 items were included in this study.
+In this example, we simulate 5 MaxDiff tasks for one participant, each showing 3 items. The study includes a total of 5 items.
 
 ```{r}
-K <- 5 # no of items
+K <- 5 # number of items
 J <- 3 # size of tasks
 I <- 1 # simulating one participant
 T <- 4 # simulating one task
@@ -67,13 +67,13 @@ mxd_task <- data.frame(
   )
 ```
 
-In the following, we will focus on the first MaxDiff task only.
+For illustrative purposes we focus on the first task only.
 
 ```{r}
 head(mxd_task, n = J)
 ```
 
-In this example, participant `r I` chose item `r mxd_task[mxd_task$cs == 1 & mxd_task$choice == 1, "item"]` as best item and item `r mxd_task[mxd_task$cs == 1 & mxd_task$choice == -1, "item"]` as worst item.
+Here, participant `r I` chose item `r mxd_task[mxd_task$cs == 1 & mxd_task$choice == 1, "item"]` as the best item and item `r mxd_task[mxd_task$cs == 1 & mxd_task$choice == -1, "item"]` as the worst item.
 
 ## Best-worst coding
 
@@ -134,7 +134,7 @@ head(
 
 ## Maximum difference coding
 
-In the *maxdiff* coding, each possible pair of two is coded and the one that has the maximum difference is chosen.
+In the *maxdiff* coding, all possible pairs of 2 items are considered, and the pair with the greatest difference is selected.
 
 ```{r}
 head(
@@ -210,9 +210,9 @@ head(
 
 # mxd with BWS from support.BWS
 
-Researchers that conduct a MaxDiff (i.e., BWS case 1) often rely on the great package support.BWS [@support.BWS]. mxd has the function `bibd_to_dm()` to convert a BWS study from support.BWS to the relevant design required for mxd.
+Researchers conducting a MaxDiff (i.e., BWS case 1) often rely on the well-supported package support.BWS [@aizaki2023]. The mxd package has the `bibd_to_dm()` function to convert a BWS study from support.BWS into the relevant format required for mxd.
 
-First, we create a design. This is a highly simplified example, for design creation, please refer to the @support.BWS package. We simulate a data set with 100 participants (`I`), each participant evaluates a total of 7 tasks (`T`), each displaying 4 alternatives (`J`). We include a total of 7 items (`K`).
+First, we create a design. This is a highly simplified example, for design creation, please refer to the @aizaki2023. We simulate a data set with 100 participants (`I`), each participant evaluates a total of 7 tasks (`T`), each displaying 4 alternatives (`J`). We include a total of 7 items (`K`).
 
 ```{r}
 I <- 100
@@ -251,7 +251,7 @@ dataset <- tidyr::crossing(
   )
 ```
 
-Now, we can create the design. We define the `design`, the `data`, the name of the participants' identifier (`id`), the columns for the best choices (`best_ch`) and worst choices (`worst_ch`), respectively. Finally, we determine the `type` for coding (see above)
+Now, we can create the design. We define the `design`, the `data`, the name of the participants' identifier (`id`), the columns for the best choices (`best_ch`) and worst choices (`worst_ch`), respectively. Finally, we determine the `type` for coding (see above).
 
 ```{r}
 output <- bibd_to_dm(
