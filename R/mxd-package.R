@@ -22,7 +22,6 @@
 #' @importFrom forcats fct_rev
 #' @importFrom readr parse_number
 #' @importFrom DescTools IsWhole
-#' @importFrom logitr logitr
 #' @importFrom ggplot2 aes facet_wrap geom_segment geom_violin ggplot guides
 #' labs theme_bw theme_minimal ylab
 #' @useDynLib mxd, .registration = TRUE
