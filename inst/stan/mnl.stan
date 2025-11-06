@@ -26,7 +26,7 @@ transformed parameters {
 }
 
 model {
-  b ~ normal(0, prior_b);
+  target += normal_lpdf(to_vector(b) | 0, prior_b);
 
   target += log_lik;
 }

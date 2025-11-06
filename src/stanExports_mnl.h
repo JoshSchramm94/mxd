@@ -36,7 +36,7 @@ static constexpr std::array<const char*, 26> locations_array__ =
   " (in 'string', line 20, column 4 to column 97)",
   " (in 'string', line 19, column 17 to line 21, column 3)",
   " (in 'string', line 19, column 2 to line 21, column 3)",
-  " (in 'string', line 24, column 2 to column 25)",
+  " (in 'string', line 24, column 2 to column 51)",
   " (in 'string', line 25, column 2 to column 20)",
   " (in 'string', line 2, column 2 to column 17)",
   " (in 'string', line 3, column 2 to column 17)",
@@ -253,7 +253,8 @@ public:
       stan::math::check_less_or_equal(function__, "log_lik", log_lik, 0);
       {
         current_statement__ = 8;
-        lp_accum__.add(stan::math::normal_lpdf<propto__>(b, 0, prior_b));
+        lp_accum__.add(stan::math::normal_lpdf<false>(
+                         stan::math::to_vector(b), 0, prior_b));
         current_statement__ = 9;
         lp_accum__.add(log_lik);
       }

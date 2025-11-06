@@ -29,7 +29,6 @@ Imports:
     furrr (>= 0.3.1),
     future (>= 1.40.0),
     ggplot2 (>= 3.5.2),
-    logitr (>= 1.1.2),
     magrittr (>= 2.0.3),
     methods (>= 4.3.2),
     purrr (>= 1.0.4),
