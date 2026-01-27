@@ -55,8 +55,9 @@
 #' @export
 #'
 csv_to_dm <- function(
-    design, id, cs, item, ch, anchor = NULL, mxd_tasks,
-    type) {
+  design, id, cs, item, ch, anchor = NULL, mxd_tasks,
+  type
+) {
   # check whether all arguments are defined ------------------------------------
   check_input(
     must = c("type", "mxd_tasks", "design", "id", "cs", "ch", "item"),

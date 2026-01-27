@@ -237,13 +237,13 @@ percentage <- function(x) {
 }
 
 
-
 # test -------------------------------------------------------------------------
 
 stanfit_input <- function(
-    input,
-    arg = rlang::caller_arg(input),
-    call = rlang::caller_env()) {
+  input,
+  arg = rlang::caller_arg(input),
+  call = rlang::caller_env()
+) {
   if (!isS4(input)) {
     cli::cli_abort(
       c(
@@ -256,9 +256,10 @@ stanfit_input <- function(
 }
 
 check_empty <- function(
-    arg1,
-    arg2,
-    call = rlang::caller_env()) {
+  arg1,
+  arg2,
+  call = rlang::caller_env()
+) {
   if (arg1 != "maxdiff" && !is.null(arg2)) {
     cli::cli_abort(
       c(
@@ -271,9 +272,10 @@ check_empty <- function(
 }
 
 labels_length <- function(
-    labels,
-    no_pars,
-    call = rlang::caller_env()) {
+  labels,
+  no_pars,
+  call = rlang::caller_env()
+) {
   length_labels <- length(labels)
   allowed_length <- no_pars
 
@@ -289,9 +291,10 @@ labels_length <- function(
 }
 
 check_demo <- function(
-    demos,
-    length_id,
-    call = rlang::caller_env()) {
+  demos,
+  length_id,
+  call = rlang::caller_env()
+) {
   if (nrow(demos) != length_id) {
     cli::cli_abort(
       c(
@@ -305,10 +308,11 @@ check_demo <- function(
 }
 
 allowed_class <- function(
-    input,
-    allowed,
-    arg = rlang::caller_arg(input),
-    call = rlang::caller_env()) {
+  input,
+  allowed,
+  arg = rlang::caller_arg(input),
+  call = rlang::caller_env()
+) {
   correct_input <- any(class(input) %in% allowed)
 
   if (!correct_input) {
@@ -323,9 +327,10 @@ allowed_class <- function(
 }
 
 list_inputs <- function(
-    input,
-    arg = rlang::caller_arg(input),
-    call = rlang::caller_env()) {
+  input,
+  arg = rlang::caller_arg(input),
+  call = rlang::caller_env()
+) {
   correct_input <- is.list(input) && !is.data.frame(input)
 
   if (!correct_input) {
@@ -355,10 +360,11 @@ list_inputs <- function(
 
 
 id_match <- function(
-    id1,
-    id2,
-    cv,
-    call = rlang::caller_env()) {
+  id1,
+  id2,
+  cv,
+  call = rlang::caller_env()
+) {
   if (cv == "no") {
     if (!(all(id1 %in% id2) && all(id2 %in% id1))) {
       cli::cli_abort(
@@ -394,9 +400,10 @@ id_match <- function(
 }
 
 post_check <- function(
-    betas,
-    arg = rlang::caller_arg(betas),
-    call = rlang::caller_env()) {
+  betas,
+  arg = rlang::caller_arg(betas),
+  call = rlang::caller_env()
+) {
   # check dimensions
   dim_must <- dim(betas[[1]])
   wrong_input <- all(unlist(lapply(betas, function(x) all(dim(x) == dim_must))))
@@ -454,11 +461,12 @@ missing_allowed <- function(data,
 }
 
 choice_per_cs <- function(
-    data,
-    id,
-    cs,
-    choice,
-    call = rlang::caller_env()) {
+  data,
+  id,
+  cs,
+  choice,
+  call = rlang::caller_env()
+) {
   ws <- dplyr::reframe(data,
     b = sum({{ choice }} == 1),
     w = sum({{ choice }} == -1),
@@ -475,11 +483,12 @@ choice_per_cs <- function(
 }
 
 bw_per_cs <- function(
-    data,
-    id,
-    cs,
-    choice,
-    call = rlang::caller_env()) {
+  data,
+  id,
+  cs,
+  choice,
+  call = rlang::caller_env()
+) {
   ws <- dplyr::reframe(data,
     b = sum({{ choice }} == 1),
     w = sum({{ choice }} == -1),
@@ -496,12 +505,12 @@ bw_per_cs <- function(
 }
 
 
-
 bw_length <- function(
-    data,
-    best_ch,
-    worst_ch,
-    call = rlang::caller_env()) {
+  data,
+  best_ch,
+  worst_ch,
+  call = rlang::caller_env()
+) {
   b_len <- dplyr::select(data, {{ best_ch }}) %>% ncol(.)
   w_len <- dplyr::select(data, {{ worst_ch }}) %>% ncol(.)
 
@@ -516,14 +525,14 @@ bw_length <- function(
 }
 
 choice_per_cs_mnl <- function(
-    data,
-    cs,
-    ch,
-    call = rlang::caller_env()) {
+  data,
+  cs,
+  ch,
+  call = rlang::caller_env()
+) {
   ws <- data %>%
     dplyr::mutate(obs = cumsum(c(1, diff({{ cs }}) != 0))) %>%
     dplyr::reframe(choice = sum({{ ch }} == 1), .by = obs)
-
 
 
   if (!(all(ws[["choice"]] == 1))) {
@@ -536,8 +545,9 @@ choice_per_cs_mnl <- function(
 }
 
 id_vector <- function(
-    ids,
-    call = rlang::caller_env()) {
+  ids,
+  call = rlang::caller_env()
+) {
   if (!(is.vector(ids))) {
     cli::cli_abort(
       c(
@@ -548,9 +558,10 @@ id_vector <- function(
 }
 
 check_input <- function(
-    must,
-    defined,
-    call = rlang::caller_env()) {
+  must,
+  defined,
+  call = rlang::caller_env()
+) {
   def_input <- match.call()
 
   input_defined <- must %in% defined
@@ -567,9 +578,10 @@ check_input <- function(
 }
 
 check_integer <- function(
-    input,
-    arg = rlang::caller_arg(input),
-    call = rlang::caller_env()) {
+  input,
+  arg = rlang::caller_arg(input),
+  call = rlang::caller_env()
+) {
   user_input <- vapply(
     X = input,
     FUN = DescTools::IsWhole,
@@ -619,10 +631,11 @@ combi <- function(x, order = FALSE) {
 
 # taken from validateHOT -------------------------------------------------------
 allowed_input <- function(
-    input,
-    allowed,
-    arg = rlang::caller_arg(input),
-    call = rlang::caller_env()) {
+  input,
+  allowed,
+  arg = rlang::caller_arg(input),
+  call = rlang::caller_env()
+) {
   correct_input <- all(input %in% allowed)
 
   if (!correct_input) {
@@ -636,11 +649,12 @@ allowed_input <- function(
 }
 
 ncol_input <- function(
-    data,
-    variable,
-    argument,
-    arg = rlang::caller_arg(argument),
-    call = rlang::caller_env()) {
+  data,
+  variable,
+  argument,
+  arg = rlang::caller_arg(argument),
+  call = rlang::caller_env()
+) {
   var <- dplyr::select(data, {{ variable }}) %>% colnames()
 
   if (length(var) > 1) {

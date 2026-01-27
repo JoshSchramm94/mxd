@@ -227,13 +227,13 @@ Now, we can simulate the design, for reproducibility, we set a seed.
 set.seed(1910)
 design <- tidyr::crossing(
   cs = seq.int(K), alt = seq.int(J)
-) %>% 
-  dplyr::mutate(item = sample(seq.int(K), J), .by = cs) %>% 
+) %>%
+  dplyr::mutate(item = sample(seq.int(K), J), .by = cs) %>%
   tidyr::pivot_wider(
     names_from = alt,
     names_prefix = "item",
     values_from = item
-)
+  )
 ```
 
 Next, we can simulate choices for the 7 tasks. In support.BWS the alternative chosen is stored in choices (i.e., maximum `J`).
@@ -241,10 +241,11 @@ Next, we can simulate choices for the 7 tasks. In support.BWS the alternative ch
 ```{r}
 dataset <- tidyr::crossing(
   id = seq.int(I), cs = seq.int(K), ch = c("b", "w")
-) %>% 
+) %>%
   dplyr::mutate(
     cs = paste0(ch, cs),
-    ch = sample(J, 2), .by = c(id, cs)) %>% 
+    ch = sample(J, 2), .by = c(id, cs)
+  ) %>%
   tidyr::pivot_wider(
     names_from = cs,
     values_from = ch

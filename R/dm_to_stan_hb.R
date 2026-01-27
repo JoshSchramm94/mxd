@@ -49,8 +49,9 @@
 #' @export
 #'
 dm_to_stan_hb <- function(
-    design, id, cs, alt, items, ch, type, anchor_start = NULL,
-    prior_b = NULL, prior_omega = NULL, prior_sigma = NULL, demos = NULL) {
+  design, id, cs, alt, items, ch, type, anchor_start = NULL,
+  prior_b = NULL, prior_omega = NULL, prior_sigma = NULL, demos = NULL
+) {
   # check whether all arguments are defined ------------------------------------
 
   check_input(

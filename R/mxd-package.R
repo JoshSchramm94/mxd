@@ -38,7 +38,6 @@
 NULL
 
 
-
 utils::globalVariables(
   c(
     ".",

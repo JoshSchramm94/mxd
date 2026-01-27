@@ -49,9 +49,10 @@
 #' @export
 #'
 dm_to_stan_hb_cv <- function(
-    design, id, cs, alt, items, ch, type, anchor_start = NULL, folds,
-    prior_b = NULL, prior_omega = NULL, prior_sigma = NULL, demos = NULL,
-    seed = NULL) {
+  design, id, cs, alt, items, ch, type, anchor_start = NULL, folds,
+  prior_b = NULL, prior_omega = NULL, prior_sigma = NULL, demos = NULL,
+  seed = NULL
+) {
   # define missing arguments ---------------------------------------------------
   # specify optional values
   prior_b <- prior_b %||% 5L
