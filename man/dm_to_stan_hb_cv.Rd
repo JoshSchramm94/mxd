@@ -77,7 +77,7 @@ the utilities; default is set to \code{5}}
 \item{prior_omega}{prior for the LKJ cholesky of the correlation matrix;
 default is set to \code{2}}
 \item{prior_sigma}{prior for the scale parameter of the utilities;
-default is set to \code{5}}
+default is set to \code{2}}
 }
 
 In addition, \emph{Z} variables can be defined, i.e., demographic variables. The

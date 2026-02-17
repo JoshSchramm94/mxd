@@ -45,14 +45,14 @@ betas_post <- function(stan_output, bw_size, cores = 1L,
   labels <- labels %||% paste0(
     "item_",
     seq_len(
-      dim(rstan::extract(stan_output)[["beta"]])[3] + 1
+      dim(rstan::extract(stan_output)[["raw"]])[3] + 1
     )
   )
 
 
   # tests ----------------------------------------------------------------------
   # check length of labels
-  labels_length(labels, dim(rstan::extract(stan_output)[["beta"]])[3] + 1)
+  labels_length(labels, dim(rstan::extract(stan_output)[["raw"]])[3] + 1)
 
   # check whether labels are class character
   allowed_class(labels, "character")
@@ -76,9 +76,9 @@ betas_post <- function(stan_output, bw_size, cores = 1L,
   with(future::plan(strategy = future::multisession, workers = cores), local = TRUE)
 
   beta_raw <- furrr::future_map(
-    seq(dim(rstan::extract(stan_output)[["beta_prep"]])[1]),
+    seq(dim(rstan::extract(stan_output)[["beta"]])[1]),
     function(x) {
-      as.data.frame(rstan::extract(stan_output)[["beta_prep"]][x, , ]) %>%
+      as.data.frame(rstan::extract(stan_output)[["beta"]][x, , ]) %>%
         stats::setNames(c("id", labels))
     }
   )

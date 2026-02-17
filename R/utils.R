@@ -177,6 +177,27 @@ res_summary <- function(.data, var) {
     stats::setNames(c("mw", "sd", "2.5%", "97.5%"))
 }
 
+res_summary_sigma <- function(.data, var) {
+  .data %>%
+    dplyr::reframe(
+      dplyr::across(
+        {{ var }},
+        function(x) {
+          c(
+            mean(x),
+            median(x),
+            stats::sd(x),
+            stats::quantile(x, probs = 0.025),
+            stats::quantile(x, probs = 0.975)
+          )
+        }
+      )
+    ) %>%
+    t() %>%
+    as.data.frame() %>%
+    stats::setNames(c("mw", "med", "sd", "2.5%", "97.5%"))
+}
+
 res_summary_group <- function(.data, var, group) {
   group_names <- var_names(.data, {{ group }})
 

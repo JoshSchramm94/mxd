@@ -26,14 +26,14 @@ parameters {
 
 transformed parameters {
   real<upper=0> log_lik = 0;
-  matrix[I, K] beta;                  // individual level parameters
-  matrix[I, K + 1] beta0;             // individual level parameters
+  matrix[I, K] raw;                  // individual level parameters
+  matrix[I, K + 1] raw0;             // individual level parameters
 
-  beta = Z * b + z * (diag_pre_multiply(sigma, L_Omega))';
-  beta0 = append_col(beta, rep_vector(0, I));
+  raw = Z * b + z * (diag_pre_multiply(sigma, L_Omega))';
+  raw0 = append_col(raw, rep_vector(0, I));
 
   for (n in 1:N) {
-    log_lik += bw[y[n]] * beta0[id[n], item[y[n]]] - log_sum_exp(bw[y[n]] * beta0[id[n], item[start_n[n]:end_n[n]]]);
+    log_lik += bw[y[n]] * raw0[id[n], item[y[n]]] - log_sum_exp(bw[y[n]] * raw0[id[n], item[start_n[n]:end_n[n]]]);
   }
 }
 
@@ -49,8 +49,8 @@ model {
 
 generated quantities {
   matrix[K, K] Omega;
-  matrix[I, K + 2] beta_prep;
+  matrix[I, K + 2] beta;
 
-  beta_prep = append_col(append_col(orig_id, beta), rep_vector(0, I));
+  beta = append_col(append_col(orig_id, raw), rep_vector(0, I));
   Omega = multiply_lower_tri_self_transpose(L_Omega);
 }

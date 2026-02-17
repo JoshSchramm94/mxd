@@ -23,4 +23,6 @@ heterogeneity (i.e., sigma) of the estimated model.
 hyperprior \code{sigma}, i.e., the standard deviation. Users have to provide the
 output of the stan model (e.g., estimated using the \code{mxd_hb()}) function.
 Optionally, users can define labels for the items.
+Output includes mean, median, standard deviation, and both 2.5\% and 97.5\%
+percentile.
 }

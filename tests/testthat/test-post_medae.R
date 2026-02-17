@@ -200,7 +200,7 @@ test_that("No error for example ", {
     group = NULL
   ))
 
-  expect_true(all(round(res, digits = 2) == c(5.11, 0.66, 3.89, 6.47)))
+  expect_true(all(round(res, digits = 2) == c(5.14, 0.92, 3.38, 7.01)))
 })
 #
 # test_that("No error for out-of-sample data ", {

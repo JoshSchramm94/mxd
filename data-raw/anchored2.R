@@ -24,7 +24,7 @@ set.seed(1910)
 b <- stats::rnorm(K)
 
 # generate sigma (half-normal)
-sigma <- abs(stats::rnorm(K))
+sigma <- abs(stats::rnorm(K, mean = 0, sd = 2))
 
 # generate variance covariance matrix
 cor_mat <- rlkj_corr_rng(K, LKJ)

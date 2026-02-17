@@ -11,6 +11,8 @@
 #' hyperprior `sigma`, i.e., the standard deviation. Users have to provide the
 #' output of the stan model (e.g., estimated using the `mxd_hb()`) function.
 #' Optionally, users can define labels for the items.
+#' Output includes mean, median, standard deviation, and both 2.5% and 97.5%
+#' percentile.
 #'
 #' @returns a tibble
 #'
@@ -52,5 +54,5 @@ sigma_summary <- function(stan_output, labels = NULL) {
   rstan::extract(stan_output)[["sigma"]] %>%
     as.data.frame() %>%
     stats::setNames(labels) %>%
-    res_summary(tidyselect::everything())
+    res_summary_sigma(tidyselect::everything())
 }

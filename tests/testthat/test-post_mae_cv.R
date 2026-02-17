@@ -218,7 +218,7 @@ test_that("If raw set to TRUE length equals betas_post length ", {
     labels = c(paste0("v", seq.int(16)), "ref"),
     hot_choice = HOT1,
     raw = TRUE
-  )), lapply(model, function(x) dim(rstan::extract(x)[["beta"]])[1]) %>%
+  )), lapply(model, function(x) dim(rstan::extract(x)[["raw"]])[1]) %>%
     unlist() %>%
     sum())
 })

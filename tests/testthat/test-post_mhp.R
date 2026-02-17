@@ -245,7 +245,7 @@ test_that("No error for example ", {
     group = NULL
   ))
 
-  expect_true(all(round(res, digits = 2) == c(27.88, 1.99, 24.16, 31.95)))
+  expect_true(all(round(res, digits = 2) == c(32.88, 2.14, 28.59, 37.01)))
 })
 
 # end --------------------------------------------------------------------------

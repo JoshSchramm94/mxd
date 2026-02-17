@@ -24,7 +24,7 @@ stan_input <- dm_to_stan_hb(
 mxd_model <- mxd_hb(
   data = stan_input,
   chains = 5L,
-  iter = 2000L,
+  iter = 4000L,
   warmup = 1000L,
   seed = 1910L
 )
@@ -37,7 +37,7 @@ betas_prep <- betas_post(
   stan_output = hb,
   bw_size = 4,
   cores = 4L,
-  labels = paste0("v", seq_len(16)),
+  labels = c(paste0("v", seq_len(16)), "ref"),
   anchor = TRUE
 )
 

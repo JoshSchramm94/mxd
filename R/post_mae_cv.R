@@ -86,7 +86,7 @@ post_mae_cv <- function(stan_cv, stan_input, hot_data, opts, hot_choice,
 
   # check length of labels
   if (!is.null(labels)) {
-    labels_length(labels, (dim(rstan::extract(stan_cv[[1]])[["beta"]])[3] + 1))
+    labels_length(labels, (dim(rstan::extract(stan_cv[[1]])[["raw"]])[3] + 1))
   }
 
   # preps ----------------------------------------------------------------------
@@ -94,11 +94,11 @@ post_mae_cv <- function(stan_cv, stan_input, hot_data, opts, hot_choice,
   val_sample_res <- purrr::map2(stan_cv, stan_input, function(x, y) {
     # define missing arguments
     labels <- labels %||% paste0(
-      "item_", seq_len((dim(rstan::extract(x)[["beta"]])[3]) + 1)
+      "item_", seq_len((dim(rstan::extract(x)[["raw"]])[3]) + 1)
     )
 
-    beta_raw <- purrr::map(seq(dim(rstan::extract(x)[["beta"]])[1]), function(a) {
-      as.data.frame(rstan::extract(x)[["beta"]][a, , ]) %>%
+    beta_raw <- purrr::map(seq(dim(rstan::extract(x)[["raw"]])[1]), function(a) {
+      as.data.frame(rstan::extract(x)[["raw"]][a, , ]) %>%
         dplyr::mutate(
           ref = 0
         ) %>%
