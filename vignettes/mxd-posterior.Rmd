@@ -79,10 +79,10 @@ acf_plot(
 )
 ```
 
-Next, we run the `alphas()` function. BWe need to specify the `stan_output` (estimated from `mxd_hb()`), and the number of alternatives shown per MaxDiff task (`bw_size`). Optionally, we can add `labels` for the output and we must indicate whether the design included anchored MaxDiff (`anchor`). The `alphas()` function returns a list of four elements: the raw alpha draws, zero-centered values, probability-scaled values, and a summary of these statistics.
+Next, we run the `b()` function. BWe need to specify the `stan_output` (estimated from `mxd_hb()`), and the number of alternatives shown per MaxDiff task (`bw_size`). Optionally, we can add `labels` for the output and we must indicate whether the design included anchored MaxDiff (`anchor`). The `alphas()` function returns a list of four elements: the raw alpha draws, zero-centered values, probability-scaled values, and a summary of these statistics.
 
 ```{r, eval=FALSE}
-alphas(
+b(
   stan_output = out,
   bw_size = 4,
   labels = paste0("item", seq.int(16)),

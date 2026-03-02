@@ -74,6 +74,7 @@ dm_to_stan_hb <- function(
       length(unique(unlist(select(design, {{ id }}))))
     )
   } else {
+    demos <- apply(demos, 2, function(x) x - mean(x))
     demos <- cbind(
       matrix(
         1,

@@ -24,9 +24,4 @@ Authors:
   \item Daniel Guhl (\href{https://orcid.org/0000-0003-2114-9405}{ORCID})
 }
 
-Other contributors:
-\itemize{
-  \item Marcel Lichers (\href{https://orcid.org/0000-0002-3710-2292}{ORCID}) [contributor]
-}
-
 }

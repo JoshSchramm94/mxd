@@ -51,6 +51,7 @@ utils::globalVariables(
     "choice",
     "cores",
     "cs",
+    "draw",
     "est",
     "group_id",
     "hb_des",

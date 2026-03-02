@@ -5,7 +5,7 @@ model <- readRDS(testthat::test_path("data", "test_model.rds"))
 # check for error messages for missing arguments -------------------------------
 test_that("Error if stan_output is missing ", {
   expect_error(
-    alphas(
+    b(
       # stan_output = mxd_model,
       bw_size = 4
     )
@@ -14,7 +14,7 @@ test_that("Error if stan_output is missing ", {
 
 test_that("Error if bw_size is missing ", {
   expect_error(
-    alphas(
+    b(
       stan_output = mxd_model,
       # bw_size = 4
     )
@@ -25,21 +25,21 @@ test_that("Error if bw_size is missing ", {
 # check for wrong input --------------------------------------------------------
 test_that("Error if stan_input is not class stanfit ", {
   test <- rstan::extract(model)
-  expect_error(alphas(
+  expect_error(b(
     stan_output = test$beta,
     bw_size = 4
   ))
 })
 
 test_that("Error if bw_size not numeric ", {
-  expect_error(alphas(
+  expect_error(b(
     stan_output = model,
     bw_size = "4"
   ))
 })
 
 test_that("Anchor only accepts TRUE and FALSE ", {
-  expect_error(alphas(
+  expect_error(b(
     stan_output = model,
     bw_size = 4,
     anchor = "direct"
@@ -49,7 +49,7 @@ test_that("Anchor only accepts TRUE and FALSE ", {
 
 # no errors for examples -------------------------------------------------------
 test_that("No error for example ", {
-  expect_no_error(alphas(
+  expect_no_error(b(
     stan_output = model,
     bw_size = 4,
     anchor = TRUE
@@ -57,7 +57,7 @@ test_that("No error for example ", {
 })
 
 test_that("Can provide labels ", {
-  expect_no_error(alphas(
+  expect_no_error(b(
     stan_output = model,
     bw_size = 4,
     anchor = TRUE,
@@ -68,7 +68,7 @@ test_that("Can provide labels ", {
 
 # check output -----------------------------------------------------------------
 test_that("Check length of output ", {
-  expect_equal(length(alphas(
+  expect_equal(length(b(
     stan_output = model,
     bw_size = 4,
     anchor = TRUE,
@@ -77,12 +77,12 @@ test_that("Check length of output ", {
 })
 
 test_that("Check length of output ", {
-  expect_equal(names(alphas(
+  expect_equal(names(b(
     stan_output = model,
     bw_size = 4,
     anchor = TRUE,
     labels = paste0("test", c(1:17))
-  )), c("alphas_raw", "alphas_zc", "alphas_prob", "summary"))
+  )), c("b_raw", "b_zc", "b_prob", "summary"))
 })
 
 # end --------------------------------------------------------------------------

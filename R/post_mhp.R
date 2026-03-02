@@ -30,6 +30,9 @@
 #' posterior draw or if the output should be aggregated across all posterior
 #' draws (i.e., set `raw` to `FALSE`).
 #'
+#' @returns a tibble
+#' @export
+#'
 post_mhp <- function(betas_post, hot_data, id, opts, hot_choice,
                      group = NULL, raw = FALSE) {
   # check whether all arguments are defined ------------------------------------

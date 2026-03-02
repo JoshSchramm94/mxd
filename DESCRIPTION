@@ -6,9 +6,7 @@ Authors@R:
     role = c("aut", "cre"),
     comment = c(ORCID = "0000-0001-5602-4632")),
     person("Daniel", "Guhl", role = "aut",
-    comment = c(ORCID = "0000-0003-2114-9405")),
-    person("Marcel", "Lichers", role = "ctb",
-    comment = c(ORCID = "0000-0002-3710-2292"))
+    comment = c(ORCID = "0000-0003-2114-9405"))
     )
 Description: mxd package is an R package to run Bayesian statistics for MaxDiff tasks (also known as Best-Worst Case 1). Users can run Bayesian multinomial logit models as well as Hierarchical Bayesian models. Multiple assumed choice processes for coding the MaxDiff tasks are provided. The package also provides functions to run cross-validation and validating the results.
 License: GPL (>= 3)

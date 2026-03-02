@@ -1,3 +1,4 @@
+library(magrittr)
 # heterogeneity - unanchored data
 I <- 50
 T <- 16 # no of tasks
@@ -24,7 +25,7 @@ set.seed(1910)
 b <- stats::rnorm(K)
 
 # generate sigma (half-normal)
-sigma <- abs(stats::rnorm(K))
+sigma <- abs(stats::rnorm(K, mean = 0, sd = 2))
 
 # generate variance covariance matrix
 cor_mat <- rlkj_corr_rng(K, LKJ)
@@ -32,16 +33,58 @@ cov_mat <- diag(sigma) %*% cor_mat %*% diag(sigma)
 
 betas <- mvtnorm::rmvnorm(I, b, cov_mat) %>%
   as.data.frame() %>%
-  dplyr::mutate(
-    id = seq.int(I),
-    V17 = 0
-  ) %>%
+  dplyr::mutate(id = seq.int(I)) %>%
   tidyr::pivot_longer(
     cols = -id,
     names_to = "item",
     values_to = "u"
   ) %>%
   dplyr::mutate(item = readr::parse_number(item))
+
+unanchored_data <- expand.grid(
+  id = seq.int(I),
+  task = seq.int(T)
+) %>%
+  dplyr::reframe(alt = sample(K, J), .by = c(id, task)) %>%
+  dplyr::group_by(id, task) %>%
+  tidyr::expand(b = alt, w = alt) %>%
+  dplyr::ungroup() %>%
+  dplyr::filter(b != w) %>%
+  dplyr::left_join(
+    x = .,
+    y = betas,
+    by = dplyr::join_by(id == id, b == item)
+  ) %>%
+  dplyr::rename("b_u" = ncol(.)) %>%
+  dplyr::left_join(
+    x = .,
+    y = betas,
+    by = dplyr::join_by(id == id, w == item)
+  ) %>%
+  dplyr::rename("w_u" = ncol(.)) %>%
+  dplyr::mutate(u = b_u - w_u) %>%
+  dplyr::select(-c(b_u, w_u)) %>%
+  dplyr::mutate(
+    p = mxd:::mnl2(u),
+    ch = as.vector(stats::rmultinom(1, 1, p)),
+    b_ch = b[ch == 1],
+    w_ch = w[ch == 1],
+    .by = c(id, task)
+  ) %>%
+  dplyr::group_by(id, task, b_ch, w_ch) %>%
+  dplyr::distinct(b) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(
+    choice = dplyr::case_when(
+      b_ch == b ~ 1,
+      w_ch == b ~ -1,
+      .default = 0L
+    )
+  ) %>%
+  dplyr::select(id, task, b, choice) %>%
+  stats::setNames(c("id", "cs", "item", "choice"))
+
+set.seed(1910)
 
 HOT1 <- dplyr::filter(betas, item %in% c(1, 3, 6, 9, 12, 17)) %>%
   dplyr::mutate(
@@ -60,6 +103,7 @@ HOT2 <- dplyr::filter(betas, item %in% c(4, 5, 7, 10, 11, 13, 14, 16)) %>%
   ) %>%
   dplyr::mutate(alt = cumsum(c(1, diff(id) == 0)), .by = id) %>%
   dplyr::reframe(HOT2 = alt[ch == 1], .by = id)
+
 
 choicedata <- dplyr::left_join(
   x = HOT1,

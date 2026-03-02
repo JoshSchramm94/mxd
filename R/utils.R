@@ -311,6 +311,25 @@ labels_length <- function(
   }
 }
 
+labels_length_cov <- function(
+    labels,
+    no_pars,
+    call = rlang::caller_env()
+) {
+  length_labels <- length(labels) + 1
+  allowed_length <- no_pars + 1
+
+  if (length_labels != allowed_length) {
+    cli::cli_abort(
+      c(
+        "{.arg labels} must have length {.num {allowed_length}}",
+        "currently, {.arg labels} have length {.num {length_labels}}."
+      ),
+      call = call
+    )
+  }
+}
+
 check_demo <- function(
   demos,
   length_id,

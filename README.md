@@ -50,7 +50,7 @@ Besides that, users can also use `shinystan()` to inspect convergence.
 - `alphas_acf_plot()`: Function get posterior summary statistics for
   population’s mean
 
-- `alphas()`: Function to get output of population’s mean.
+- `b()`: Function to get output of population’s mean.
 
 - `beta_summary()`: Function to prepare posterior individual
   coefficients

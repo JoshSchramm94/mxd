@@ -63,9 +63,13 @@ to \code{random}}
 to \code{iter / 10}}
 \item{algorithm}{argument to define the algorithm, the default is set to
 \code{NUTS}, which is the No-U-Turn Sampler}
+\item{adapt_delta}{default set to 0.8, more information can be found
+\code{\link[rstan]{sampling}}}
+\item{max_treedepth}{default set to 10, more information can be found
+\code{\link[rstan]{sampling}}}
 }
 
-\code{mxd_hb_cv()} uses the \code{\link[rstan]{stan}} for sampling, thus, a more
+\code{mxd_hb()} uses the \code{\link[rstan]{sampling}} for sampling, thus, a more
 detailed description for the parameters can be obtained from their
 documentation.
 }

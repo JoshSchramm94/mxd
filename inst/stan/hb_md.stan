@@ -62,6 +62,18 @@ model {
 generated quantities {
   matrix[K, K] Omega;
   matrix[I, K + 2] beta;
+  vector[I] log_lik_i;
+  log_lik_i = rep_vector(0, I);
+
+  if (A_inc == 1) {
+    for (ac in 1:A){
+      log_lik_i[id_a[ac]] =+ bernoulli_logit_lpmf(a[ac] | raw0[id_a[ac], a_id[ac]]);
+    }
+  }
+
+  for (n in 1:N) {
+    log_lik_i[id[n]] += (raw0[id[n], bi[y[n]]] - raw0[id[n], wi[y[n]]]) - log_sum_exp(raw0[id[n], bi[start_n[n]:end_n[n]]] - raw0[id[n], wi[start_n[n]:end_n[n]]]);
+  }
 
   beta = append_col(append_col(orig_id, raw), rep_vector(0, I));
   Omega = multiply_lower_tri_self_transpose(L_Omega);

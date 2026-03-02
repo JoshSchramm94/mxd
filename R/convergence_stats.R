@@ -27,34 +27,41 @@ convergence_stats <- function(stan_output, pars = c("b", "sigma"), labels = NULL
 
   check_input(c("stan_output", "pars"), names(match.call()))
 
+  # check whether pars is correctly defined
+  allowed_input(pars, c("b", "sigma"))
+
   # check whether input is correct
   stanfit_input(stan_output)
 
   # define missing arguments ---------------------------------------------------
-  labels <- labels %||% paste0(
-    "item_",
-    seq_len(
-      ncol(
-        as.data.frame(
-          rstan::extract(stan_output)[[pars]]
-        )
-      )
-    )
-  )
+  if (pars == "sigma") {
+    labels <- labels %||% paste0(
+      "item_",
+      seq_len(dim(rstan::extract(stan_output)[[pars]])[2]))
+
+    # check length of labels
+    labels_length(labels, dim(rstan::extract(stan_output)[[pars]])[2])
+  } else if (pars == "b") {
+    labels <- labels %||% paste0(
+      "item_",
+      seq_len(dim(rstan::extract(stan_output)[["b"]])[3]))
+
+    # check length of labels
+    labels_length(labels, dim(rstan::extract(stan_output)[["b"]])[3])
+  }
 
   # tests ----------------------------------------------------------------------
-
-  # check whether pars is correctly defined
-  allowed_input(pars, c("b", "sigma"))
-
-  # check length of labels
-  labels_length(labels, ncol(as.data.frame(rstan::extract(stan_output)[["b"]])))
-
   # check whether labels are class character
   allowed_class(labels, "character")
 
   # preps ----------------------------------------------------------------------
-  rstan::extract(stan_output)[[pars]] %>%
+  if (pars == "sigma") {
+    res = rstan::extract(stan_output)[[pars]]
+  } else if (pars == "b") {
+    res = rstan::extract(stan_output)[[pars]][, 1, ]
+  }
+
+  res %>%
     as.data.frame() %>%
     stats::setNames(labels) %>%
     dplyr::reframe(

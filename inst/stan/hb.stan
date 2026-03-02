@@ -50,6 +50,12 @@ model {
 generated quantities {
   matrix[K, K] Omega;
   matrix[I, K + 2] beta;
+  vector[I] log_lik_i;
+  log_lik_i = rep_vector(0, I);
+
+  for (n in 1:N) {
+    log_lik_i[id[n]] += bw[y[n]] * raw0[id[n], item[y[n]]] - log_sum_exp(bw[y[n]] * raw0[id[n], item[start_n[n]:end_n[n]]]);
+  }
 
   beta = append_col(append_col(orig_id, raw), rep_vector(0, I));
   Omega = multiply_lower_tri_self_transpose(L_Omega);

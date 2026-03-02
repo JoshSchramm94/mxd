@@ -39,9 +39,13 @@
 #'   to `iter / 10`}
 #'   \item{algorithm}{argument to define the algorithm, the default is set to
 #'   `NUTS`, which is the No-U-Turn Sampler}
+#'   \item{adapt_delta}{default set to 0.8, more information can be found
+#'   \code{\link[rstan]{sampling}}}
+#'   \item{max_treedepth}{default set to 10, more information can be found
+#'   \code{\link[rstan]{sampling}}}
 #' }
 #'
-#' `mxd_hb()` uses the \code{\link[rstan]{stan}} for sampling, thus, a more
+#' `mxd_hb()` uses the \code{\link[rstan]{sampling}} for sampling, thus, a more
 #' detailed description for the parameters can be obtained from their
 #' documentation.
 #'
@@ -85,7 +89,9 @@ mxd_hb <- function(data_stan,
     thin = 5L,
     init = "random",
     algorithm = "NUTS",
-    refresh = iter / 10
+    refresh = iter / 10,
+    adapt_delta = 0.8,
+    max_treedepth = 10
   )
 
   args <- args_list(defi_args, defa_args)
@@ -94,6 +100,8 @@ mxd_hb <- function(data_stan,
   allowed_class(args[["cores"]], c("numeric", "integer"))
   allowed_class(args[["thin"]], c("numeric", "integer"))
   allowed_class(args[["refresh"]], c("numeric", "integer"))
+  allowed_class(args[["adapt_delta"]], c("numeric", "integer"))
+  allowed_class(args[["max_treedepth"]], c("numeric", "integer"))
 
   # check right input
   check_integer(list(
@@ -103,7 +111,8 @@ mxd_hb <- function(data_stan,
     "warmup" = warmup,
     "cores" = args[["cores"]],
     "thin" = args[["thin"]],
-    "refresh" = args[["refresh"]]
+    "refresh" = args[["refresh"]],
+    "max_treedepth" = args[["max_treedepth"]]
   ))
 
   # preps ----------------------------------------------------------------------
@@ -112,7 +121,7 @@ mxd_hb <- function(data_stan,
     hbmnl_mcmc <- rstan::sampling(
       object = stanmodels$hb,
       data = data_stan,
-      pars = c("b", "sigma", "Omega", "raw", "log_lik", "beta"),
+      pars = c("b", "sigma", "Omega", "raw", "log_lik", "beta", "log_lik_i"),
       algorithm = args[["algorithm"]],
       init = args[["init"]],
       seed = seed,
@@ -120,6 +129,10 @@ mxd_hb <- function(data_stan,
       cores = args[["cores"]],
       warmup = warmup,
       iter = iter,
+      control = list(
+        adapt_delta = args[["adapt_delta"]],
+        max_treedepth = args[["max_treedepth"]]
+      ),
       thin = args[["thin"]],
       refresh = args[["refresh"]]
     )
@@ -129,7 +142,7 @@ mxd_hb <- function(data_stan,
     hbmnl_mcmc <- rstan::sampling(
       object = stanmodels$hb_md,
       data = data_stan,
-      pars = c("b", "sigma", "Omega", "raw", "log_lik", "beta"),
+      pars = c("b", "sigma", "Omega", "raw", "log_lik", "beta", "log_lik_i"),
       algorithm = args[["algorithm"]],
       init = args[["init"]],
       seed = seed,
@@ -137,6 +150,10 @@ mxd_hb <- function(data_stan,
       cores = args[["cores"]],
       warmup = warmup,
       iter = iter,
+      control = list(
+        adapt_delta = args[["adapt_delta"]],
+        max_treedepth = args[["max_treedepth"]]
+      ),
       thin = args[["thin"]],
       refresh = args[["refresh"]]
     )

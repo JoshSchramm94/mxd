@@ -22,6 +22,9 @@ post_mhp(betas_post, hot_data, id, opts, hot_choice, group = NULL, raw = FALSE)
 \item{raw}{logical vector to indicate whether raw or aggregated results
 should be reported}
 }
+\value{
+a tibble
+}
 \description{
 Function to calculate posterior mean hit probability for each
 saved posterior draw.
