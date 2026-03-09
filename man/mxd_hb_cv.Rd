@@ -2,7 +2,7 @@
 % Please edit documentation in R/mxd_hb_cv.R
 \name{mxd_hb_cv}
 \alias{mxd_hb_cv}
-\title{K-fold hierarchical Bayesian estimation for MaxDiff}
+\title{\emph{k}-fold hierarchical Bayesian estimation for MaxDiff}
 \usage{
 mxd_hb_cv(
   data_stan,
@@ -27,36 +27,36 @@ for warm-up purposes}
 \item{seed}{numeric input to specify seed for reproducible results}
 
 \item{...}{additional arguments to define are \code{cores}, \code{thin}, \code{init},
-\code{refresh} and \code{algorithm}, more information see \code{\link[rstan]{stan}}
-documentation}
+\code{refresh}, \code{adapt_delta}, \code{max_treedepth}, and \code{algorithm}; more information
+see \code{\link[rstan]{stan}} documentation}
 }
 \value{
 S4
 }
 \description{
-K-fold hierarchical Bayesian estimation for MaxDiff
+\emph{k}-fold hierarchical Bayesian estimation for MaxDiff
 }
 \details{
-\code{mxd_hb_cv()} runs the k-fold hierarchical Bayes cross-validation for MaxDiff data.
-\code{data_stan} needs to be a list with named parameters. This is provided using
-the \code{dm_to_stan_hb_cv()} in the \code{stan_input} list. \code{chains} defines the number
-of Markov chains to be run and has to be a positive integer. The default is
-set to \code{5}. \code{iter} defines the number of iterations that should be run, which
-also includes the number of \code{warmup} iteration. Both have to be a positive
-integer. For more information on how to define them, see
-\code{\link[rstan]{stan}} documentation. The defaults for \code{iter} and \code{warmup}
-are \code{4000L} and \code{1000L}, respectively. The \code{seed}
-must be a numeric input and is needed for reproduce results. Finally,
-other optional arguments can be defined, namely
+\code{mxd_hb_cv()} runs the \emph{k}-fold hierarchical Bayes cross-validation for
+MaxDiff data. \code{data_stan} needs to be a list with named parameters. This is
+provided using the \code{dm_to_stan_hb_cv()} in the \code{stan_input} list. \code{chains}
+defines the number of Markov chains to be run and has to be a positive
+integer. The default is set to \code{5}. \code{iter} defines the number of iterations
+that should be run, which also includes the number of \code{warmup} iterations.
+Both have to be a positive integer. For more information on how to define
+them, see \code{\link[rstan]{stan}} documentation. The defaults for \code{iter}
+and \code{warmup} are \code{4000L} and \code{1000L}, respectively. The \code{seed} must be a
+numeric input and is needed for reproduce results. Finally, other optional
+arguments can be defined, namely
 
 \describe{
 \item{cores}{how many cores should be used for running the models. To
 determine how many cores are available users can use, for example, the
 \code{\link[parallelly]{availableCores}} function. The default value is set
-to \code{5}.}
+to \code{5}}
 \item{thin}{thinning parameter that defines how many draws should be saved.
 The default is set to \code{5}, which means that every 5th draw of a chain is
-stored.}
+stored}
 \item{init}{argument to define the initial starting values, default is set
 to \code{random}}
 \item{refresh}{the times the progress should be reported, default is set

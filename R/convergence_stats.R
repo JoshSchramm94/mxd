@@ -17,7 +17,8 @@
 #' \code{\link[rstan]{ess_tail}}), and the `Rhat` values (for more information
 #' see \code{\link[rstan]{Rhat}}). Users can decide to get convergence
 #' diagnostics for either `b` (population mean) or `sigma` (population
-#' standard deviation).
+#' standard deviation). In case, `demos` was used in the `mxd_hb()` estimation,
+#' only the intercept values for `b` are displayed.
 #'
 #' @returns a tibble
 #' @export
@@ -37,14 +38,16 @@ convergence_stats <- function(stan_output, pars = c("b", "sigma"), labels = NULL
   if (pars == "sigma") {
     labels <- labels %||% paste0(
       "item_",
-      seq_len(dim(rstan::extract(stan_output)[[pars]])[2]))
+      seq_len(dim(rstan::extract(stan_output)[[pars]])[2])
+    )
 
     # check length of labels
     labels_length(labels, dim(rstan::extract(stan_output)[[pars]])[2])
   } else if (pars == "b") {
     labels <- labels %||% paste0(
       "item_",
-      seq_len(dim(rstan::extract(stan_output)[["b"]])[3]))
+      seq_len(dim(rstan::extract(stan_output)[["b"]])[3])
+    )
 
     # check length of labels
     labels_length(labels, dim(rstan::extract(stan_output)[["b"]])[3])
@@ -56,9 +59,9 @@ convergence_stats <- function(stan_output, pars = c("b", "sigma"), labels = NULL
 
   # preps ----------------------------------------------------------------------
   if (pars == "sigma") {
-    res = rstan::extract(stan_output)[[pars]]
+    res <- rstan::extract(stan_output)[[pars]]
   } else if (pars == "b") {
-    res = rstan::extract(stan_output)[[pars]][, 1, ]
+    res <- rstan::extract(stan_output)[[pars]][, 1, ]
   }
 
   res %>%

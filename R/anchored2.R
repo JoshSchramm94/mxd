@@ -4,7 +4,8 @@
 #' 50 individuals, each facing 16 MaxDiff tasks with 4 alternatives. In
 #' addition, each participant also answered 16 direct anchored anchor questions.
 #' In the simulation, to determine choices, it was assumed that there is
-#' heterogeneity across preferences.
+#' heterogeneity across preferences. The utilities were drawn from a
+#' multivariate normal distribution.
 #'
 #' @format ## `anchored2`
 #' A data frame with 4,800 rows and 4 columns:

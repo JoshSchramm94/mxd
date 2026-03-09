@@ -58,8 +58,8 @@ Function to convert the design matrix to input required for \code{mxd_hb()}.
 is required to run the hierarchical Bayes estimation using \code{mxd_hb()}.
 Users have to define the design matrix (\code{design}), the variables for the
 participants identifier (\code{id}), the choice set (\code{cs}), the alternative
-within the choice set (\code{alt}), the items (i.e., predictors; \code{items}) and the
-actual choice variable (\code{ch}). For \code{type}, please specify the type
+within the choice set (\code{alt}), the items (i.e., predictors; \code{items}), and
+the actual choice variable (\code{ch}). For \code{type}, please specify the type
 of coding assumed (see also \code{\link[mxd]{csv_to_dm}}).
 Further, the user can specify the priors for the hyperpriors \code{b},
 \code{omega}, and \code{sigma}.
@@ -74,5 +74,6 @@ default is set to \code{2}}
 }
 
 In addition, \emph{Z} variables can be defined, i.e., demographic variables. The
-intercept for \code{demos} will be added in the function.
+intercept for \code{demos} will be added in the function. The input will be
+mean-centered before estimation.
 }

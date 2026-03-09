@@ -23,8 +23,8 @@
 #' is required to run the hierarchical Bayes estimation using `mxd_hb()`.
 #' Users have to define the design matrix (`design`), the variables for the
 #' participants identifier (`id`), the choice set (`cs`), the alternative
-#' within the choice set (`alt`), the items (i.e., predictors; `items`) and the
-#' actual choice variable (`ch`). For `type`, please specify the type
+#' within the choice set (`alt`), the items (i.e., predictors; `items`), and
+#' the actual choice variable (`ch`). For `type`, please specify the type
 #' of coding assumed (see also \code{\link[mxd]{csv_to_dm}}).
 #' Further, the user can specify the priors for the hyperpriors `b`,
 #' `omega`, and `sigma`.
@@ -39,7 +39,8 @@
 #' }
 #'
 #' In addition, *Z* variables can be defined, i.e., demographic variables. The
-#' intercept for `demos` will be added in the function.
+#' intercept for `demos` will be added in the function. The input will be
+#' mean-centered before estimation.
 #'
 #'
 #' @returns

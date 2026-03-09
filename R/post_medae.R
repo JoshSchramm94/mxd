@@ -17,15 +17,15 @@
 #' can be prepared from the `mxd_hb()` output using the `betas_post()` function.
 #' `hot_data` must be a data frame with the participants' actual choice in the
 #' validation task (`hot_choice`). The respondents in `hot_data` do not have to
-#' be the same as in `betas_post` that means it could also be a validation sample.
-#' The options in the validation task are specified in the `opts` argument
-#' (make sure that they have the same order as the variables shown in the
-#' validation task). `hot_choice` must be the column name of the actual choice
-#' in the validation task in `hot_data`. Optionally, a grouping variable can be
-#' specified (`group`) to get results split by `group`. Finally, users can
-#' decide whether they want the `raw` results (set `raw` to `TRUE`) to get the
-#' MedAE for each posterior draw or if the output should be aggregated across all
-#' posterior draws (i.e., set `raw` to `FALSE`).
+#' be the same as in `betas_post` that means it could also be a validation
+#' sample. The options in the validation task are specified in the `opts`
+#' argument (make sure that they have the same order as the variables shown in
+#' the validation task). `hot_choice` must be the column name of the actual
+#' choice in the validation task in `hot_data`. Optionally, a grouping variable
+#' can be specified (`group`) to get results split by `group`. Finally, users
+#' can decide whether they want the `raw` results (set `raw` to `TRUE`) to get
+#' the MedAE for each posterior draw or if the output should be aggregated
+#' across all posterior draws (i.e., set `raw` to `FALSE`; the default).
 #'
 #' @returns a tibble
 #' @export

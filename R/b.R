@@ -14,9 +14,10 @@
 #' `b()` is a function to extract the posterior distribution from the
 #' hyperprior `b`, i.e., the population's mean. Users have to provide the
 #' output of the stan model (e.g., estimated using the `mxd_hb()`) function. In
-#' addition, `bw_size` needs to be defined. Optionally, users can define labels
-#' for the items. Finally, in case an anchored MaxDiff was used, this has to be
-#' defined via a logical vector in the `anchor` argument.
+#' addition, `bw_size` needs to be defined, but only if `demos` set to `FALSE`.
+#' Optionally, users can define labels for the items. Finally, in case an
+#' anchored MaxDiff was used, this has to be defined via a logical vector in
+#' the `anchor` argument.
 #'
 #' @returns
 #' a list with 4 objects
@@ -28,22 +29,20 @@
 #'   interval}
 #' }
 #'
+#' If `demos` set to `TRUE` the output displays the raw utilities for the
+#' intercept (average raw utility) and the deviation of that mean for all
+#' variables defined in the `demos` argument.
+#'
 #'
 #' @export
 #'
-b <- function(stan_output, bw_size, labels = NULL, anchor = FALSE, demos = FALSE) {
+b <- function(stan_output, bw_size = NULL, labels = NULL, anchor = FALSE, demos = FALSE) {
   # check whether all arguments are defined ------------------------------------
 
-  check_input(c("stan_output", "bw_size"), names(match.call()))
+  check_input(c("stan_output"), names(match.call()))
 
   # check whether input is correct
   stanfit_input(stan_output)
-
-  # check whether bw_size is numeric
-  allowed_class(bw_size, c("numeric", "integer"))
-
-  # check right intput
-  check_integer(list("bw_size" = bw_size))
 
   # check input anchor
   allowed_input(anchor, c("TRUE", "FALSE", "T", "F"))
@@ -62,6 +61,12 @@ b <- function(stan_output, bw_size, labels = NULL, anchor = FALSE, demos = FALSE
       )
     )
 
+    # check whether bw_size is numeric
+    allowed_class(bw_size, c("numeric", "integer"))
+
+    # check right intput
+    check_integer(list("bw_size" = bw_size))
+
     # tests ----------------------------------------------------------------------
     # check length of labels
     labels_length(labels, ncol(as.data.frame(rstan::extract(stan_output)[["b"]])) + 1)
@@ -70,45 +75,38 @@ b <- function(stan_output, bw_size, labels = NULL, anchor = FALSE, demos = FALSE
     allowed_class(labels, "character")
 
     # preps ----------------------------------------------------------------------
-    alphas_raw <- rstan::extract(stan_output)[["b"]] %>%
-      as.data.frame() %>%
-      dplyr::mutate(ref = 0) %>%
-      stats::setNames(labels)
+    # alphas_raw <- rstan::extract(stan_output)[["b"]] %>%
+    #   as.data.frame() %>%
+    #   dplyr::mutate(ref = 0) %>%
+    #   stats::setNames(labels)
+
+    alphas_raw <- rstan::extract(stan_output)[["b"]]
+    alphas_raw <- matrix(alphas_raw,
+      nrow = dim(alphas_raw)[1],
+      ncol = dim(alphas_raw)[3]
+    )
+    alphas_raw <- cbind(alphas_raw, 0)
 
 
     if (isTRUE(anchor)) {
-      alphas_zc <- apply(alphas_raw, 1, range_100) %>%
-        apply(., 2, function(x) x - x[nrow(.)]) %>%
-        t() %>%
-        as.data.frame() %>%
-        stats::setNames(labels)
+      alphas_zc <- zc_wi_anc(alphas_raw)
+      colnames(alphas_zc) <- labels
 
-      alphas_prob <- apply(
-        alphas_raw,
-        1,
-        function(x) {
-          prob_scores(x, bw_size) * 100 / (1 / bw_size)
-        }
-      ) %>%
-        t() %>%
-        as.data.frame() %>%
-        stats::setNames(labels)
+      alphas_prob <- prob_sc(alphas_raw, bw_size, anc = TRUE)
+      colnames(alphas_prob) <- labels
     }
 
     if (isFALSE(anchor)) {
-      alphas_zc <- apply(alphas_raw, 1, range_100) %>%
-        apply(., 2, mean_center) %>%
-        t() %>%
-        as.data.frame() %>%
-        stats::setNames(labels)
+      alphas_zc <- zc_no_anc(alphas_raw)
+      colnames(alphas_zc) <- labels
 
-      alphas_prob <- apply(alphas_raw, 1, mean_center) %>%
-        apply(., 2, function(x) prob_scores(x, bw_size)) %>%
-        apply(., 2, function(x) x / sum(x) * 100) %>%
-        t() %>%
-        as.data.frame() %>%
-        stats::setNames(labels)
+      alphas_prob <- prob_sc(alphas_raw, bw_size, anc = FALSE)
+      colnames(alphas_zc) <- labels
     }
+
+    alphas_raw <- as.data.frame(alphas_raw)
+    alphas_zc <- as.data.frame(alphas_zc)
+    alphas_prob <- as.data.frame(alphas_prob)
 
     alphas_summary <- data.frame(
       items = labels,
@@ -149,13 +147,15 @@ b <- function(stan_output, bw_size, labels = NULL, anchor = FALSE, demos = FALSE
     labels_length_cov(labels, n_pred)
 
     labels <- paste0(
-      rep(c("inter",
-                paste0("demo", seq.int(n_demo - 1))), times = n_pred),
+      rep(c(
+        "inter",
+        paste0("demo", seq.int(n_demo - 1))
+      ), times = n_pred),
       ".",
       rep(labels, each = n_demo)
     )
 
-    b_draws = as.data.frame(rstan::extract(stan_output)[["b"]]) %>%
+    b_draws <- as.data.frame(rstan::extract(stan_output)[["b"]]) %>%
       setNames(labels) %>%
       tidyr::pivot_longer(
         cols = tidyselect::everything(),
@@ -167,5 +167,4 @@ b <- function(stan_output, bw_size, labels = NULL, anchor = FALSE, demos = FALSE
 
     return(b_draws)
   }
-
 }

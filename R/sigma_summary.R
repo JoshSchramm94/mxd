@@ -12,7 +12,7 @@
 #' output of the stan model (e.g., estimated using the `mxd_hb()`) function.
 #' Optionally, users can define labels for the items.
 #' Output includes mean, median, standard deviation, and both 2.5% and 97.5%
-#' percentile.
+#' percentile of the posterior.
 #'
 #' @returns a tibble
 #'

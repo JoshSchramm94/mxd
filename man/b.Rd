@@ -4,7 +4,7 @@
 \alias{b}
 \title{Preparation of population mean's posterior draws}
 \usage{
-b(stan_output, bw_size, labels = NULL, anchor = FALSE, demos = FALSE)
+b(stan_output, bw_size = NULL, labels = NULL, anchor = FALSE, demos = FALSE)
 }
 \arguments{
 \item{stan_output}{stanfit object}
@@ -27,6 +27,10 @@ a list with 4 objects
 \item{alphas_summary}{summary of the three scores including 95\% credible
 interval}
 }
+
+If \code{demos} set to \code{TRUE} the output displays the raw utilities for the
+intercept (average raw utility) and the deviation of that mean for all
+variables defined in the \code{demos} argument.
 }
 \description{
 \code{b()} prepares the output for the means of the population-level (i.e.,
@@ -36,7 +40,8 @@ alphas or upper-level draws) of the estimated model.
 \code{b()} is a function to extract the posterior distribution from the
 hyperprior \code{b}, i.e., the population's mean. Users have to provide the
 output of the stan model (e.g., estimated using the \code{mxd_hb()}) function. In
-addition, \code{bw_size} needs to be defined. Optionally, users can define labels
-for the items. Finally, in case an anchored MaxDiff was used, this has to be
-defined via a logical vector in the \code{anchor} argument.
+addition, \code{bw_size} needs to be defined, but only if \code{demos} set to \code{FALSE}.
+Optionally, users can define labels for the items. Finally, in case an
+anchored MaxDiff was used, this has to be defined via a logical vector in
+the \code{anchor} argument.
 }

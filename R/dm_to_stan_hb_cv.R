@@ -1,4 +1,5 @@
-#' Prepare design matrix for k-fold cross-validation Hierarchical Bayes estimation
+#' Prepare design matrix for k-fold cross-validation Hierarchical Bayes
+#' estimation
 #'
 #' Function to convert the design matrix to input required for `mxd_hb_cv()`.
 #'
@@ -26,7 +27,7 @@
 #' using `mxd_hb_cv()`. Users have to define the design matrix (`design`), the
 #' variables for the participants identifier (`id`), the choice set (`cs`), the
 #' alternative within the choice set (`alt`), the items (i.e., predictors;
-#' `items`) and the actual choice variable (`ch`). For `type`, please specify
+#' `items`), and the actual choice variable (`ch`). For `type`, please specify
 #' the type of coding assumed (see also \code{\link[mxd]{csv_to_dm}}). The
 #' `folds` argument defines the number of folds used for cross-validation.
 #' Further, the user can specify the priors for the hyperpriors `b`,
@@ -42,8 +43,9 @@
 #' }
 #'
 #' In addition, *Z* variables can be defined, i.e., demographic variables. The
-#' intercept for `demos` will be added in the function. To reproduce the folds
-#' assignment, specify a seed in the `seed` argument.
+#' intercept for `demos` will be added in the function. The input will be
+#' mean-centered before estimation. To reproduce the folds assignment, specify
+#' a seed in the `seed` argument (default set to `1910`).
 #'
 #' @returns list
 #' @export

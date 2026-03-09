@@ -13,8 +13,8 @@
 #' should be reported
 #'
 #' @details
-#' `post_mhp()` calculates the posterior mean hit probability of a validation task.
-#' `betas_post` should be the raw beta posterior draws which can be
+#' `post_mhp()` calculates the posterior mean hit probability of a validation
+#' task. `betas_post` should be the raw beta posterior draws which can be
 #' prepared from the `mxd_hb()` output using the `betas_post()` function.
 #' `hot_data` must be a data frame with the respondents unique identifier (`id`)
 #' and the actual choice in the validation task (`hot_choice`). For merging
@@ -28,7 +28,7 @@
 #' split by `group`. Finally, users can decide whether they want the `raw`
 #' results (set `raw` to `TRUE`) to get the mean hit probabilities for each
 #' posterior draw or if the output should be aggregated across all posterior
-#' draws (i.e., set `raw` to `FALSE`).
+#' draws (i.e., set `raw` to `FALSE`; the default).
 #'
 #' @returns a tibble
 #' @export

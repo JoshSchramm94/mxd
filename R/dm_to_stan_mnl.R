@@ -19,10 +19,10 @@
 #' to run the hierarchical multinomial logit model using `mxd_logit()`.
 #' Users have to define the design matrix (`design`), the variables for the
 #' participants identifier (`id`), the choice set (`cs`), the alternative
-#' within the choice set (`alt`), the items (i.e., predictors; `items`) and the
-#' actual choice variable (`ch`). For `type`, please specify the type
+#' within the choice set (`alt`), the items (i.e., predictors; `items`), and
+#' the actual choice variable (`ch`). For `type`, please specify the type
 #' of coding set for creating the design (see \code{\link[mxd]{csv_to_dm}}).
-#' Further, the use can specify the prior for the hyperprior `b`, the
+#' Further, the user can specify the prior for the hyperprior `b`, the
 #' prior for the population mean (mean of hyperprior) of the utilities. The
 #' default value for `prior_b` is set to `5`.
 #'

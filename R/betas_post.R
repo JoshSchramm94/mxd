@@ -11,17 +11,17 @@
 #' @param anchor logical vector to indicate whether it is an anchored MaxDiff
 #'
 #' @details
-#' `betas_post()` prepares the posterior distribution for the individual coefficients
-#' (i.e., `beta`). Users have to provide the output of the stan model (e.g.,
-#' estimated using the `mxd_hb()`) function. Since the utilities from the
-#' posterior distribution are also transformed into choice probabilities, users
-#' have to specify the number of items shown per MaxDiff task (i.e., `bw_size`).
-#' Similarly, if an anchored MaxDiff was applied (default set to `FALSE`),
-#' this has to be specified in the `anchor` argument via logical. To speed up the
-#' calculation, multiple cores can be used (`cores`). To determine how many
-#' cores are available users can use, for example, the
-#' \code{\link[parallelly]{availableCores}} function. The default is set to
-#' single core.
+#' `betas_post()` prepares the posterior distribution for the individual
+#' coefficients (i.e., `beta`). Users have to provide the output of the stan
+#' model (e.g., estimated using the `mxd_hb()`) function. Since the utilities
+#' from the posterior distribution are also transformed into choice
+#' probabilities, users have to specify the number of items shown per MaxDiff
+#' task (i.e., `bw_size`). Similarly, if an anchored MaxDiff was applied
+#' (default set to `FALSE`), this has to be specified in the `anchor` argument
+#' via logical. To speed up the calculation, multiple cores can be used
+#' (`cores`). To determine how many cores are available users can use, for
+#' example, the \code{\link[parallelly]{availableCores}} function. The default
+#' is set to 1 core.
 #'
 #'
 #' @returns
@@ -73,80 +73,93 @@ betas_post <- function(stan_output, bw_size, cores = 1L,
   # preps ----------------------------------------------------------------------
 
   # setting multiple cores if wanted
-  with(future::plan(strategy = future::multisession, workers = cores), local = TRUE)
+  with(future::plan(strategy = future::multisession, workers = cores), {
+    res <- rstan::extract(stan_output)[["beta"]]
 
-  beta_raw <- furrr::future_map(
-    seq(dim(rstan::extract(stan_output)[["beta"]])[1]),
-    function(x) {
-      as.data.frame(rstan::extract(stan_output)[["beta"]][x, , ]) %>%
-        stats::setNames(c("id", labels))
+    beta_raw <- furrr::future_map(seq(dim(res)[1]), function(x) {
+      res[x, , ]
+    })
+
+    ids <- unlist(beta_raw[[1]][, 1])
+
+    if (isTRUE(anchor)) {
+      beta_zc <- furrr::future_map(beta_raw, function(df) {
+        df <- df[, -1]
+        zc_wi_anc(df)
+      })
+
+      beta_prob <- furrr::future_map(beta_raw, function(df) {
+        df <- df[, -1]
+        prob_sc(df, bw_size, anc = TRUE)
+      })
     }
-  )
 
-  ids <- unlist(beta_raw[[1]]$id)
+    if (isFALSE(anchor)) {
+      beta_zc <- furrr::future_map(beta_raw, function(df) {
+        df <- df[, -1]
+        zc_no_anc(df)
+      })
 
-  if (isTRUE(anchor)) {
-    beta_zc <- furrr::future_map(beta_raw, function(df) {
-      df %>%
-        dplyr::select(-id) %>%
-        apply(., 1, range_100) %>%
-        apply(., 2, function(x) x - x[nrow(.)]) %>%
-        t() %>%
-        as.data.frame() %>%
-        stats::setNames(labels) %>%
-        dplyr::mutate(
-          id = ids
-        ) %>%
-        dplyr::relocate(id, .before = tidyselect::everything())
+      beta_prob <- furrr::future_map(beta_raw, function(df) {
+        df <- df[, -1]
+        prob_sc(df, bw_size, anc = FALSE)
+      })
+    }
+
+    # if (isTRUE(anchor)) {
+    #   beta_zc <- furrr::future_map(beta_raw, function(df) {
+    #     df %>%
+    #       .[, -1] %>%
+    #       apply(., 1, range_100) %>%
+    #       apply(., 2, function(x) x - x[nrow(.)]) %>%
+    #       t()
+    #   })
+    #
+    #   beta_prob <- furrr::future_map(beta_raw, function(df) {
+    #     df %>%
+    #       .[, -1] %>%
+    #       apply(
+    #         ., 1,
+    #         function(x) prob_scores(x, bw_size) * 100 / (1 / bw_size)
+    #       ) %>%
+    #       t()
+    #   })
+    # }
+    #
+    # if (isFALSE(anchor)) {
+    #   beta_zc <- furrr::future_map(beta_raw, function(df) {
+    #     df %>%
+    #       .[, -1] %>%
+    #       apply(., 1, range_100) %>%
+    #       apply(., 2, mean_center) %>%
+    #       t()
+    #   })
+    #
+    #   beta_prob <- furrr::future_map(beta_raw, function(df) {
+    #     df %>%
+    #       .[, -1] %>%
+    #       apply(., 1, mean_center) %>%
+    #       apply(., 2, function(x) prob_scores(x, bw_size)) %>%
+    #       apply(., 2, function(x) x / sum(x) * 100) %>%
+    #       t()
+    #   })
+    # }
+
+    beta_raw <- future_map(beta_raw, function(x) {
+      colnames(x) <- c("id", labels)
+      as.data.frame(x)
     })
-
-    beta_prob <- furrr::future_map(beta_raw, function(df) {
-      df %>%
-        dplyr::select(-id) %>%
-        apply(
-          ., 1,
-          function(x) prob_scores(x, bw_size) * 100 / (1 / bw_size)
-        ) %>%
-        t() %>%
-        as.data.frame() %>%
-        stats::setNames(labels) %>%
-        dplyr::mutate(
-          id = ids
-        ) %>%
-        dplyr::relocate(id, .before = tidyselect::everything())
+    beta_zc <- future_map(beta_zc, function(x) {
+      res <- data.frame("id" = ids, x)
+      colnames(res) <- c("id", labels)
+      return(res)
     })
-  }
-
-  if (isFALSE(anchor)) {
-    beta_zc <- furrr::future_map(beta_raw, function(df) {
-      df %>%
-        dplyr::select(-id) %>%
-        apply(., 1, range_100) %>%
-        apply(., 2, mean_center) %>%
-        t() %>%
-        as.data.frame() %>%
-        stats::setNames(labels) %>%
-        dplyr::mutate(
-          id = ids
-        ) %>%
-        dplyr::relocate(id, .before = tidyselect::everything())
+    beta_prob <- future_map(beta_prob, function(x) {
+      res <- data.frame("id" = ids, x)
+      colnames(res) <- c("id", labels)
+      return(res)
     })
-
-    beta_prob <- furrr::future_map(beta_raw, function(df) {
-      df %>%
-        dplyr::select(-id) %>%
-        apply(., 1, mean_center) %>%
-        apply(., 2, function(x) prob_scores(x, bw_size)) %>%
-        apply(., 2, function(x) x / sum(x) * 100) %>%
-        t() %>%
-        as.data.frame() %>%
-        stats::setNames(labels) %>%
-        dplyr::mutate(
-          id = ids
-        ) %>%
-        dplyr::relocate(id, .before = tidyselect::everything())
-    })
-  }
+  })
 
   future::plan(strategy = future::sequential)
 

@@ -24,7 +24,7 @@ violin plot.
 \code{betas_violin()} displays the posterior distribution of the individual draws
 via a violin plot. Users have to provide the output of the stan
 model (e.g., estimated using the \code{mxd_hb()}) function. In addition, users
-have to define the items in the \code{vars} argument.
-\code{betas_violin()} exports a \code{ggplot} object that can be further modified by
-the user.
+have to define the items in the \code{vars} argument, which are the column names
+of the variables. \code{betas_violin()} exports a \code{ggplot} object that can be
+further modified by the user.
 }

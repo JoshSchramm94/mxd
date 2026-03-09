@@ -34,6 +34,5 @@ also includes the participants' choices. Users have to specify the
 (\code{design}), the variable indicating the choice set (\code{cs}), the column that
 indicates which item was shown (\code{item}), the choice column (\code{ch}), the total
 number of items included (\code{no_items}). Further, the user can define an
-optional grouping variable (\code{group}) as well as labels for the items
-(\code{labels}).
+optional grouping variable (\code{group}) and labels for the items (\code{labels}).
 }

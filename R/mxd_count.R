@@ -17,8 +17,7 @@
 #' (`design`), the variable indicating the choice set (`cs`), the column that
 #' indicates which item was shown (`item`), the choice column (`ch`), the total
 #' number of items included (`no_items`). Further, the user can define an
-#' optional grouping variable (`group`) as well as labels for the items
-#' (`labels`).
+#' optional grouping variable (`group`) and labels for the items (`labels`).
 #'
 #'
 #' @returns

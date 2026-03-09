@@ -257,6 +257,59 @@ percentage <- function(x) {
   x / sum(x)
 }
 
+zc_no_anc <- function(x) {
+  mx <- rowMeans(x)
+  res <- sweep(x, 1, mx, FUN = "-")
+  mn <- apply(res, 1, min)
+  ran <- apply(res, 1, dfra)
+  res <- sweep(res, 1, mn, FUN = "-")
+  res <- sweep(res, 1, ran, FUN = "/")
+  res <- sweep(res, 1, 100, FUN = "*")
+  mx <- rowMeans(res)
+  sweep(res, 1, mx, FUN = "-")
+}
+
+zc_wi_anc <- function(x) {
+  mx <- rowMeans(x)
+  res <- sweep(x, 1, mx, FUN = "-")
+  mn <- apply(res, 1, min)
+  ran <- apply(res, 1, dfra)
+  res <- sweep(res, 1, mn, FUN = "-")
+  res <- sweep(res, 1, ran, FUN = "/")
+  res <- sweep(res, 1, 100, FUN = "*")
+  mx <- res[, ncol(res)]
+  sweep(res, 1, mx, FUN = "-")
+}
+
+prob_no_anc <- function(x, size) {
+  mx <- rowMeans(x)
+  res <- sweep(x, 1, mx, FUN = "-")
+  res <- exp(res)
+  res <- res / (res + size - 1)
+  tot <- rowSums(res)
+  res <- sweep(res, 1, tot, FUN = "/")
+  res <- sweep(res, 1, 100, FUN = "*")
+}
+
+prob_sc <- function(x, size, anc = FALSE) {
+  if (isFALSE(anc)) {
+    mx <- rowMeans(x)
+    x <- sweep(x, 1, mx, FUN = "-")
+  }
+  res <- exp(x)
+  res <- res / (res + size - 1)
+  if (isFALSE(anc)) {
+    tot <- rowSums(res)
+    res <- sweep(res, 1, tot, FUN = "/")
+    res <- sweep(res, 1, 100, FUN = "*")
+  }
+  if (isTRUE(anc)) {
+    res <- res * 100 / (1 / size)
+  }
+  return(res)
+}
+
+dfra <- function(x) diff(range(x))
 
 # test -------------------------------------------------------------------------
 
@@ -312,9 +365,9 @@ labels_length <- function(
 }
 
 labels_length_cov <- function(
-    labels,
-    no_pars,
-    call = rlang::caller_env()
+  labels,
+  no_pars,
+  call = rlang::caller_env()
 ) {
   length_labels <- length(labels) + 1
   allowed_length <- no_pars + 1

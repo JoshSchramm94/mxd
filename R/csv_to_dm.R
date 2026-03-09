@@ -3,7 +3,7 @@
 #' Converts a Lighthouse Studio csv export to a design matrix including
 #' assumed choice process. Allows for both direct or indirect anchoring.
 #'
-#' @param design csv design provided by Lighthouse Studio
+#' @param design csv design provided by Lighthouse Studio or Discover
 #' @param id column name of participants' identifier
 #' @param cs column name of the choice set variable
 #' @param item column name of the item variable
@@ -15,15 +15,15 @@
 #'
 #' @details
 #' `csv_to_dm()` converts a design export (including participants' responses)
-#' from Lighthouse Studio into a design matrix required for mxd. Users have to
-#' specify the design (`design`), the participant's unique identifier (`id`),
-#' the variable indicating the choice set (`cs`), the column that indicates
-#' which item was shown (`item`), the choice column (`ch`), whether it was an
-#' anchored MaxDiff (if yes, participants can choose between `direct` and
-#' `indirect`; if is an unanchored MaxDiff leave argument empty), the number of
-#' MaxDiff tasks (`mxd_tasks`). Finally, the participant has to choose the
-#' assumed decision process. mxd currently offers the following assumed
-#' decision processes:
+#' from Lighthouse Studio or Discover into a design matrix required for mxd.
+#' Users have to specify the design (`design`), the participant's unique
+#' identifier (`id`), the variable indicating the choice set (`cs`), the column
+#' that indicates which item was shown (`item`), the choice column (`ch`),
+#' whether it was an anchored MaxDiff (if yes, participants can choose between
+#' `direct` and `indirect`; if it's an unanchored MaxDiff leave argument empty),
+#' the number of MaxDiff tasks (`mxd_tasks`). Finally, the participant has to
+#' choose the assumed decision process. mxd currently offers the following
+#' assumed decision processes:
 #'
 #' \describe{
 #'   \item{best-worst}{participants make best and worst choices simultaneously,

@@ -41,5 +41,5 @@ in the validation task in \code{hot_data}. Optionally, a grouping variable can b
 specified (\code{group}) to get results split by \code{group}. Finally, users can
 decide whether they want the \code{raw} results (set \code{raw} to \code{TRUE}) to get the
 RMSE for each posterior draw or if the output should be aggregated across all
-posterior draws (i.e., set \code{raw} to \code{FALSE}).
+posterior draws (i.e., set \code{raw} to \code{FALSE}; the default).
 }

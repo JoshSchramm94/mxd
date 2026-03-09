@@ -30,8 +30,8 @@ Function to calculate posterior mean hit probability for each
 saved posterior draw.
 }
 \details{
-\code{post_mhp()} calculates the posterior mean hit probability of a validation task.
-\code{betas_post} should be the raw beta posterior draws which can be
+\code{post_mhp()} calculates the posterior mean hit probability of a validation
+task. \code{betas_post} should be the raw beta posterior draws which can be
 prepared from the \code{mxd_hb()} output using the \code{betas_post()} function.
 \code{hot_data} must be a data frame with the respondents unique identifier (\code{id})
 and the actual choice in the validation task (\code{hot_choice}). For merging
@@ -45,5 +45,5 @@ Optionally, a grouping variable can be specified (\code{group}) to get results
 split by \code{group}. Finally, users can decide whether they want the \code{raw}
 results (set \code{raw} to \code{TRUE}) to get the mean hit probabilities for each
 posterior draw or if the output should be aggregated across all posterior
-draws (i.e., set \code{raw} to \code{FALSE}).
+draws (i.e., set \code{raw} to \code{FALSE}; the default).
 }

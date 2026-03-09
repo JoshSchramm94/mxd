@@ -2,7 +2,8 @@
 % Please edit documentation in R/dm_to_stan_hb_cv.R
 \name{dm_to_stan_hb_cv}
 \alias{dm_to_stan_hb_cv}
-\title{Prepare design matrix for k-fold cross-validation Hierarchical Bayes estimation}
+\title{Prepare design matrix for k-fold cross-validation Hierarchical Bayes
+estimation}
 \usage{
 dm_to_stan_hb_cv(
   design,
@@ -65,7 +66,7 @@ is required to run the k-fold hierarchical Bayes cross-validation
 using \code{mxd_hb_cv()}. Users have to define the design matrix (\code{design}), the
 variables for the participants identifier (\code{id}), the choice set (\code{cs}), the
 alternative within the choice set (\code{alt}), the items (i.e., predictors;
-\code{items}) and the actual choice variable (\code{ch}). For \code{type}, please specify
+\code{items}), and the actual choice variable (\code{ch}). For \code{type}, please specify
 the type of coding assumed (see also \code{\link[mxd]{csv_to_dm}}). The
 \code{folds} argument defines the number of folds used for cross-validation.
 Further, the user can specify the priors for the hyperpriors \code{b},
@@ -81,6 +82,7 @@ default is set to \code{2}}
 }
 
 In addition, \emph{Z} variables can be defined, i.e., demographic variables. The
-intercept for \code{demos} will be added in the function. To reproduce the folds
-assignment, specify a seed in the \code{seed} argument.
+intercept for \code{demos} will be added in the function. The input will be
+mean-centered before estimation. To reproduce the folds assignment, specify
+a seed in the \code{seed} argument (default set to \code{1910}).
 }

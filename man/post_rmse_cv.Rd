@@ -40,12 +40,12 @@ should be reported}
 a tibble
 }
 \description{
-Function to calculate posterior root mean square error for each k-fold.
+Function to calculate posterior root mean square error for each \emph{k}-fold.
 }
 \details{
 \code{post_rmse_cv()} calculates the posterior root mean square error (RMSE) of a
-validation task for a k-fold validation sample. \code{stan_cv} should be the
-output of a hierarchical Bayesian k-fold cross-validation estimation
+validation task for a \emph{k}-fold validation sample. \code{stan_cv} should be the
+output of a hierarchical Bayesian \emph{k}-fold cross-validation estimation
 (see \code{\link[mxd]{mxd_hb_cv}}). \code{stan_input} needs to be the input that
 was required for \code{mxd_hb_cv()}.
 \code{hot_data} must be a data frame with the participants' actual choice in the
@@ -57,5 +57,5 @@ validation task). \code{hot_choice} must be the column name of the actual choice
 in the validation task in \code{hot_data}. Finally, users can
 decide whether they want the \code{raw} results (set \code{raw} to \code{TRUE}) to get the
 RMSE for each posterior draw for each k-fold or if the output should be
-aggregated across folds (i.e., set \code{raw} to \code{FALSE}).
+aggregated across folds (i.e., set \code{raw} to \code{FALSE}; the default).
 }

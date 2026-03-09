@@ -1,6 +1,6 @@
 #' Cross-fold root mean square error
 #'
-#' Function to calculate posterior root mean square error for each k-fold.
+#' Function to calculate posterior root mean square error for each *k*-fold.
 #'
 #' @param stan_cv cross-fold stan object
 #' @param stan_input cross-fold stan input
@@ -15,8 +15,8 @@
 #'
 #' @details
 #' `post_rmse_cv()` calculates the posterior root mean square error (RMSE) of a
-#' validation task for a k-fold validation sample. `stan_cv` should be the
-#' output of a hierarchical Bayesian k-fold cross-validation estimation
+#' validation task for a *k*-fold validation sample. `stan_cv` should be the
+#' output of a hierarchical Bayesian *k*-fold cross-validation estimation
 #' (see \code{\link[mxd]{mxd_hb_cv}}). `stan_input` needs to be the input that
 #' was required for `mxd_hb_cv()`.
 #' `hot_data` must be a data frame with the participants' actual choice in the
@@ -28,7 +28,7 @@
 #' in the validation task in `hot_data`. Finally, users can
 #' decide whether they want the `raw` results (set `raw` to `TRUE`) to get the
 #' RMSE for each posterior draw for each k-fold or if the output should be
-#' aggregated across folds (i.e., set `raw` to `FALSE`).
+#' aggregated across folds (i.e., set `raw` to `FALSE`; the default).
 #'
 #' @returns a tibble
 #' @export

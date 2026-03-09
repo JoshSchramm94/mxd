@@ -34,7 +34,7 @@ first place users often use the \code{\link[crossdes]{find.BIB}} function.
 To run the \code{bibd_to_dm()} function, users have to define the BIBD (\code{design}),
 the data frame that includes the best and worst choices from the
 respondents (\code{data}), the variable name of the participants' identifier
-(\code{id}), the variables names of the best (\code{best_ch}) and the worst
+(\code{id}) as well as the variables names of the best (\code{best_ch}) and the worst
 (\code{worst_ch}) choices, and finally, the type of coding that should be used
 (\code{type}; see also \code{\link[mxd]{csv_to_dm}}).
 }

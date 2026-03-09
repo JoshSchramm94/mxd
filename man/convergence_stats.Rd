@@ -30,5 +30,6 @@ effective sample size (for more information see
 \code{\link[rstan]{ess_tail}}), and the \code{Rhat} values (for more information
 see \code{\link[rstan]{Rhat}}). Users can decide to get convergence
 diagnostics for either \code{b} (population mean) or \code{sigma} (population
-standard deviation).
+standard deviation). In case, \code{demos} was used in the \code{mxd_hb()} estimation,
+only the intercept values for \code{b} are displayed.
 }

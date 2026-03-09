@@ -20,7 +20,7 @@
 #' To run the `bibd_to_dm()` function, users have to define the BIBD (`design`),
 #' the data frame that includes the best and worst choices from the
 #' respondents (`data`), the variable name of the participants' identifier
-#' (`id`), the variables names of the best (`best_ch`) and the worst
+#' (`id`) as well as the variables names of the best (`best_ch`) and the worst
 #' (`worst_ch`) choices, and finally, the type of coding that should be used
 #' (`type`; see also \code{\link[mxd]{csv_to_dm}}).
 #'

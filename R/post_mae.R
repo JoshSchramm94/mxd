@@ -25,7 +25,7 @@
 #' specified (`group`) to get results split by `group`. Finally, users can
 #' decide whether they want the `raw` results (set `raw` to `TRUE`) to get the
 #' MAE for each posterior draw or if the output should be aggregated across all
-#' posterior draws (i.e., set `raw` to `FALSE`).
+#' posterior draws (i.e., set `raw` to `FALSE`; the default).
 #'
 #'
 #' @returns a tibble
