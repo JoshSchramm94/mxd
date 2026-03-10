@@ -5,6 +5,7 @@
 
 <!-- badges: start -->
 
+[![R-CMD-check](https://github.com/JoshSchramm94/mxd/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JoshSchramm94/mxd/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of mxd is to provide an *R* package for MaxDiff (i.e., Maximum
@@ -52,7 +53,7 @@ Besides that, users can also use `shinystan()` to inspect convergence.
 
 - `b()`: Function to get output of population’s mean.
 
-- `beta_summary()`: Function to prepare posterior individual
+- `betas_summary()`: Function to prepare posterior individual
   coefficients
 
 - `beta_post()`: Function to get posterior summary statistics for beta
@@ -60,8 +61,8 @@ Besides that, users can also use `shinystan()` to inspect convergence.
 - `betas_violin()`: Function to get violin plot of posterior summary
   statistics
 
-- `bpe()`: Function to get the beta point estimates (i.e., aggregated
-  individual coefficients)
+- `beta_point_estimates()`: Function to get the beta point estimates
+  (i.e., aggregated individual coefficients)
 
 - `mxd_count()`: Function to run classical count analysis
 
