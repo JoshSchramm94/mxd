@@ -1,3 +1,3 @@
-# mxd (development version)
+# mxd (0.0.0.9000)
 
-* Initial CRAN submission.
+* Initial GitHub version.

@@ -86,7 +86,8 @@ b(
   stan_output = out,
   bw_size = 4,
   labels = paste0("item", seq.int(16)),
-  anchor = FALSE
+  anchor = FALSE,
+  demos = FALSE
 )
 ```
 
