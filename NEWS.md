@@ -1,3 +1,3 @@
-# mxd (development version)
+# mxd 1.0.0
 
 * Initial CRAN submission.
