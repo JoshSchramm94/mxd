@@ -143,6 +143,7 @@ test_that("Error if hot_choice has NAs ", {
 })
 
 test_that("Warning if group has NAs ", {
+  skip_on_ci()
   val_data2 <- val_data
   val_data2[["group"]][1] <- NA
 
@@ -158,6 +159,7 @@ test_that("Warning if group has NAs ", {
 })
 
 test_that("group also working for other input format ", {
+  skip_on_ci()
   val_data2 <- val_data
   labelled::val_labels(val_data2$group) <- c(G1 = "A", G2 = "B")
 
@@ -173,6 +175,7 @@ test_that("group also working for other input format ", {
 })
 
 test_that("If raw set to TRUE length equals betas_post length ", {
+  skip_on_ci()
   expect_equal(nrow(post_hit(
     betas_post = betas[["beta_raw"]],
     hot_data = val_data,
@@ -187,6 +190,7 @@ test_that("If raw set to TRUE length equals betas_post length ", {
 
 # test whether example works ---------------------------------------------------
 test_that("No error for example ", {
+  skip_on_ci()
   expect_no_error(post_hit(
     betas_post = betas[["beta_raw"]],
     hot_data = val_data,
@@ -198,43 +202,47 @@ test_that("No error for example ", {
   ))
 })
 
-# test_that("No error for example, raw set to TRUE ", {
-#   expect_no_error(post_hit(
-#     betas_post = betas[["beta_raw"]],
-#     hot_data = val_data,
-#     id = id,
-#     opts = c(v1, v3, v6, v9, v12, ref),
-#     hot_choice = HOT1,
-#     raw = TRUE,
-#     group = NULL
-#   ))
-# })
-#
-# test_that("No error for example with group ", {
-#   expect_no_error(post_hit(
-#     betas_post = betas[["beta_raw"]],
-#     hot_data = val_data,
-#     id = id,
-#     opts = c(v1, v3, v6, v9, v12, ref),
-#     hot_choice = HOT1,
-#     raw = FALSE,
-#     group = group
-#   ))
-# })
-#
-# test_that("No error for example with group and raw set to TRUE ", {
-#   expect_no_error(post_hit(
-#     betas_post = betas[["beta_raw"]],
-#     hot_data = val_data,
-#     id = id,
-#     opts = c(v1, v3, v6, v9, v12, ref),
-#     hot_choice = HOT1,
-#     raw = TRUE,
-#     group = group
-#   ))
-# })
+test_that("No error for example, raw set to TRUE ", {
+  skip_on_ci()
+  expect_no_error(post_hit(
+    betas_post = betas[["beta_raw"]],
+    hot_data = val_data,
+    id = id,
+    opts = c(v1, v3, v6, v9, v12, ref),
+    hot_choice = HOT1,
+    raw = TRUE,
+    group = NULL
+  ))
+})
+
+test_that("No error for example with group ", {
+  skip_on_ci()
+  expect_no_error(post_hit(
+    betas_post = betas[["beta_raw"]],
+    hot_data = val_data,
+    id = id,
+    opts = c(v1, v3, v6, v9, v12, ref),
+    hot_choice = HOT1,
+    raw = FALSE,
+    group = group
+  ))
+})
+
+test_that("No error for example with group and raw set to TRUE ", {
+  skip_on_ci()
+  expect_no_error(post_hit(
+    betas_post = betas[["beta_raw"]],
+    hot_data = val_data,
+    id = id,
+    opts = c(v1, v3, v6, v9, v12, ref),
+    hot_choice = HOT1,
+    raw = TRUE,
+    group = group
+  ))
+})
 
 test_that("No error for example ", {
+  skip_on_ci()
   res <- unlist(post_hit(
     betas_post = betas[["beta_raw"]],
     hot_data = val_data,

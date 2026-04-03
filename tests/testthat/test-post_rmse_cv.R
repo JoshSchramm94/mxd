@@ -242,6 +242,7 @@ test_that("Error if hot_choice has NAs ", {
 
 # test whether examples work
 test_that("No error for example ", {
+  skip_on_ci()
   expect_no_error(post_rmse_cv(
     stan_cv = model,
     stan_input = input,

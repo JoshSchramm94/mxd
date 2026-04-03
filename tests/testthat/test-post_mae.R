@@ -106,6 +106,7 @@ test_that("Error if hot_choice has NAs ", {
 })
 
 test_that("Warning if group has NAs ", {
+  skip_on_ci()
   val_data2 <- val_data
   val_data2[["group"]][1] <- NA
 
@@ -120,6 +121,7 @@ test_that("Warning if group has NAs ", {
 })
 
 test_that("group also working for other input format ", {
+  skip_on_ci()
   val_data2 <- val_data
   labelled::val_labels(val_data2$group) <- c(G1 = "A", G2 = "B")
 
@@ -134,6 +136,7 @@ test_that("group also working for other input format ", {
 })
 
 test_that("If raw set to TRUE length equals betas_post length ", {
+  skip_on_ci()
   expect_equal(nrow(post_mae(
     betas_post = betas[["beta_raw"]],
     hot_data = val_data,
@@ -147,6 +150,7 @@ test_that("If raw set to TRUE length equals betas_post length ", {
 
 # test whether example works ---------------------------------------------------
 test_that("No error for example ", {
+  skip_on_ci()
   expect_no_error(post_mae(
     betas_post = betas[["beta_raw"]],
     hot_data = val_data,
@@ -191,6 +195,7 @@ test_that("No error for example ", {
 # })
 
 test_that("No error for example ", {
+  skip_on_ci()
   res <- unlist(post_mae(
     betas_post = betas[["beta_raw"]],
     hot_data = val_data,

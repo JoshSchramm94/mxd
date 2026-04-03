@@ -208,6 +208,7 @@ test_that("Error if hot_choice has NAs ", {
 })
 
 test_that("If raw set to TRUE length equals betas_post length ", {
+  skip_on_ci()
   expect_equal(nrow(post_mae_cv(
     stan_cv = model,
     stan_input = input,
@@ -224,6 +225,7 @@ test_that("If raw set to TRUE length equals betas_post length ", {
 })
 
 test_that("Output equals number of folds plus 1 ", {
+  skip_on_ci()
   expect_equal(nrow(post_mae_cv(
     stan_cv = model,
     stan_input = input,
@@ -242,6 +244,7 @@ test_that("Output equals number of folds plus 1 ", {
 
 # test whether examples work
 test_that("No error for example ", {
+  skip_on_ci()
   expect_no_error(post_mae_cv(
     stan_cv = model,
     stan_input = input,

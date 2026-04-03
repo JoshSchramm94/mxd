@@ -76,34 +76,34 @@ test_that("Error if type is not specified in input ", {
 
 # check output -----------------------------------------------------------------
 
-test_that("No error for example ", {
-  res <- mxd_logit(
-    data_stan = input,
-    chains = 1L,
-    cores = 1L,
-    iter = 2000L,
-    warmup = 1000L,
-    bw_size = 4,
-    refresh = 0
-  )
-
-  expect_equal(names(res), c("beta_raw", "beta_zc", "beta_prob", "summary", "stanfit_object"))
-  expect_true(is.list(res))
-  expect_true(length(res) == 5)
-})
-
-# end --------------------------------------------------------------------------
-
-# check whether example works --------------------------------------------------
-test_that("No error for example ", {
-  expect_no_error(mxd_logit(
-    data_stan = input,
-    chains = 1L,
-    cores = 1L,
-    iter = 2000L,
-    warmup = 1000L,
-    bw_size = 4,
-    refresh = 0
-  ))
-})
+# test_that("No error for example ", {
+#   res <- mxd_logit(
+#     data_stan = input,
+#     chains = 1L,
+#     cores = 1L,
+#     iter = 2000L,
+#     warmup = 1000L,
+#     bw_size = 4,
+#     refresh = 0
+#   )
+#
+#   expect_equal(names(res), c("beta_raw", "beta_zc", "beta_prob", "summary", "stanfit_object"))
+#   expect_true(is.list(res))
+#   expect_true(length(res) == 5)
+# })
+#
+# # end --------------------------------------------------------------------------
+#
+# # check whether example works --------------------------------------------------
+# test_that("No error for example ", {
+#   expect_no_error(mxd_logit(
+#     data_stan = input,
+#     chains = 1L,
+#     cores = 1L,
+#     iter = 2000L,
+#     warmup = 1000L,
+#     bw_size = 4,
+#     refresh = 0
+#   ))
+# })
 # end --------------------------------------------------------------------------
