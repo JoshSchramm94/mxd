@@ -5,6 +5,7 @@
 
 <!-- badges: start -->
 
+[![R-CMD-check](https://github.com/JoshSchramm94/mxd/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JoshSchramm94/mxd/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of mxd is to provide an *R* package for MaxDiff (i.e., Maximum
