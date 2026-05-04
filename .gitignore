@@ -7,3 +7,8 @@
 inst/doc
 download
 paper/
+src/*.o
+src/*.so
+src/*.dll
+src/*.exe
+inst/stan/*.exe
