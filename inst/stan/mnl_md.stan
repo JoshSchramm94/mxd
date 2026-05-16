@@ -4,13 +4,13 @@ data {
   int<lower=1> K;                     // number of items
   int<lower=0> A;                     // number of anchor choices
   int<lower=0,upper=1> A_inc;         // anchor included (0 = no, 1 = yes)
-  int<lower=1> bi[M];                  // vector of best item
-  int<lower=0> wi[M];                  // vector of worst item
-  int<lower=0> y[N];                  // row number in X that belongs to nth choice
-  int<lower=0> a[A];                  // anchor choice
-  int<lower=0> a_id[A];               // anchor items
-  int<lower=1> start_n[N];            // row number in X where nth choice task starts
-  int<lower=1> end_n[N];              // row number in X where nth choice task ends
+  array[M] int<lower=1> bi;                  // vector of best item
+  array[M] int<lower=1> wi;                  // vector of worst item
+  array[N] int<lower=1> y;                  // row number in X that belongs to nth choice
+  array[A] int<lower=0> a;                  // anchor choice
+  array[A] int<lower=0> a_id;               // anchor items
+  array[N] int<lower=1> start_n;            // row number in X where nth choice task starts
+  array[N] int<lower=1> end_n;              // row number in X where nth choice task ends
   real<lower=0> prior_b;           // prior
 }
 

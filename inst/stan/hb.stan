@@ -4,13 +4,13 @@ data {
   int<lower=1> M;                     // number of rows in X
   int<lower=1> K;                     // number of items
   int<lower=1> D;                     // number of group parameters (number of cols in Z)
-  int<lower=1> item[M];               // vector of items
-  int<lower=-1> bw[M];                // vector of best-worst indicator (1 = best; -1 = worst)
+  array[M] int<lower=1> item;               // vector of items
+  array[M] int<lower=-1,upper=1> bw;                // vector of best-worst indicator (1 = best; -1 = worst)
   matrix[I, D] Z;                     // indivicual level variables (e.g., demographics)
-  int<lower=1> y[N];                  // row number in X that belongs to nth choice
-  int<lower=1> start_n[N];            // row number in X where nth choice task starts
-  int<lower=1> end_n[N];              // row number in X where nth choice task ends
-  int<lower=1, upper=I> id[N];        // id identifying each individual
+  array[N] int<lower=1> y;                  // row number in X that belongs to nth choice
+  array[N] int<lower=1> start_n;            // row number in X where nth choice task starts
+  array[N] int<lower=1> end_n;              // row number in X where nth choice task ends
+  array[N] int<lower=1, upper=I> id;        // id identifying each individual
   vector<lower=1>[I] orig_id;         // original ids
   real<lower=0> prior_omega;          // prior for correlation (lkj)
   real<lower=0> prior_b;              // prior for mean (sd normal)

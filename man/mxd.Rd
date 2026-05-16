@@ -21,6 +21,7 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Joshua Schramm \email{josh.schramm@gmx.de} (\href{https://orcid.org/0000-0001-5602-4632}{ORCID})
   \item Daniel Guhl (\href{https://orcid.org/0000-0003-2114-9405}{ORCID})
 }
 

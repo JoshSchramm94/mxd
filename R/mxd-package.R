@@ -5,9 +5,7 @@
 "_PACKAGE"
 
 ## usethis namespace: start
-#' @importFrom dplyr across add_row arrange case_when count distinct filter
-#' first group_by join_by last left_join mutate pick reframe relocate rename
-#' row_number select ungroup
+#' @importFrom dplyr across add_row arrange case_when count distinct filter first group_by join_by last left_join mutate pick reframe relocate rename row_number select ungroup
 #' @importFrom magrittr "%>%"
 #' @importFrom tidyr pivot_longer
 #' @importFrom tidyselect all_of everything
@@ -22,8 +20,7 @@
 #' @importFrom forcats fct_rev
 #' @importFrom readr parse_number
 #' @importFrom DescTools IsWhole
-#' @importFrom ggplot2 aes facet_wrap geom_segment geom_violin ggplot guides
-#' labs theme_bw theme_minimal ylab
+#' @importFrom ggplot2 aes facet_wrap geom_segment geom_violin ggplot guides labs theme_bw theme_minimal ylab
 #' @useDynLib mxd, .registration = TRUE
 #' @import methods
 #' @import Rcpp

@@ -9,3 +9,5 @@
 ^download
 ^simulation$
 ^\.github$
+^\.positai$
+^\.claude$

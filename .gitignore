@@ -12,3 +12,4 @@ src/*.so
 src/*.dll
 src/*.exe
 inst/stan/*.exe
+.positai

@@ -6,16 +6,16 @@ data {
   int<lower=1> A;                     // number of anchor choices
   int<lower=0, upper=1> A_inc;        // anchor included (0 = no, 1 = yes)
   int<lower=1> D;                     // number of group parameters (number of cols in Z)
-  int<lower=1> bi[M];                 // vector of best item
-  int<lower=0> wi[M];                 // vector of worst item
+  array[M] int<lower=1> bi;                 // vector of best item
+  array[M] int<lower=1> wi;                 // vector of worst item
   matrix[I, D] Z;                     // indivicual level variables (e.g., demographics)
-  int<lower=1> y[N];                  // row number in X that belongs to nth choice
-  int<lower=0> a[A];                  // anchor choice
-  int<lower=0> a_id[A];               // anchor items
-  int<lower=1> start_n[N];            // row number in X where nth choice task starts
-  int<lower=1> end_n[N];              // row number in X where nth choice task ends
-  int<lower=1, upper=I> id[N];        // id identifying each individual - mxd choice
-  int<lower=1, upper=I> id_a[A];      // id identifying each individual - anchor choice
+  array[N] int<lower=1> y;                  // row number in X that belongs to nth choice
+  array[A] int<lower=0> a;                  // anchor choice
+  array[A] int<lower=0> a_id;               // anchor items
+  array[N] int<lower=1> start_n;            // row number in X where nth choice task starts
+  array[N] int<lower=1> end_n;              // row number in X where nth choice task ends
+  array[N] int<lower=1, upper=I> id;        // id identifying each individual - mxd choice
+  array[N] int<lower=1, upper=I> id_a;      // id identifying each individual - anchor choice
   vector<lower=1>[I] orig_id;         // original ids
   real<lower=0> prior_omega;          // prior for correlation (lkj)
   real<lower=0> prior_b;              // prior for mean (sd normal)
