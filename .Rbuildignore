@@ -10,3 +10,5 @@
 ^\.github$
 ^\.positai$
 ^\.claude$
+^Code_of_Conduct.md
+^contributing.md

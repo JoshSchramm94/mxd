@@ -7,8 +7,7 @@
 #' heterogeneity across preferences. The utilities were drawn from a
 #' multivariate normal distribution.
 #'
-#' @format ## `anchored2`
-#' A data frame with 4,800 rows and 4 columns:
+#' @format A data frame with 4,800 rows and 4 columns:
 #' \describe{
 #'   \item{id}{individuals' unique identifier}
 #'   \item{cs}{MaxDiff task indicator}
@@ -19,3 +18,4 @@
 #' @docType data
 #' @keywords datasets
 #' @name anchored2
+"anchored2"

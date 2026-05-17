@@ -7,8 +7,7 @@
 #' 8 alternatives. Finally, `group` is a group identifier with 2 groups, namely,
 #' `A` and `B`.
 #'
-#' @format ## `choicedata`
-#' A data frame with 50 rows and 4 columns:
+#' @format A data frame with 50 rows and 4 columns:
 #' \describe{
 #'   \item{id}{individuals' unique identifier}
 #'   \item{HOT1}{simulated choice for a free-choice holdout task including
@@ -20,3 +19,4 @@
 #' @docType data
 #' @keywords datasets
 #' @name choicedata
+"choicedata"

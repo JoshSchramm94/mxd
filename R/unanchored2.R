@@ -5,8 +5,7 @@
 #' determine choices, it was assumed that there is heterogeneity across
 #' preferences.
 #'
-#' @format ## `unanchored2`
-#' A data frame with 3,200 rows and 4 columns:
+#' @format A data frame with 3,200 rows and 4 columns:
 #' \describe{
 #'   \item{id}{individuals' unique identifier}
 #'   \item{cs}{MaxDiff task indicator}
@@ -17,3 +16,4 @@
 #' @docType data
 #' @keywords datasets
 #' @name unanchored2
+"unanchored2"
