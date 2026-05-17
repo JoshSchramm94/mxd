@@ -15,7 +15,7 @@ data {
   array[N] int<lower=1> start_n;            // row number in X where nth choice task starts
   array[N] int<lower=1> end_n;              // row number in X where nth choice task ends
   array[N] int<lower=1, upper=I> id;        // id identifying each individual - mxd choice
-  array[N] int<lower=1, upper=I> id_a;      // id identifying each individual - anchor choice
+  array[A] int<lower=1, upper=I> id_a;      // id identifying each individual - anchor choice
   vector<lower=1>[I] orig_id;         // original ids
   real<lower=0> prior_omega;          // prior for correlation (lkj)
   real<lower=0> prior_b;              // prior for mean (sd normal)
