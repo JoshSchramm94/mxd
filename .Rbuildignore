@@ -3,7 +3,6 @@
 ^LICENSE\.md$
 ^README\.Rmd$
 ^paper$
-^data$
 ^toDos$
 ^data-raw$
 ^download
