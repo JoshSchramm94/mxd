@@ -328,11 +328,11 @@ public:
       current_statement__ = 62;
       stan::math::check_less_or_equal(function__, "id", id, I);
       current_statement__ = 63;
-      stan::math::validate_non_negative_index("id_a", "N", N);
+      stan::math::validate_non_negative_index("id_a", "A", A);
       current_statement__ = 64;
       context__.validate_dims("data initialization", "id_a", "int",
-        std::vector<size_t>{static_cast<size_t>(N)});
-      id_a = std::vector<int>(N, std::numeric_limits<int>::min());
+        std::vector<size_t>{static_cast<size_t>(A)});
+      id_a = std::vector<int>(A, std::numeric_limits<int>::min());
       current_statement__ = 64;
       id_a = context__.vals_i("id_a");
       current_statement__ = 64;
