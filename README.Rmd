@@ -89,7 +89,7 @@ Besides that, users can also use `shinystan()` to inspect convergence.
 
 The workflow in which mxd can support the user is displayed below.
 
-![Analysis steps in which mxd can help the user](paper/workflow.png){#fig:workflow width="60%"}
+![Analysis steps in which mxd can help the user](workflow.png){#fig:workflow width="60%"}
 
 ## Installation
 
