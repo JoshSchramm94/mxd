@@ -6,6 +6,7 @@
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/JoshSchramm94/mxd/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/JoshSchramm94/mxd/actions/workflows/R-CMD-check.yaml)
+
 <!-- badges: end -->
 
 The goal of mxd is to provide an *R* package for MaxDiff (i.e., Maximum
@@ -13,7 +14,7 @@ Difference Scaling, also known as Best-Worst-Scaling case 1).
 
 Currently, mxd provides the following function:
 
-**Converting design to design matrix**
+**Preparing design matrix**
 
 - `bibd_to_dm()`: Function to convert balanced incomplete block design
   to design matrix used for estimation in mxd
@@ -21,7 +22,7 @@ Currently, mxd provides the following function:
 - `csv_to_dm()`: Function to convert .csv design from Lighthouse Studio
   to design matrix used for estimation in mxd
 
-**Preparing design matrix for estimation in Stan**
+**Preparing design matrix for estimation**
 
 - `dm_to_stan_hb()`: Function to prepare input for HB estimation in Stan
 
@@ -31,7 +32,7 @@ Currently, mxd provides the following function:
 - `dm_to_stan_mnl()`: Function to prepare input for MNL estimation in
   Stan
 
-**Running estimation**
+**Estimate preferences**
 
 - `mxd_hb()`: Function to run hierarchical Bayes estimation
 
@@ -39,37 +40,34 @@ Currently, mxd provides the following function:
 
 - `mxd_logit()`: Function to run Bayesian version of MNL
 
-**Checking convergence**
+**Assess etimation quality**
 
 - `convergence_stats()`: Function to test convergence stats of
   population’s mean
 
+- `acf_plot()`: Function to get autocorrelation between draws
+
 Besides that, users can also use `shinystan()` to inspect convergence.
 
-**Analyses tools**
-
-- `alphas_acf_plot()`: Function get posterior summary statistics for
-  population’s mean
+**Summary of posteriors**
 
 - `b()`: Function to get output of population’s mean.
 
-- `beta_summary()`: Function to prepare posterior individual
-  coefficients
+- `betas_summary()`: Function to get posterior summary statistics for
+  beta
 
-- `beta_post()`: Function to get posterior summary statistics for beta
+- `betas_post()`: Function to prepare posterior individual coefficients
 
 - `betas_violin()`: Function to get violin plot of posterior summary
   statistics
 
-- `bpe()`: Function to get the beta point estimates (i.e., aggregated
-  individual coefficients)
-
-- `mxd_count()`: Function to run classical count analysis
+- `beta_point_estimates()`: Function to get the beta point estimates
+  (i.e., aggregated individual coefficients)
 
 - `sigma_summary()`: Function to get posterior summary statistics for
   sigma
 
-**Validation tools**
+**Validation**
 
 - `post_hit()`: Function to calculate posterior hit rates (in-sample
   only)
@@ -95,21 +93,25 @@ Besides that, users can also use `shinystan()` to inspect convergence.
 - `post_rmse_cv()`: Function to calculate cross-validation root mean
   square error
 
+The workflow in which mxd can support the user is displayed below.
+
+<figure id="fig:workflow">
+<img src="paper/workflow.png" style="width:60.0%"
+alt="Analysis steps in which mxd can help the user" />
+<figcaption aria-hidden="true">Analysis steps in which mxd can help the
+user</figcaption>
+</figure>
+
 ## Installation
 
 You can install the development version of mxd from
 [GitHub](https://github.com/) with:
 
 ``` r
-# install.packages("pak")
-pak::pak("JoshSchramm94/mxd")
+# install.packages("remotes")
+remotes::install_github("JoshSchramm94/mxd", build_vignettes = TRUE)
 ```
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
-
-``` r
-library(mxd)
-## basic example code
-```
+For examples, please see the corresponding vignettes.
