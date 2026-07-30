@@ -14,7 +14,7 @@
 #' @importFrom fastDummies dummy_cols
 #' @importFrom cli cli_abort cli_warn
 #' @importFrom rlang caller_arg caller_env "%||%"
-#' @importFrom purrr list_rbind map map2
+#' @importFrom purrr list_cbind list_rbind map map2
 #' @importFrom future multisession plan sequential
 #' @importFrom furrr future_map
 #' @importFrom forcats fct_rev

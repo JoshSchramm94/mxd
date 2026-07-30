@@ -45,7 +45,9 @@ different \code{type} specified, leave \code{anchor_start} empty}
 
 \item{prior_sigma}{numeric input for the sigma prior}
 
-\item{demos}{matrix of demographic variables (i.e., Z variables)}
+\item{demos}{optional input of class data.frame with demographic
+variables (i.e., Z variables; see details for recoding of variables in
+\code{demos})}
 }
 \value{
 a named list with stan input that is required for the model of \code{mxd_hb()}
@@ -75,5 +77,7 @@ default is set to \code{2}}
 
 In addition, \emph{Z} variables can be defined, i.e., demographic variables. The
 intercept for \code{demos} will be added in the function. The input will be
-mean-centered before estimation.
+mean-centered for numeric variables and weighted effects-coded for character
+and factor variables. This will be done automatically before estimation.Thus,
+the intercept displays the average effect.
 }

@@ -18,7 +18,9 @@
 #' @param prior_b numeric input for the b prior
 #' @param prior_omega numeric input for the omega prior
 #' @param prior_sigma numeric input for the sigma prior
-#' @param demos matrix of demographic variables (i.e., Z variables)
+#' @param demos optional input of class data.frame with demographic
+#' variables (i.e., Z variables; see details for recoding of variables in
+#' `demos`)
 #' @param seed seed numeric input to specify seed for reproducible results
 #'
 #' @details
@@ -44,7 +46,9 @@
 #'
 #' In addition, *Z* variables can be defined, i.e., demographic variables. The
 #' intercept for `demos` will be added in the function. The input will be
-#' mean-centered before estimation. To reproduce the folds assignment, specify
+#' mean-centered for numeric variables and weighted effects-coded for character
+#' and factor variables. This will be done automatically before estimation.Thus,
+#' the intercept displays the average effect. To reproduce the folds assignment, specify
 #' a seed in the `seed` argument (default set to `1910`).
 #'
 #' @returns list
@@ -81,7 +85,7 @@ dm_to_stan_hb_cv <- function(
   # check length of input
   if (!is.null(demos)) {
     check_demo(demos, length(unique(unlist(select(design, {{ id }})))))
-    allowed_class(demos, "matrix")
+    allowed_class(demos, c("tbl_df", "tbl", "data.frame"))
   }
 
   # check whether priors are numeric input
@@ -161,9 +165,7 @@ dm_to_stan_hb_cv <- function(
     if (!is.null(demos)) {
       demos <- demos_df %>%
         dplyr::filter(group_id != x) %>%
-        dplyr::select(-c({{ id }}, group_id)) %>%
-        as.matrix() %>%
-        unname()
+        dplyr::select(-c({{ id }}, group_id))
     } else {
       demos <- NULL
     }

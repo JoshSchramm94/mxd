@@ -16,7 +16,9 @@
 #' @param prior_b numeric input for the b prior
 #' @param prior_omega numeric input for the omega prior
 #' @param prior_sigma numeric input for the sigma prior
-#' @param demos matrix of demographic variables (i.e., Z variables)
+#' @param demos optional input of class data.frame with demographic
+#' variables (i.e., Z variables; see details for recoding of variables in
+#' `demos`)
 #'
 #' @details
 #' `dm_to_stan_hb()` converts the design matrix into a nested list. The input
@@ -40,7 +42,9 @@
 #'
 #' In addition, *Z* variables can be defined, i.e., demographic variables. The
 #' intercept for `demos` will be added in the function. The input will be
-#' mean-centered before estimation.
+#' mean-centered for numeric variables and weighted effects-coded for character
+#' and factor variables. This will be done automatically before estimation.Thus,
+#' the intercept displays the average effect.
 #'
 #'
 #' @returns
@@ -75,14 +79,29 @@ dm_to_stan_hb <- function(
       length(unique(unlist(select(design, {{ id }}))))
     )
   } else {
-    demos <- apply(demos, 2, function(x) x - mean(x))
-    demos <- cbind(
-      matrix(
-        1,
-        length(unique(unlist(select(design, {{ id }}))))
-      ),
-      demos
-    )
+    allowed_class(demos, c("tbl_df", "tbl", "data.frame"))
+    demos <- purrr::map(seq.int(ncol(demos)), function(i) {
+      if (is.numeric(demos[[i]])) {
+        as.data.frame(apply(demos[i], 2, function(x) x - mean(x)))
+      } else if (is.character(demos[[i]]) || is.factor(demos[[i]])) {
+        tabs <- table(demos[, i])[1]
+        varname <- names(demos)[i]
+        fastDummies::dummy_cols(demos[i],
+          select_columns = varname,
+          remove_first_dummy = TRUE,
+          remove_selected_columns = FALSE
+        ) %>%
+          dplyr::mutate(
+            dplyr::across(-1, ~
+                            ifelse(.x == 0 & .data[[varname]] == names(tabs),
+                                   -sum(.x) / tabs,
+                                   .x))) %>%
+          dplyr::select(-1)
+      }
+    }) %>%
+      purrr::list_cbind() %>%
+      cbind(inter = matrix(1, nrow(demos)), .) %>%
+      as.matrix()
   }
 
   # tests ----------------------------------------------------------------------
