@@ -1,6 +1,6 @@
 Package: mxd
 Title: A Package For Estimating MaxDiff (i.e., BWS) tasks in R
-Version: 1.0.2
+Version: 1.0.3
 Authors@R: 
     c(person("Joshua", "Schramm", email = "josh.schramm@gmx.de", 
     role = c("aut", "cre"),
